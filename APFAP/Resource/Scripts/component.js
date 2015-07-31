@@ -7,14 +7,16 @@
 /*시스템 사용 temp*/
 //테이블타겟용
 var _tempTableTarget = '';
-
+/*
+    타겟을 지정하는 
+*/
 _setTarget = function (component) {
     _tempTableTarget.add(Ext.create('Ext.container.Container', {
         margin: '2 0 0 2',
         layout: {
             type: 'column'
         },
-        items: [CmComponent]
+        items: [component]
     }))
 }
 
@@ -73,10 +75,10 @@ ApPanel.prototype.divideV = function (panel1, panel2, panel) {
         panel2.setHeight('50%');
         panel1.setRegion('center');
     }
-    
+
     this.add(panel1);
     this.add(panel2);
-}
+};
 
 var ApPanel = {
     create: function (title) {
@@ -90,13 +92,13 @@ var ApPanel = {
         })
         return _panel;
     }
-}
+};
 
 //테이블
 Ext.define('ApTable', {
     extend: 'Ext.panel.Panel',
     ComponentType: 'table'
-})
+});
 ApTable.prototype.setTarget = function () {
     _tempTableTarget = this;
 }
@@ -105,7 +107,7 @@ var ApTable = {
         var _ApTable = Ext.create('ApTable', {
             layout:{
                 type: 'table',
-                column : colsize
+                columns : colsize
             },
             region: 'center',
             items: []
@@ -117,31 +119,84 @@ var ApTable = {
 Ext.define('ApText', {
     extend: 'Ext.form.field.Text',
     ComponentType: 'text'
-})
+});
 ApText.prototype.e = {
     focus: function () { },
     change: function (newValue, oldValue) { },
-    keydown: function (e) { }
-}
+    keyDown: function (e) { }
+};
 var ApText = {
-    create: function (text, paramId) {
+    create: function (label, paramId) {
         var _ApText = Ext.create('ApText', {
             labelWidth: 80,
             width: 180,
-            fieldLabel: text
+            fieldLabel: label,
+            paramId: paramId
         });
         _ApText.on('afterrender', function (me, eOpts) {
-            _ApText.getEl().on('focus', function (me, eOpts) {
-                ApText.e.focus();
+            _ApText.on('focus', function (me, eOpts) {
+                _ApText.e.focus();
             });
-            _ApText.getEl().on('change', function (me, eOpts) {
-                ApText.e.change(newValue, oldValue);
+            _ApText.on('change', function (me, newValue, oldValue) {
+                _ApText.e.change(newValue, oldValue);
             })
             _ApText.getEl().on('keydown', function (e, t, eOpts) {
-                _CmText.e.KeyDown(e);
+                _ApText.e.keyDown(e);
             });
         });
+        _setTarget(_ApText)
         return _ApText;
+    }
+}
+//콤보박스
+Ext.define('ApCombo', {
+    extend: 'Ext.form.ComboBox',
+    ComponentType: 'combo'
+});
+ApCombo.prototype.addItem = function (showValue, hideValue) {
+
+    this.items.push({
+        SHOWVALUE: showValue,
+        HIDEVALUE: hideValue
+    });
+    var makeStore = Ext.create('Ext.data.Store', {
+        fields: ['SHOWVALUE', 'HIDEVALUE'],
+        data: this.items
+    });
+    this.bindStore(makeStore);
+}
+ApCombo.prototype.e = {
+    focus: function () { },
+    change: function (me) { },
+    keyDown: function (e) { }
+};
+var ApCombo = {
+    create: function (label, paramId) {
+        var _ApCombo = Ext.create('ApCombo', {
+            labelWidth: 80,
+            width: 180,
+            displayField: 'SHOWVALUE',
+            fieldLabel: label,
+            forceSelection: true,
+            paramId: paramId,
+            items: []
+        });
+        _ApCombo.on('afterrender', function (me, eOpts) {
+            _ApCombo.on('focus', function (me, eOpts) {
+                _ApCombo.e.focus();
+            });
+            _ApCombo.on('change', function (me, newValue, oldValue) {
+                _ApCombo.e.change(newValue, oldValue);
+            })
+            _ApCombo.getEl().on('keydown', function (e, t, eOpts) {
+                _ApCombo.e.keyDown(e);
+            });
+            _ApCombo.on('select', function (me, records, eOpts) {
+                _ApCombo.e.change(me);
+            });
+        });
+        _setTarget(_ApCombo)
+        return _ApCombo;
     }
 }
 

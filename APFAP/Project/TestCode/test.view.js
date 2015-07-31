@@ -19,11 +19,18 @@ var ff = ApPanel.create('첫번째 오른쪽의 자식 아래쪽');
 //ee.setHeight('70%');
 //aa.setCollapsible(true);
 
-var table = ApTable.create(3);
+var table = ApTable.create(1);
 table.setTarget();
+
+var txt = ApText.create('거스바보');
+var txt2 = ApText.create('진성바보');
+var txt3 = ApText.create('창은바보');
+var txt4 = ApText.create('준희천재');
+var combo = ApCombo.create('준희2천재');
+combo.addItem('test', 'test1');
+combo.addItem('test2', 'test2');
+combo.addItem('test3', 'test3');
 viewPanel.full(table);
-var txt = ApText.create('hello');
-var txt2 = ApText.create('hello');
 txt.e.change = function () {
 
 }
