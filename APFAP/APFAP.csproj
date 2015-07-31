@@ -130,10 +130,34 @@
     <Content Include="favicon.ico" />
     <Content Include="Index.aspx" />
     <Content Include="packages.config" />
+    <Content Include="Project\PjtCom\ComFormA01-TITLE 관리폼.css" />
+    <Content Include="Project\PjtCom\ComFormA01.app.js" />
+    <Content Include="Project\PjtCom\ComFormA01.html" />
+    <Content Include="Project\PjtCom\ComFormA01.view.js" />
     <Content Include="Project\PjtDef\DefFormA01-TITLE 관리폼.css" />
     <Content Include="Project\PjtDef\DefFormA01.app.js" />
     <Content Include="Project\PjtDef\DefFormA01.html" />
     <Content Include="Project\PjtDef\DefFormA01.view.js" />
+    <Content Include="Project\PjtDev\DevFormA01-TITLE 관리폼.css" />
+    <Content Include="Project\PjtDev\DevFormA01.app.js" />
+    <Content Include="Project\PjtDev\DevFormA01.html" />
+    <Content Include="Project\PjtDev\DevFormA01.view.js" />
+    <Content Include="Project\PjtEvl\EvlFormB01-TITLE 관리폼.css" />
+    <Content Include="Project\PjtEvl\EvlFormB01.app.js" />
+    <Content Include="Project\PjtEvl\EvlFormB01.html" />
+    <Content Include="Project\PjtEvl\EvlFormB01.view.js" />
+    <Content Include="Project\PjtEvl\EvlFormA01-TITLE 관리폼.css" />
+    <Content Include="Project\PjtEvl\EvlFormA01.app.js" />
+    <Content Include="Project\PjtEvl\EvlFormA01.html" />
+    <Content Include="Project\PjtEvl\EvlFormA01.view.js" />
+    <Content Include="Project\PjtTes\TesFormB01-TITLE 관리폼.css" />
+    <Content Include="Project\PjtTes\TesFormB01.app.js" />
+    <Content Include="Project\PjtTes\TesFormb01.html" />
+    <Content Include="Project\PjtTes\TesFormB01.view.js" />
+    <Content Include="Project\PjtTes\TesFormA01-TITLE 관리폼.css" />
+    <Content Include="Project\PjtTes\TesFormA01.app.js" />
+    <Content Include="Project\PjtTes\TesFormA01.html" />
+    <Content Include="Project\PjtTes\TesFormA01.view.js" />
     <Content Include="Project\TestCode\test-모듈테스트페이지.css" />
     <Content Include="Project\TestCode\test.app.js" />
     <Content Include="Project\TestCode\test.html" />
@@ -669,9 +693,6 @@
     <Folder Include="Images\" />
     <Folder Include="Project\PjtAnl\" />
     <Folder Include="Project\PjtDes\" />
-    <Folder Include="Project\PjtDev\" />
-    <Folder Include="Project\PjtEvl\" />
-    <Folder Include="Project\PjtTes\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Account\Web.config" />
