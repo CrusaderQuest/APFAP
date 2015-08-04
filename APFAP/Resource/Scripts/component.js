@@ -4,7 +4,7 @@
     Team MasterPlan, J.Jobs was build it!
     This help other developer to making easy Ext js script.
 */
-/*시스템 사용 temp*/
+/* 컴포넌트 정의시 사용되는 내부로직 *****************************************/
 //테이블타겟용
 var _tempTableTarget = '';
 /*
@@ -21,7 +21,7 @@ _setTarget = function (component) {
 }
 
 
-/*레이아웃 관련 컴포넌트*/
+/* 레이아웃 관련 컴포넌트 ****************************************************/
 
 //패널
 Ext.define('ApPanel', {
@@ -93,6 +93,27 @@ var ApPanel = {
         return _panel;
     }
 };
+//탭
+Ext.define('ApTab', {
+    extend: 'Ext.tab.Panel',
+    ComponentType: 'tab'
+});
+
+ApTab.prototype.eTabchange = function (tabPanel, newCard) {
+
+};
+var ApTab = {
+    create: function () {
+        var _tab = Ext.create('ApTab', {
+            listeners: {
+                tabchange: function (tabPanel, newCard) {
+                    eTabchange(tabPanel, newCard);
+                }
+            }
+        });
+    }
+};
+
 
 //테이블
 Ext.define('ApTable', {
@@ -115,16 +136,149 @@ var ApTable = {
         return _ApTable;
     }
 }
+
+/* 그리드 컴포넌트 **********************************************************/
+Ext.define('ApGrid', {
+    extend: 'Ext.grid.Panel',
+    ComponentType : 'grid'
+})
+ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) {
+    var columnType = null;
+    if (width == undefined) {
+        width = 200;
+    }
+    switch (type) {
+        case 'text':
+            columnType = Ext.create('Ext.grid.column.Column', {
+                text: columnText,
+                xtype: 'textcolumn',
+                dataIndex: paramId,
+                align: 'center',
+                width: width,
+                editor: {
+                    xtype: 'textfield',
+                    align: 'left',
+                }
+
+            });
+            break;
+        case 'num':
+            columnType = Ext.create('Ext.grid.column.Column', {
+                text: columnText,
+                xtype: 'numbercolumn',
+                dataIndex: paramId,
+                width: width,
+                align: 'center',
+                editor: {
+                    xtype: 'numberfield',
+                    align: 'right',
+                    allowBlank: false,
+                    minValue: 0,
+                    maxValue: 100000
+                }
+            });
+            break;
+        case 'date':
+            columnType = Ext.create('Ext.grid.column.Column', {
+                text: columnText,
+                xtype: 'datecolumn',
+                format: 'Y-m-d',
+                dataIndex: paramId,
+                width: width,
+                align: 'center',
+                sortable: true,
+                renderer: Ext.util.Format.dateRenderer('Y-m-d'),
+                editor: {
+                    xtype: 'datefield',
+                    format: 'Y-m-d'
+                }
+            });
+            break;
+        case 'check':
+            columnType = Ext.create('Ext.grid.column.Column', {
+                text: columnText,
+                xtype: 'checkcolumn',
+                width: width,
+                dataIndex: paramId,
+                align: 'center',
+                trueText: 'Yes',
+                falseText: 'No',
+                align: 'center',
+                editor: {
+                    xtype: 'checkfield',
+                    selectOnFocus: true,
+                }
+            });
+            break;
+        case 'combo':
+            columnType = Ext.create('Ext.grid.column.Column', {
+                text: columnText,
+                width: width,
+                dataIndex: paramId[0],
+                align: 'center',
+                //store: comboStore,
+                //renderer: Ext.util.Format.usMoney,
+                editor: {
+                    xtype: 'combobox',
+                    displayField: 'SHOWDATA',
+                    valueField: 'SHOWDATA',
+                    store: paramId[1],
+                }
+            });
+            break;
+    }
+    this.headerCt.insert(this.columns.length-2, columnType);
+    this.getView().refresh();
+}
+ApGrid.prototype.eFocus = function () {
+    console.log('focus');
+};
+ApGrid.prototype.eChange = function (newValue, oldValue) {
+    console.log('change');
+};
+ApGrid.prototype.eKeyDown = function (e) {
+    console.log('KeyDown');
+}
+var ApGrid = {
+    create: function () {
+        var _ApGrid = Ext.create('ApGrid', {
+            //store: store,
+            width: 550,
+            title: 'TEST',
+            border: 1,
+            selModel: Ext.create('Ext.selection.CheckboxModel'),
+            columns: [Ext.create('Ext.grid.RowNumberer')],
+            plugins: [Ext.create('Ext.grid.plugin.CellEditing', {
+                clicksToEdit: 2
+            })]
+        })
+        _ApGrid.on('afterrender', function (me, eOpts) {
+            _ApGrid.on('focus', function (me, eOpts) {
+                _ApGrid.eFocus();
+            });
+            _ApGrid.on('change', function (me, newValue, oldValue) {
+                _ApGrid.eChange(newValue, oldValue);
+            })
+            _ApGrid.getEl().on('keydown', function (e, t, eOpts) {
+                _ApGrid.eKeyDown(e);
+            });
+        });
+        return _ApGrid;
+    }
+}
+/* 일반 컴포넌트 ************************************************************/
 //텍스트박스
 Ext.define('ApText', {
     extend: 'Ext.form.field.Text',
     ComponentType: 'text'
 });
-ApText.prototype.e = {
-    focus: function () { },
-    change: function (newValue, oldValue) { },
-    keyDown: function (e) { }
+ApText.prototype.eFocus = function(){
 };
+ApText.prototype.eChange = function (newValue, oldValue) {
+};
+ApText.prototype.eKeyDown = function (e) {
+
+}
 var ApText = {
     create: function (label, paramId) {
         var _ApText = Ext.create('ApText', {
@@ -135,16 +289,16 @@ var ApText = {
         });
         _ApText.on('afterrender', function (me, eOpts) {
             _ApText.on('focus', function (me, eOpts) {
-                _ApText.e.focus();
+                _ApText.eFocus();
             });
             _ApText.on('change', function (me, newValue, oldValue) {
-                _ApText.e.change(newValue, oldValue);
+                _ApText.eChange(newValue, oldValue);
             })
             _ApText.getEl().on('keydown', function (e, t, eOpts) {
-                _ApText.e.keyDown(e);
+                _ApText.eKeyDown(e);
             });
         });
-        _setTarget(_ApText)
+        _setTarget(_ApText);
         return _ApText;
     }
 }
@@ -165,10 +319,11 @@ ApCombo.prototype.addItem = function (showValue, hideValue) {
     });
     this.bindStore(makeStore);
 }
-ApCombo.prototype.e = {
-    focus: function () { },
-    change: function (me) { },
-    keyDown: function (e) { }
+ApCombo.prototype.eFocus = function () {
+};
+ApCombo.prototype.eChange = function (me) {
+};
+ApCombo.prototype.eKeyDown = function (e) {
 };
 var ApCombo = {
     create: function (label, paramId) {
@@ -183,20 +338,42 @@ var ApCombo = {
         });
         _ApCombo.on('afterrender', function (me, eOpts) {
             _ApCombo.on('focus', function (me, eOpts) {
-                _ApCombo.e.focus();
+                _ApCombo.eFocus();
             });
-            _ApCombo.on('change', function (me, newValue, oldValue) {
-                _ApCombo.e.change(newValue, oldValue);
-            })
             _ApCombo.getEl().on('keydown', function (e, t, eOpts) {
-                _ApCombo.e.keyDown(e);
+                _ApCombo.eKeyDown(e);
             });
             _ApCombo.on('select', function (me, records, eOpts) {
-                _ApCombo.e.change(me);
+                _ApCombo.eChange(me);
             });
         });
-        _setTarget(_ApCombo)
+        _setTarget(_ApCombo);
         return _ApCombo;
+    }
+}
+//버튼
+Ext.define('ApButton', {
+    extend: 'Ext.button.Button',
+    ComponentType: 'button'
+});
+ApButton.prototype.eClick = function () {
+};
+var ApButton = {
+    create: function (text, paramId) {
+        var _ApButton = Ext.create('ApButton', {
+            labelWidth: 80,
+            text : text,
+            width: 180,
+            fieldLabel: label,
+            paramId: paramId
+        });
+        _ApButton.on('afterrender', function (me, eOpts) {
+            _ApButton.on('click', function (me, eOpts) {
+                _ApButton.eClick();
+            });
+        });
+        _setTarget(_ApButton)
+        return _ApButton;
     }
 }
 
