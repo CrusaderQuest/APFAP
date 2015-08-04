@@ -5,10 +5,18 @@
 
 //View 단 정의 영역 시작
 
-Ext.onReady(function () {
+var pnl_top = ApPanel.create("top field");
+var pnl_content = ApPanel.create("contents field");
 
-    Ext.define('MpPanel', {
-        extend: 'Ext.panel.Panel',
-        dataType: 'panel'
-    });
-});
+viewPanel.divideV(pnl_top, pnl_content);
+pnl_top.setHeight('10%');
+
+var pnl_title = ApPanel.create("팀내 개발 후 수정내역");
+//pnl_title.setBodyStyle('background-color','#ff0000');
+var pnl_summary = ApPanel.create("고객 요청에 의한 수정 외에 개발 후 수정한 내역을 관리할 수 있습니다.");
+
+pnl_top.divideH(pnl_title, pnl_summary);
+pnl_title.setWidth('25%');
+
+var pnl_grid = ApPanel.create("이곳에 그리드가 추가될 예정");
+pnl_content.full(pnl_grid);
