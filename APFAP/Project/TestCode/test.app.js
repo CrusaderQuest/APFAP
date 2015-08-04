@@ -4,6 +4,6 @@
 /// <reference path="test.view.js" />
 
 //App 단 정의 영역 시작
-txt2.e.change = function (newValue, oldValue) {
-    console.log(newValue);
-}
+//txt2.eChange = function (newValue, oldValue) {
+//    console.log(newValue);
+//}
