@@ -19,4 +19,27 @@ pnl_top.divideH(pnl_title, pnl_summary);
 pnl_title.setWidth('25%');
 
 var pnl_grid = ApPanel.create("이곳에 그리드가 추가될 예정");
+//--------------------------------------------------
+
+Ext.define('mainReqAnalData', {
+    extend: 'Ext.data.Model',
+    fields: [
+        { name: 'SUMMARY' },
+        { name: 'REVIEW' }
+    ]
+});
+var gridData = Ext.create('Ext.data.ArrayStore', {
+    model: 'mainReqAnalData',
+    data: [
+        ['이미지뷰 영역의 충분한 확보', '잘댐 ㅎㅎ'],
+        ['업로드시 모든 파일 양식 지원', '잘 안댐 ㅠㅠ']
+    ]
+});
+var grd = ApGrid.create();
+grd.addColumn('text', '요약', 'SUMMARY', 200);
+grd.addColumn('text', '평가', 'REVIEW', 700);
+
+grd.reconfigure(gridData);
+//--------------------------------------------------
 pnl_content.full(pnl_grid);
+pnl_grid.full(grd);
