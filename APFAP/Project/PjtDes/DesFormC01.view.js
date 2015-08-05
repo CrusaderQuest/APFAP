@@ -5,11 +5,10 @@
 
 //View 단 정의 영역 시작
 var pnl_proNM = ApPanel.create('Project Name');
-var pnl_proUP = ApPanel.create('table나와야지');
+//var pnl_proUP = ApPanel.create('table나와야지');
 Ext.define('systemArchi', {
     extend: 'Ext.data.Model',
     fields: [
-        //{ name: 'PROJECTNM' },
         { name: 'DATE', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'CHECK', type: 'boolean' },
         { name: 'SUMMARY' }
@@ -24,36 +23,39 @@ var gridData = Ext.create('Ext.data.ArrayStore', {
 });
 
 var grd = ApGrid.create();
-//grd.addColumn('text', '프로젝트 이름', 'PROJECTNM', 200);
 
 grd.addColumn('date', '날짜', 'DATE', 200);
 grd.addColumn('check', '업로드 여부', 'CHECK', 200);
-grd.addColumn('text', 'Summary', 'SUMMARY', 900);
+grd.addColumn('text', 'Summary', 'SUMMARY', 910);
 
 grd.reconfigure(gridData);
-pnl_proUP.full(grd);
+//pnl_proUP.divideV(grd,);
+var pnl_in_pnl = Ext.create('Ext.panel.Panel', { title: 'button추가된 panel', buttons: [{ text: 'insert image' }, { text: 'delete image' }] });
+pnl_in_pnl.add(grd);
+grd.setWidth('fit');
+pnl_proNM.full(pnl_in_pnl);
 
 
-var pnl_proDown = ApPanel.create('버튼만나옴');
-var fake2 = ApTable.create(2);
-fake2.setTarget();
-var insert2 = ApButton.create('insert image');
-var delete2 = ApButton.create('delete image');
-pnl_proDown.full(fake2);
-pnl_proNM.divideV(pnl_proUP, pnl_proDown);
+//var pnl_proDown = ApPanel.create('버튼만나옴');
+//var fake2 = ApTable.create(2);
+//fake2.setTarget();
+//var insert2 = ApButton.create('insert image');
+//var delete2 = ApButton.create('delete image');
+//pnl_proDown.full(fake2);
+//pnl_proNM.divideV(pnl_proUP, pnl_proDown);
 
 
 
 
 var pnl_sysArchi = ApPanel.create('System Architecture Image');
-var fake = ApTable.create(2);
-fake.setTarget();
+//var fake = ApTable.create(2);
+//fake.setTarget();
 
-var insertbtn = ApButton.create('insert image');
-var deletebtn = ApButton.create('delete image');
-pnl_sysArchi.full(fake);
+//var insertbtn = ApButton.create('insert image');
+//var deletebtn = ApButton.create('delete image');
+//pnl_sysArchi.full(fake);
 viewPanel.divideV(pnl_proNM, pnl_sysArchi);
-pnl_proNM.setHeight(300);
+pnl_proNM.setHeight(250);
 
 
 
