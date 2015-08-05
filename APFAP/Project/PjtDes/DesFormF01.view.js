@@ -4,7 +4,7 @@
 //
 
 //View 단 정의 영역 시작
-
+//화면흐름도 쪽인데 아직 설계 ㄴㄴ
 Ext.onReady(function () {
 
     Ext.define('MpPanel', {
