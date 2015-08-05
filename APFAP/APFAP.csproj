@@ -154,10 +154,15 @@
     <Content Include="Project\PjtAnl\AnlFormF01.app.js" />
     <Content Include="Project\PjtAnl\AnlFormF01.html" />
     <Content Include="Project\PjtAnl\AnlFormF01.view.js" />
+    <Content Include="Project\PjtCom\calendarSrc\App.js" />
     <Content Include="Project\PjtCom\ComFormA01-TITLE 관리폼.css" />
     <Content Include="Project\PjtCom\ComFormA01.app.js" />
     <Content Include="Project\PjtCom\ComFormA01.html" />
     <Content Include="Project\PjtCom\ComFormA01.view.js" />
+    <Content Include="Project\PjtCom\ComFormB01-TITLE 관리폼.css" />
+    <Content Include="Project\PjtCom\ComFormB01.app.js" />
+    <Content Include="Project\PjtCom\ComFormB01.html" />
+    <Content Include="Project\PjtCom\ComFormB01.view.js" />
     <Content Include="Project\PjtDef\DefFormA01-TITLE 관리폼.css" />
     <Content Include="Project\PjtDef\DefFormA01.app.js" />
     <Content Include="Project\PjtDef\DefFormA01.html" />
@@ -242,6 +247,9 @@
     <Content Include="Resource\Scripts\ext-theme-crisp-debug.js" />
     <Content Include="Resource\Scripts\noncomponent-컴포넌트 외 모듈.css" />
     <Content Include="Resource\Scripts\noncomponent.js" />
+    <Content Include="Resource\Scripts\options-toolbar.js" />
+    <Content Include="Resource\Themes\calendar.css" />
+    <Content Include="Resource\Themes\examples.css" />
     <Content Include="Resource\Themes\ext-theme-crisp-all-rtl.css" />
     <Content Include="Resource\Themes\ext-theme-crisp-all-rtl_01.css" />
     <Content Include="Resource\Themes\ext-theme-crisp-all-rtl_02.css" />
@@ -428,6 +436,12 @@
     <Content Include="Resource\Themes\images\button\plain-toolbar-small-s-arrow-b.png" />
     <Content Include="Resource\Themes\images\button\plain-toolbar-small-s-arrow-rtl.png" />
     <Content Include="Resource\Themes\images\button\plain-toolbar-small-s-arrow.png" />
+    <Content Include="Resource\Themes\images\calendar\arrow.gif" />
+    <Content Include="Resource\Themes\images\calendar\bg.gif" />
+    <Content Include="Resource\Themes\images\calendar\calendar-sprites.gif" />
+    <Content Include="Resource\Themes\images\calendar\ext-cal-edit-hd.png" />
+    <Content Include="Resource\Themes\images\calendar\page-next.gif" />
+    <Content Include="Resource\Themes\images\calendar\page-prev.gif" />
     <Content Include="Resource\Themes\images\datepicker\arrow-left.png" />
     <Content Include="Resource\Themes\images\datepicker\arrow-right.png" />
     <Content Include="Resource\Themes\images\datepicker\month-arrow.png" />
@@ -740,6 +754,7 @@
     <Content Include="Resource\Themes\config.rb" />
     <Content Include="Resource\Themes\ext-theme-crisp-all-rtl-debug.scss" />
     <Content Include="Resource\Themes\Readme.md" />
+    <Content Include="Resource\Themes\images\calendar\Thumbs.db" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
