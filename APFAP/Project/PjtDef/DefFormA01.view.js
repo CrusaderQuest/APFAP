@@ -21,6 +21,7 @@ tbl_subtitle.setMargin(50);
 
 pnl_contents.divideV(tbl_title, tbl_subtitle);
 pnl_contents.setMargin(50);
+
 Ext.require([
     '*'
 ]);
