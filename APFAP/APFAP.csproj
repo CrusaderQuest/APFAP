@@ -250,9 +250,6 @@
     <Content Include="Resource\Scripts\options-toolbar.js" />
     <Content Include="Resource\Themes\calendar.css" />
     <Content Include="Resource\Themes\examples.css" />
-    <Content Include="Resource\Themes\ext-theme-crisp-all-rtl.css" />
-    <Content Include="Resource\Themes\ext-theme-crisp-all-rtl_01.css" />
-    <Content Include="Resource\Themes\ext-theme-crisp-all-rtl_02.css" />
     <Content Include="Resource\Themes\images\breadcrumb\default-arrow-open-rtl.png" />
     <Content Include="Resource\Themes\images\breadcrumb\default-arrow-open.png" />
     <Content Include="Resource\Themes\images\breadcrumb\default-arrow-rtl.png" />
@@ -752,7 +749,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resource\Themes\config.rb" />
-    <Content Include="Resource\Themes\ext-theme-crisp-all-rtl-debug.scss" />
     <Content Include="Resource\Themes\Readme.md" />
     <Content Include="Resource\Themes\images\calendar\Thumbs.db" />
     <None Include="Web.Debug.config">
