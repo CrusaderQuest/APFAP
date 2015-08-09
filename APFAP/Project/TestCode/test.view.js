@@ -18,43 +18,43 @@
 //cc.setWidth(200);
 //ee.setHeight('70%');
 //aa.setCollapsible(true);
-var comboStore = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA'],
-    data: [
-        ['aa', 'AAA'],
-        ['bb', 'BBB'],
-        ['cc', 'CCC'],
-        ['dd', 'DDD'],
-        ['ee', 'EEEE']
-    ]
-});
+//var comboStore = Ext.create('Ext.data.ArrayStore', {
+//    fields: ['HIDEDATA', 'SHOWDATA'],
+//    data: [
+//        ['aa', 'AAA'],
+//        ['bb', 'BBB'],
+//        ['cc', 'CCC'],
+//        ['dd', 'DDD'],
+//        ['ee', 'EEEE']
+//    ]
+//});
 
-Ext.define('testData', {
-    extend: 'Ext.data.Model',
-    fields: [
-        { name: 'USERID' },
-        { name: 'CHECK', type: 'boolean' },
-        { name: 'DATE', type: 'date', dateFormat: 'Y-m-d' },
-        { name: 'SEQ', type: 'number' },
-        { name: 'COMBO' }
-    ]
-});
-var gridData = Ext.create('Ext.data.ArrayStore', {
-    model: 'testData',
-    data: [
-        ['aaa1', false, '2015-07-29', 30.24, 'AAA'],
-        ['aaa2', false, '2015-07-29', 30.24,'BBB'],
-        ['aaa3', true, '2015-07-29', 30.24,'CCC'],
-        ['aaa4', true, '2015-07-29', 30.24, 'AAA'],
-        ['aaa5', false, '2015-07-29', 30.24, 'AAA'],
-        ['aaa6', false, '2015-07-29', 30.24, 'BBB'],
-    ]
-});
-var grd = ApGrid.create();
-grd.addColumn('text', '텍스트', 'USERID', 200);
-grd.addColumn('num', '넘버', 'SEQ', 200);
-grd.addColumn('date', '날짜', 'DATE', 200);
-grd.addColumn('check', '체크', 'CHECK', 200);
-grd.addColumn('combo', '콤보', ['COMBO', comboStore], 200);
-grd.reconfigure(gridData);
-viewPanel.full(grd);
+//Ext.define('testData', {
+//    extend: 'Ext.data.Model',
+//    fields: [
+//        { name: 'USERID' },
+//        { name: 'CHECK', type: 'boolean' },
+//        { name: 'DATE', type: 'date', dateFormat: 'Y-m-d' },
+//        { name: 'SEQ', type: 'number' },
+//        { name: 'COMBO' }
+//    ]
+//});
+//var gridData = Ext.create('Ext.data.ArrayStore', {
+//    model: 'testData',
+//    data: [
+//        ['aaa1', false, '2015-07-29', 30.24, 'AAA'],
+//        ['aaa2', false, '2015-07-29', 30.24,'BBB'],
+//        ['aaa3', true, '2015-07-29', 30.24,'CCC'],
+//        ['aaa4', true, '2015-07-29', 30.24, 'AAA'],
+//        ['aaa5', false, '2015-07-29', 30.24, 'AAA'],
+//        ['aaa6', false, '2015-07-29', 30.24, 'BBB'],
+//    ]
+//});
+//var grd = ApGrid.create();
+//grd.addColumn('text', '텍스트', 'USERID', 200);
+//grd.addColumn('num', '넘버', 'SEQ', 200);
+//grd.addColumn('date', '날짜', 'DATE', 200);
+//grd.addColumn('check', '체크', 'CHECK', 200);
+//grd.addColumn('combo', '콤보', ['COMBO', comboStore], 200);
+//grd.reconfigure(gridData);
+//viewPanel.full(grd);
