@@ -12,7 +12,7 @@ var node2 = getNode('', true, false);
 tre_CUSTOMTREE.bindNode(node1, 1, false);
 tre_CUSTOMTREE.bindNode(node2, 2, false);
 tre_CUSTOMTREE.bindNode(node3, 2, false);
-
+//주석
 
 var tbl_H = ApTable.create(1);
 tbl_H.setTarget();
