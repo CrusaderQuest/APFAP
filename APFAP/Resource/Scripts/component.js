@@ -20,8 +20,462 @@ _setTarget = function (component) {
     }))
 }
 
+Ext.define('ApMapArray', {
+    key: [],
+    value: []
+})
+ApMapArray.prototype.clear = function () {
+    this.key = [];
+    this.value = [];
+}
+ApMapArray.prototype.setValue = function (key, value) {
+    this.key.push(key);
+    this.value.push(value);
+}
+ApMapArray.prototype.getValue = function (key) {
+    var index = this.key.indexOf(key);
+    if (index != -1)
+        return this.value[index];
+}
+ApMapArray.prototype.remove = function (key) {
+    var index = this.key.indexOf(key);
+    if (index != -1) {
+        this.keys.splice(index, 1);
+        this.values.splice(index, 1);
+    }
+}
+
+var ApMapArray = {
+    create: function () {
+        return Ext.create('ApMapArray');
+    }
+}
+
+
+function getUrlNode(level, text, url, leaf, expanded) {
+    if (level == undefined) {
+        return console.error('Level is not defined.')
+    };
+    if (text == undefined) {
+        text = 'I have no text.';
+    };
+    if (url == undefined) {
+        url = 'juneheepark';
+    };
+    if (leaf == undefined) {
+        leaf = false;
+    };
+    if (expanded == undefined) {
+        expanded = false;
+    };
+    return {
+        children: [],
+        leaf: leaf,
+        level: level,
+        text: text,
+        hrefTarget: url,
+        expanded: expanded
+    };
+}
+function getNode(text, leaf, expanded, check) {
+    if (text == undefined || text == "") { text = '빈노드'; };
+    if (leaf == undefined || leaf == "") { leaf = undefined };
+    if (expanded == undefined || expanded == "") { expanded = true; };
+    var node = {
+        children: [],
+        leaf: leaf,
+        text: text,
+        value: Ext.create('ApMapArray'),
+        expanded: expanded
+    };
+    if (check != undefined && check != "") {
+        node.checked = check;
+    } else if (check == false) {
+        node.checked = false;
+    };
+    return node;
+}
+
+//스토어 단 루트 보이기 숨기기 옵션 추가
+Ext.define('ApTreeStore', {
+    extend: 'Ext.data.TreeStore',
+    root: {
+        expanded: true,
+        children: []
+    }
+});
+
+ApTreeStore.prototype.addNode = function (parentNode, node) {
+    if (parentNode == undefined || parentNode == '') {
+        parentNode = this.getRootNode();
+    };
+    parentNode.appendChild(node);
+};
+
+
+ApTreeStore.prototype.insertNode = function (parentNode, index, node) {
+    parentNode.insertChild(index, node);
+};
+
+ApTreeStore.prototype.removeNode = function (node) {
+    if (node == "") {
+        return;
+    } else {
+        target = node.parentNode;
+        target.removeChild(node);
+    };
+};
+
+//ApTreeStore.prototype.setData = function (node, field, data) {
+//    //node.set('text', 'help') store 데이터 변경
+//    node.set(field, data);
+//};
+
+ApTreeStore.prototype.replaceNode = function (newChild, oldChild, mode) {
+
+    var parentNode = oldChild.parentNode
+    if (oldChild.data.index == -1) {
+        return;
+    };
+    if (mode == 'straight') {
+        oldChild = parentNode.replaceChild(newChild, oldChild);
+        parentNode.insertChild(newChild.data.index + 1, oldChild);
+    } else if (mode == 'back') {
+        oldChild = parentNode.replaceChild(newChild, oldChild);
+        parentNode.insertChild(newChild.data.index, oldChild);
+    };
+};
+
+//트리 스토어
+var ApTreeStore = {
+    create: function (rootText) {
+        if (rootText == undefined)
+            rootText = "";
+        var store = Ext.create('ApTreeStore', {
+        });
+        store.root.text = rootText;
+        return store;
+    }
+};
+//트리 모듈
+Ext.define('ApTree', {
+    extend: 'Ext.tree.Panel',
+    componentTree: 'tree'
+});
+ApTree.prototype.eventContextMenu = function (x, y, width, height) { };
+ApTree.prototype.eventEnter = function (s, r) { };
+ApTree.prototype.eventClick = function (selected) { };
+ApTree.prototype.eventSelectionChange = function (r) { };
+ApTree.prototype.eventDbclick = function (s, r) { };
+ApTree.prototype.eventExpand = function (s) { };
+ApTree.prototype.eventCollapse = function (s) { };
+ApTree.prototype.setFocus = function (key, value) {
+    var index = this.view.getStore().findBy(function (re, id) {
+        if (re.raw.value.getValue(key) == value) {
+            return true;
+        }
+    })
+    if (index == -1) index = 0;
+    this.getSelectionModel().select(index);//포커스이동
+};
+ApTree.prototype.getIndex = function (key, value) {
+    var index = this.view.getStore().findBy(function (re, id) {
+        if (re.raw.value.getValue(key) == value) {
+            return true;
+        }
+    });
+    return index;
+};
+ApTree.prototype.addNode = function (node, parentNode) {
+    //타겟이 없을경우
+    var length = 0;
+    if (node.leaf == undefined) {
+        node.leaf = true;
+    };
+    if (parentNode == undefined || parentNode == null) {
+        var parentNode;
+        //루트 레벨
+        if (this.selected == "" || this.selected == undefined) {
+            this.store.addNode(parentNode, node);
+            if (this.rootVisible == true) {
+                length = this.store.root.childNodes.length
+            } else {
+                length = this.store.root.childNodes.length - 1
+            };
+            this.getSelectionModel().select(length);
+            //선택레벨
+        } else {
+            parentNode = this.selected.parentNode;
+            index = this.selected.data.index + 1;
+            this.store.insertNode(parentNode, index, node);
+
+            var record = this.getSelectionModel().lastSelected
+            if (record != undefined) {
+                if (record.childNodes.length == 0) {
+                    this.getSelectionModel().selectNext(node);
+                } else {
+                    record.cascadeBy(function (childNode) {
+                        childNode.expand();
+                    })
+                    record.cascadeBy(function (childNode) {
+                        this.getSelectionModel().selectNext(node);
+                    }, this);
+                };
+            };
+        };
+    } else {
+        parentNode.set('leaf', false);
+        if (parentNode.childNodes.length == 0) {
+            this.store.addNode(parentNode, node);
+            parentNode.expand();
+            this.getSelectionModel().selectNext();
+
+        } else {
+            var depth = parentNode.childNodes[0].data.depth
+            parentNode.cascadeBy(function (childNode) {
+                childNode.expand();
+            });
+            parentNode.cascadeBy(function (childNode) {
+                if (childNode.data.depth == depth || childNode.data.index == parentNode.childNodes.length - 1) return;
+                this.getSelectionModel().selectNext(node);
+            }, this);
+        };
+    };
+
+    this.selected = this.getSelectionModel().lastSelected;
+};
+
+ApTree.prototype.removeNode = function (node) {
+    if (this.getRootNode().childNodes.length > 0) {
+
+        if (this.selected.childNodes.length != 0) {
+        } else {
+
+        };
+        if (this.getSelectionModel().selectPrevious(this.getSelectionModel().lastSelected)) {
+            this.store.removeNode(node);
+        } else {
+            this.getSelectionModel().selectNext();
+            this.store.removeNode(node);
+        };
+        this.selected = this.getSelectionModel().lastSelected
+        if (this.getSelectionModel().lastSelected.childNodes.length == 0) {
+            this.getSelectionModel().lastSelected.set('leaf', true);
+        }
+    } else {
+        return false;
+    };
+};
+
+ApTree.prototype.bindNode = function (node, depth, expended) {
+    var parentNode = this.getRootNode();
+    if (depth == 1) {
+        parentNode.appendChild(node);
+        if (undefined == this.getRootNode().childNodes[0]) {
+            this.node[noedeIndex].leaf = true;
+        };
+
+    } else {
+        var deepCount = depth - 1;
+        for (var i = 0 ; i < deepCount ; i++) {
+
+            if (i == 0) {
+                parentNode = this.getRootNode().childNodes[this.getRootNode().childNodes.length - 1];
+            }
+            else {
+                if (parentNode.childNodes.length > 0) {
+                    parentNode = parentNode.childNodes[parentNode.childNodes.length - 1];
+                };
+            };
+        };
+        //parentNodeNode.leaf = false;
+        parentNode.appendChild(node);
+        if (expended == true) {
+            parentNode.expand();
+        } else {
+            parentNode.collapse();
+        };
+    };
+};
+
+// getNode
+ApTree.prototype.getNode = function (key, value) {
+    var parentNode = this.getRootNode();
+    parentNode.cascadeBy(function (childNode) {
+        childNode.expand();
+    });
+    parentNode.cascadeBy(function (childNode) {
+        if (childNode.raw.value.keys == key && childNode.raw.value.values == value) {
+            return childNode;
+        };
+    }, this);
+};
+
+ApTree.prototype.clear = function () {
+    this.getRootNode().removeAll();
+    this.selected = '';
+};
+ApTree.prototype.upNode = function (node) {
+    var index = node.data.index - 1;
+    if (index >= 0) {
+        var oldNode = node.parentNode.getChildAt(index);
+        this.store.replaceNode(node, oldNode, 'straight');
+    };
+};
+
+ApTree.prototype.downNode = function (node) {
+    var index = node.data.index + 1
+    if (index <= node.parentNode.childNodes.length - 1) {
+        var oldNode = node.parentNode.getChildAt(index);
+        this.store.replaceNode(node, oldNode, 'back');
+    };
+};
+
+ApTree.prototype.allMember = function () {
+    var everyNodes = [];
+    this.getRootNode().cascadeBy(function (childNode) {
+        everyNodes.push(childNode.raw);
+    }, this);
+    return everyNodes;
+};
+var ApTree = {
+    store: '',
+    frame: false,
+    create: function (title, store, editable, rootVisible) {
+        if (store != undefined && store != "") {
+            this.store = store;
+        } else {
+            this.store = ApTreeStore.create('Root');
+        };
+        //트리 더블클릭시 오류 때문에 editable false이면 플러그인안넣도록 수정
+        var plug_in = '';
+        if (editable) plug_in = 'cellediting';
+        if (editable == undefined || editable == "" || editable == false) {
+            editable = '';
+        } else {
+            editable = [{
+                xtype: 'treecolumn',
+                dataIndex: 'text',
+                flex: 1,
+                editor: {
+                    xtype: 'textfield',
+                    allowBlank: false,
+                    allowOnlyWhitespace: false
+                }
+            }];
+        };
+        if (rootVisible == undefined || rootVisible == "") {
+            rootVisible = false;
+        } else {
+            rootVisible = true;
+        };
+
+        var _ApTree = Ext.create('ApTree', {
+            title: title,
+            store: ApTree.store,
+            rootVisible: rootVisible,
+            selected: '',
+            plugins: plug_in,
+            hideHeaders: true,
+            useArrows: true,
+            columns: editable,
+            cls: '',
+            frame: ApTree.frame
+        });
+
+        _ApTree.on('afterrender', function (me, eOpts) {
+            _ApTree.on('itemdblclick', function (s, r, a, b, e) {
+                _ApTree.eventDbclick(r);
+            });
+            _ApTree.on('itemclick', function (s, r) {
+                _ApTree.selected = r;
+                _ApTree.eventClick(r);
+            });
+            _ApTree.on('checkchange', function (node, checked, eOpts) {
+                node.cascadeBy(function (node) {
+                    node.set('checked', checked);
+                });
+            });
+            _ApTree.on('selectionchange', function (node, selected, eOpts) {
+                _ApTree.eventSelectionChange(selected);
+            });
+            _ApTree.getEl().on('contextmenu', function (e, t, eOpts) {
+                var inputX = _ApTree.getEl().getX();
+                var inputY = _ApTree.getEl().getY();
+                var inputW = _ApTree.getEl().getWidth();
+                var inputH = _ApTree.getEl().getHeight();
+                _ApTree.eventContextMenu(inputX, inputY, inputW, inputH);
+                e.stopEvent();
+            });
+            _ApTree.on('itemexpand', function (me, eOpts) {
+                _ApTree.eventExpand(me);
+            });
+
+            _ApTree.on('itemcollapse', function (me, eOpts) {
+                _ApTree.eventCollapse(me);
+            });
+            _ApTree.on('beforecellkeydown', function (me, td, cellIndex, record, tr, rowIndex, e, eOpts) {
+                if (e.button == 12) {
+                    _ApTree.eventEnter(record, e);
+                };
+            });
+        });
+        return _ApTree;
+    }
+};
+
 
 /* 레이아웃 관련 컴포넌트 ****************************************************/
+
+Ext.define('ApTab', {
+    extend: 'Ext.tab.Panel',
+    ComponentType: 'tab'
+});
+/*
+    @parent : ApTab
+    @brief : 탭변경 이벤트
+    @param : (이전탭, 변경된 탭)
+*/
+ApTab.prototype.eTabchange = function (tabPanel, newCard) {
+};
+/*
+    @parent : ApTab
+    @brief : 탭추가 함수
+    @param : (타이틀)
+*/
+ApTab.prototype.addTab = function (title) {
+    var _tabPage = ApPanel.create();
+    _tabPage.title = title;
+    _tabPage.tabConfig = { xtype: 'tab', width: this.tabWidth };
+    this.add(_tabPage);
+    this.setActiveTab(0);
+    return _tabPage;
+};
+/*
+    @parent : ApTab
+    @brief : 해당인덱스 탭을 가져오는 함수
+    @param : (인덱스)
+*/
+ApTab.prototype.getTab = function (index) {
+    return this.items.items[index];
+};
+/*
+    @parent : ApTab
+    @brief : ApTab 생성자
+    @param : ()
+*/
+var ApTab = {
+    create: function () {
+        var _tab = Ext.create('ApTab', {
+            listeners: {
+                tabchange: function (tabPanel, newCard) {
+                    this.eTabchange(tabPanel, newCard);
+                }
+            }
+        });
+        return _tab;
+    }
+};
 
 //패널
 Ext.define('ApPanel', {
@@ -93,27 +547,6 @@ var ApPanel = {
         return _panel;
     }
 };
-//탭
-Ext.define('ApTab', {
-    extend: 'Ext.tab.Panel',
-    ComponentType: 'tab'
-});
-
-ApTab.prototype.eTabchange = function (tabPanel, newCard) {
-
-};
-var ApTab = {
-    create: function () {
-        var _tab = Ext.create('ApTab', {
-            listeners: {
-                tabchange: function (tabPanel, newCard) {
-                    eTabchange(tabPanel, newCard);
-                }
-            }
-        });
-    }
-};
-
 
 //테이블
 Ext.define('ApTable', {
@@ -364,7 +797,6 @@ var ApButton = {
             labelWidth: 80,
             text : text,
             width: 180,
-            fieldLabel: label,
             paramId: paramId
         });
         _ApButton.on('afterrender', function (me, eOpts) {
@@ -376,5 +808,24 @@ var ApButton = {
         return _ApButton;
     }
 }
-
-/*일반 컴포넌트*/
+//체크박스
+Ext.define('ApCheck', {
+    extend: 'Ext.form.field.Checkbox',
+    componentType: 'check'
+});
+ApCheck.prototype.eventChange = function (newValue, oldValue) { };
+var ApCheck = {
+    create: function (text, paramId) {
+        var _ApCheck = Ext.create('ApCheck', {
+            boxLabel: text,
+            paramId: paramId
+        });
+        _ApCheck.on('afterrender', function (me, eOpts) {
+            _ApCheck.on('change', function (me, newValue, oldValue) {
+                _ApCheck.eventChange(newValue, oldValue);
+            });
+        });
+        _setTarget(_ApCheck);
+        return _ApCheck;
+    }
+}
