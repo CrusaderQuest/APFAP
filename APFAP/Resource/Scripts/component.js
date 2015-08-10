@@ -162,13 +162,13 @@ Ext.define('ApTree', {
     extend: 'Ext.tree.Panel',
     componentTree: 'tree'
 });
-ApTree.prototype.eventContextMenu = function (x, y, width, height) { };
-ApTree.prototype.eventEnter = function (s, r) { };
-ApTree.prototype.eventClick = function (selected) { };
-ApTree.prototype.eventSelectionChange = function (r) { };
-ApTree.prototype.eventDbclick = function (s, r) { };
-ApTree.prototype.eventExpand = function (s) { };
-ApTree.prototype.eventCollapse = function (s) { };
+ApTree.prototype.eContextMenu = function (x, y, width, height) { };
+ApTree.prototype.eEnter = function (s, r) { };
+ApTree.prototype.eClick = function (selected) { };
+ApTree.prototype.eSelectionChange = function (r) { };
+ApTree.prototype.eDbclick = function (s, r) { };
+ApTree.prototype.eExpand = function (s) { };
+ApTree.prototype.eCollapse = function (s) { };
 ApTree.prototype.setFocus = function (key, value) {
     var index = this.view.getStore().findBy(function (re, id) {
         if (re.raw.value.getValue(key) == value) {
@@ -385,11 +385,11 @@ var ApTree = {
 
         _ApTree.on('afterrender', function (me, eOpts) {
             _ApTree.on('itemdblclick', function (s, r, a, b, e) {
-                _ApTree.eventDbclick(r);
+                _ApTree.eDbclick(r);
             });
             _ApTree.on('itemclick', function (s, r) {
                 _ApTree.selected = r;
-                _ApTree.eventClick(r);
+                _ApTree.eClick(r);
             });
             _ApTree.on('checkchange', function (node, checked, eOpts) {
                 node.cascadeBy(function (node) {
@@ -397,26 +397,26 @@ var ApTree = {
                 });
             });
             _ApTree.on('selectionchange', function (node, selected, eOpts) {
-                _ApTree.eventSelectionChange(selected);
+                _ApTree.eSelectionChange(selected);
             });
             _ApTree.getEl().on('contextmenu', function (e, t, eOpts) {
                 var inputX = _ApTree.getEl().getX();
                 var inputY = _ApTree.getEl().getY();
                 var inputW = _ApTree.getEl().getWidth();
                 var inputH = _ApTree.getEl().getHeight();
-                _ApTree.eventContextMenu(inputX, inputY, inputW, inputH);
+                _ApTree.eContextMenu(inputX, inputY, inputW, inputH);
                 e.stopEvent();
             });
             _ApTree.on('itemexpand', function (me, eOpts) {
-                _ApTree.eventExpand(me);
+                _ApTree.eExpand(me);
             });
 
             _ApTree.on('itemcollapse', function (me, eOpts) {
-                _ApTree.eventCollapse(me);
+                _ApTree.eCollapse(me);
             });
             _ApTree.on('beforecellkeydown', function (me, td, cellIndex, record, tr, rowIndex, e, eOpts) {
                 if (e.button == 12) {
-                    _ApTree.eventEnter(record, e);
+                    _ApTree.eEnter(record, e);
                 };
             });
         });
@@ -672,10 +672,10 @@ ApGrid.prototype.eChange = function (newValue, oldValue) {
 ApGrid.prototype.eKeyDown = function (e) {
     console.log('KeyDown');
 }
-ApGrid.prototype.eventBeforeEdit = function (store, rowIndex, paramId, record, value) { };
+ApGrid.prototype.eBeforeEdit = function (store, rowIndex, paramId, record, value) { };
 ApGrid.prototype.eSelectionChange = function (record, rowindex, paramId) { };
 ApGrid.prototype.eUpdate = function (record, rowIndex, paramId) { };
-ApGrid.prototype.eventCellClick = function (store, rowIndex, paramId, record) { };
+ApGrid.prototype.eCellClick = function (store, rowIndex, paramId, record) { };
 
 var ApGrid = {
     create: function () {
@@ -868,7 +868,7 @@ Ext.define('ApCheck', {
     extend: 'Ext.form.field.Checkbox',
     componentType: 'check'
 });
-ApCheck.prototype.eventChange = function (newValue, oldValue) { };
+ApCheck.prototype.eChange = function (newValue, oldValue) { };
 var ApCheck = {
     create: function (text, paramId) {
         var _ApCheck = Ext.create('ApCheck', {
@@ -877,7 +877,7 @@ var ApCheck = {
         });
         _ApCheck.on('afterrender', function (me, eOpts) {
             _ApCheck.on('change', function (me, newValue, oldValue) {
-                _ApCheck.eventChange(newValue, oldValue);
+                _ApCheck.eChange(newValue, oldValue);
             });
         });
         _setTarget(_ApCheck);
@@ -889,6 +889,3 @@ ApEvent = {
 
     }
 }
-Ext.onReady(function () {
-    ApEvent.onlaod();
-})
