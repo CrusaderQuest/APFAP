@@ -41,25 +41,25 @@ var DBconnect = {
             connectStr = + '|' + sqlParam.params;
         };
 
-        Ext.Ajax.request({
-            async: false,
-            url: '',
-            method: 'POST',
-            params: {
-                params : connectStr
-            },
-            reader: {
-                type : 'json'
-            },
-            success: function (response, eOpt) {
-                var responseStr = response.responseText;
-                while (responseStr == '') {
-                    var endIndex = resText.indexOf('|');
-                    var convertTxt = responseStr.subString(0, endIndex);
-                    responseStr.
-                }
-            }
-        })
+        //Ext.Ajax.request({
+        //    async: false,
+        //    url: '',
+        //    method: 'POST',
+        //    params: {
+        //        params : connectStr
+        //    },
+        //    reader: {
+        //        type : 'json'
+        //    },
+        //    success: function (response, eOpt) {
+        //        var responseStr = response.responseText;
+        //        while (responseStr == '') {
+        //            var endIndex = resText.indexOf('|');
+        //            var convertTxt = responseStr.subString(0, endIndex);
+        //            responseStr.
+        //        }
+        //    }
+        //})
 
     }
 }
