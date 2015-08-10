@@ -672,6 +672,11 @@ ApGrid.prototype.eChange = function (newValue, oldValue) {
 ApGrid.prototype.eKeyDown = function (e) {
     console.log('KeyDown');
 }
+ApGrid.prototype.eventBeforeEdit = function (store, rowIndex, dataIndex, record, value) { };
+ApGrid.prototype.eSelectionChange = function (record, rowindex, dataIndex) { };
+ApGrid.prototype.eventUpdate = function (store, rowindex, dataIndex) { };
+ApGrid.prototype.eventCellClick = function (store, rowIndex, dataIndex, record) { };
+
 var ApGrid = {
     create: function () {
         var _ApGrid = Ext.create('ApGrid', {
@@ -686,14 +691,19 @@ var ApGrid = {
             })]
         })
         _ApGrid.on('afterrender', function (me, eOpts) {
-            _ApGrid.on('focus', function (me, eOpts) {
-                _ApGrid.eFocus();
-            });
-            _ApGrid.on('change', function (me, newValue, oldValue) {
-                _ApGrid.eChange(newValue, oldValue);
-            })
-            _ApGrid.getEl().on('keydown', function (e, t, eOpts) {
-                _ApGrid.eKeyDown(e);
+            _ApGrid.getEl().on('keyup', function (e, t, eOpts) {
+                var cellindex = 0;
+                var dataIndex = null;
+                var recode = null;
+                var code = e.getCharCode();
+                if (_ApGrid.selModel.getCurrentPosition()) {
+                    cellindex = _ApGrid.selModel.getCurrentPosition().column;
+                    dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(cellindex).dataIndex;
+                    recode = _ApGrid.store.getAt(_ApGrid.selModel.getCurrentPosition().row);
+                    if (code == 38 || code == 40) {
+                        _ApGrid.eSelectionChange(recode, _ApGrid.selModel.getCurrentPosition().row, dataIndex);
+                    }
+                }
             });
         });
         return _ApGrid;
