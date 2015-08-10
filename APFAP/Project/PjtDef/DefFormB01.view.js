@@ -27,6 +27,7 @@ tbl_input.setTarget();
 var txt_category = ApText.create("업무 영역 ");
 var txt_reqNm = ApText.create("요구 사항 ");
 var txt_blank = ApText.create("비고 ");
+
 //btn
 var btn_ok = ApButton.create("추가");
 btn_ok.eClick();
@@ -40,7 +41,6 @@ btn_clrear.eClick();
 //        }
 //    }]
 //});
-
 pnl_input.full(tbl_input);
 
 //pnl_grid
@@ -60,7 +60,6 @@ grd_a.addColumn('text', '업무영역', 'CATEGORY', 200);
 grd_a.addColumn('text', '요구사항', 'REQNM', 500);
 grd_a.addColumn('text', '비고', 'BLANK', 300);
 grd_a.reconfigure(gridData);
-gridData.add(reqData, ['aaa5', '추가추가추가1', '구기능을 수정하는 요구사항이다.']);
 
 pnl_grid.full(grd_a);
 
