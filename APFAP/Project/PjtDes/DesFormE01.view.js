@@ -6,41 +6,45 @@
 //View 단 정의 영역 시작
 
 //grid 로 category 화면 나타내는 부분
-var pnl_Menu_tree = Ext.create('Ext.tree.Panel', {
-    title: '메뉴 tree',
-    width: 200,
-    collapsible: true,
-    tools: [{
-        type: 'close',
-        handler: function () { }
-    }],
-    store: Ext.create('Ext.data.TreeStore', {
-        root: {
-            expanded: true,
-            children: [
-                { text: "MENU GUS", leaf: true },
-                {
-                    text: "MENU Jinsung", leaf: true,
-                    children: [
-                        { text: "sub Menu option2.1", leaf: true },
-                        { text: "sub Menu option2.2", leaf: true }
-                    ]
-                },
-                { text: "MENU Junhee", leaf: true }
-            ]
-        }
-    }),
-    viewConfig: {
-        plugins: {
-            ptype: 'treeviewdragdrop'
-        }
-    },
-    buttons: [{ text: 'Save' }],
-    rootVisible: false
-});
-
-
-
+//var pnl_Menu_tree = Ext.create('Ext.tree.Panel', {
+//    title: '메뉴 tree',
+//    width: 200,
+//    collapsible: true,
+//    tools: [{
+//        type: 'close',
+//        handler: function () { }
+//    }],
+//    store: Ext.create('Ext.data.TreeStore', {
+//        root: {
+//            expanded: true,
+//            children: [
+//                { text: "MENU GUS", leaf: true },
+//                {
+//                    text: "MENU Jinsung", leaf: true,
+//                    children: [
+//                        { text: "sub Menu option2.1", leaf: true },
+//                        { text: "sub Menu option2.2", leaf: true }
+//                    ]
+//                },
+//                { text: "MENU Junhee", leaf: true }
+//            ]
+//        }
+//    }),
+//    viewConfig: {
+//        plugins: {
+//            ptype: 'treeviewdragdrop'
+//        }
+//    },
+//    buttons: [{ text: 'Save' }],
+//    rootVisible: false
+//});
+var pnl_Menu_tree = ApTree.create('Module Test', '', true, false);
+var node1 = getNode('Menu Parent', true, false, true);
+var node2 = getNode('Menu Child 1', true, false);
+var node3 = getNode('Menu Child 2', true, false);
+pnl_Menu_tree.bindNode(node1, 1, false);
+pnl_Menu_tree.bindNode(node2, 2, false);
+pnl_Menu_tree.bindNode(node3, 2, false);
 
 var pnl_detail = ApPanel.create('grid 들어가서 설명할 부분 ');
 
