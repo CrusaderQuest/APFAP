@@ -681,7 +681,7 @@ var ApGrid = {
     create: function () {
         var _ApGrid = Ext.create('ApGrid', {
             //store: store,
-            width: 550,
+            width: 'fit',
             title: 'TEST',
             border: 1,
             selModel: Ext.create('Ext.selection.CheckboxModel'),
