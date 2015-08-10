@@ -496,7 +496,9 @@ ApPanel.prototype.full = function (panel) {
 ApPanel.prototype.divideH = function (panel1, panel2, panel) {
 
     this.setLayout('border');
-
+    if (panel == undefined || panel == panel1) {
+        panel = panel1;
+    }
     if (panel == undefined || panel == panel1) {
         panel1.setRegion('west');
         panel1.setWidth('50%');
