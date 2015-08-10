@@ -19,6 +19,7 @@ tbl_H.setTarget();
 var chk_aa = ApCheck.create('체크지롱');
 var btn_aa = ApButton.create('Yo Check');
 var btn_bb = ApButton.create('탭체인지');
+var text_cc = ApText.create('헤이요');
 
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEDATA', 'SHOWDATA'],

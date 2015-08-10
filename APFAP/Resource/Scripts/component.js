@@ -672,10 +672,10 @@ ApGrid.prototype.eChange = function (newValue, oldValue) {
 ApGrid.prototype.eKeyDown = function (e) {
     console.log('KeyDown');
 }
-ApGrid.prototype.eventBeforeEdit = function (store, rowIndex, dataIndex, record, value) { };
-ApGrid.prototype.eSelectionChange = function (record, rowindex, dataIndex) { };
-ApGrid.prototype.eventUpdate = function (store, rowindex, dataIndex) { };
-ApGrid.prototype.eventCellClick = function (store, rowIndex, dataIndex, record) { };
+ApGrid.prototype.eventBeforeEdit = function (store, rowIndex, paramId, record, value) { };
+ApGrid.prototype.eSelectionChange = function (record, rowindex, paramId) { };
+ApGrid.prototype.eUpdate = function (record, rowIndex, paramId) { };
+ApGrid.prototype.eventCellClick = function (store, rowIndex, paramId, record) { };
 
 var ApGrid = {
     create: function () {
@@ -688,24 +688,69 @@ var ApGrid = {
             columns: [Ext.create('Ext.grid.RowNumberer')],
             plugins: [Ext.create('Ext.grid.plugin.CellEditing', {
                 clicksToEdit: 2
-            })]
-        })
-        _ApGrid.on('afterrender', function (me, eOpts) {
-            _ApGrid.getEl().on('keyup', function (e, t, eOpts) {
-                var cellindex = 0;
-                var dataIndex = null;
-                var recode = null;
-                var code = e.getCharCode();
-                if (_ApGrid.selModel.getCurrentPosition()) {
-                    cellindex = _ApGrid.selModel.getCurrentPosition().column;
-                    dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(cellindex).dataIndex;
-                    recode = _ApGrid.store.getAt(_ApGrid.selModel.getCurrentPosition().row);
+            })],
+            listeners: {
+                cellclick: function (grd, rowIndex, colIndex, e) {
+                    var record = grd.getStore().getAt(grd.selModel.getCurrentPosition().rowIdx);
+                    dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
+
+                    this.eSelectionChange(record, grd.selModel.getCurrentPosition().rowIdx, dataIndex);
+                },
+                cellkeydown: function (grd, row, colIndex, z, a, b, event) {
+                    var code = event.getCharCode();
+                    var rowIndex = grd.selModel.getCurrentPosition().rowIdx;
                     if (code == 38 || code == 40) {
-                        _ApGrid.eSelectionChange(recode, _ApGrid.selModel.getCurrentPosition().row, dataIndex);
+                        if (code == 38) rowIndex--;
+                        if (code == 40) rowIndex++;
+                        try {
+                            var record = grd.getStore().getAt(rowIndex);
+                            dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
+
+                            this.eSelectionChange(record, rowIndex, dataIndex);
+                        } catch (e) {
+
+                        }
+                    }
+                    else if (code == 37 || code == 39) {
+                        try {
+                            if (code == 37) colIndex--;
+                            if (code == 39) colIndex++;
+                            var record = grd.getStore().getAt(rowIndex);
+                            dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
+
+                            this.eSelectionChange(record, rowIndex, dataIndex);
+                        } catch (e) {
+
+                        }
+                    }
+                },
+                edit: function (editor, e, eOpts) {
+                    try {
+                    var record = this.getStore().getAt(e.rowIdx);
+                    dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(e.colIdx).dataIndex;
+                    _ApGrid.eUpdate(record, e.rowIdx, dataIndex);
+                    } catch (e) {
+
                     }
                 }
-            });
-        });
+            }
+        })
+        //_ApGrid.on('afterrender', function (me, eOpts) {
+        //    _ApGrid.getEl().on('keyup', function (e, t, eOpts) {
+        //        var cellindex = 0;
+        //        var dataIndex = null;
+        //        var recode = null;
+        //        var code = e.getCharCode();
+        //        if (_ApGrid.selModel.getCurrentPosition()) {
+        //            cellindex = _ApGrid.selModel.getCurrentPosition().column;
+        //            dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(cellindex).dataIndex;
+        //            recode = _ApGrid.store.getAt(_ApGrid.selModel.getCurrentPosition().row);
+        //            if (code == 38 || code == 40) {
+        //                _ApGrid.eSelectionChange(recode, _ApGrid.selModel.getCurrentPosition().row, dataIndex);
+        //            }
+        //        }
+        //    });
+        //});
         return _ApGrid;
     }
 }

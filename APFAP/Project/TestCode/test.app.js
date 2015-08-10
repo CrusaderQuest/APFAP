@@ -18,6 +18,10 @@ btn_aa.eClick = function () {
 btn_bb.eClick = function () {
     tab.setActiveTab(1);
 }
-grd.eSelectionChange = function (record, rowIndex, dataIndex) {
-    console.log(record, rowIndex, dataIndex);
+grd.eSelectionChange = function (record, rowIndex, paramId) {
+    console.log(paramId, record.data, rowIndex);
+    text_cc.setValue(record.data.USERID);
+}
+grd.eUpdate = function (record, rowIndex, paramId) {
+    console.log(paramId, record.data, rowIndex);
 }
