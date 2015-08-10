@@ -32,6 +32,14 @@ var btn_ok = ApButton.create("추가");
 btn_ok.eClick();
 var btn_clrear = ApButton.create("삭제");
 btn_clrear.eClick();
+//var btn = Ext.create('Ext.button.Button', {
+//    text: 'sd',
+//    listeners: [{
+//        click: function () {
+//            Ext.Msg.alert("sdsd");
+//        }
+//    }]
+//});
 
 pnl_input.full(tbl_input);
 
