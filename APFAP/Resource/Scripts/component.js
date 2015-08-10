@@ -516,7 +516,7 @@ ApPanel.prototype.divideH = function (panel1, panel2, panel) {
 ApPanel.prototype.divideV = function (panel1, panel2, panel) {
 
     this.setLayout('border');
-    if (panel == undefined) {
+    if (panel == undefined || panel == panel1) {
         panel = panel1;
     }
     if (panel1 == panel) {
@@ -540,7 +540,6 @@ var ApPanel = {
             ComponentType: 'Panel',
             region: 'center',
             flex: false,
-            region: 'center',
             collapsible: false,
             title: title,
         })

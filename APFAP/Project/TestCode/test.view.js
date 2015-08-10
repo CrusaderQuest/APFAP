@@ -61,8 +61,10 @@ grd.addColumn('check', '체크', 'CHECK', 200);
 grd.addColumn('combo', '콤보', ['COMBO', comboStore], 200);
 grd.reconfigure(gridData);
 
+var panel2 = ApPanel.create('aaa');
+
 var tab = ApTab.create();
-tab.addTab('안녕').full(grd);
+tab.addTab('안녕').divideV(grd, panel2);
 tab.addTab('하이').full(tbl_H);
 tab.addTab('헬로우').full(tre_CUSTOMTREE);
 viewPanel.full(tab);
