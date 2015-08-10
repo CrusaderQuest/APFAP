@@ -520,14 +520,14 @@ ApPanel.prototype.divideV = function (panel1, panel2, panel) {
         panel = panel1;
     }
     if (panel1 == panel) {
+        panel2.setRegion('center');
         panel1.setRegion('north');
         panel1.setHeight('50%');
-        panel1.setCollapsible(true)
-        panel2.setRegion('center');
+        //panel1.setCollapsible(true);
     } else {
+        panel1.setRegion('center');
         panel2.setRegion('south');
         panel2.setHeight('50%');
-        panel1.setRegion('center');
     }
 
     this.add(panel1);
