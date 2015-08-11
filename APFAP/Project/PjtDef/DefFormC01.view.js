@@ -4,7 +4,7 @@
 //
 
 //View 단 정의 영역 시작
-var pnl_contents = ApPanel.create("REQ_STATE");
+var pnl_contents = ApPanel.create("REQ_DOC");
 var pnl_input = ApPanel.create("Input");
 var pnl_grid = ApPanel.create("Grid");
 
@@ -17,23 +17,37 @@ Ext.define('reqData', {
         { name: 'USERID' },
         { name: 'CATEGORY' },
         { name: 'REQNM' },
-        { name: 'BLANK' }
+        { name: 'SUMMARY' },
+        { name: 'CONTENT' },
+        { name: 'IMPORTANT' },
+        { name: 'LEVEL',type:'number' }
     ]
 });
-
 //pnl_input
-var tbl_input = ApTable.create();
-tbl_input.setTarget();
+var tbl_input_1 = ApTable.create();
+tbl_input_1.setTarget();
 var txt_category = ApText.create("업무 영역 ");
 var txt_reqNm = ApText.create("요구 사항 ");
-var txt_blank = ApText.create("비고 ");
+var txt_summary = ApText.create("개요 ");
 //btn
-var btn_ok = ApButton.create("추가");
+var btn_ok = ApButton.create("저장");
 btn_ok.eClick();
 var btn_clrear = ApButton.create("삭제");
 btn_clrear.eClick();
 
-pnl_input.full(tbl_input);
+var tbl_input_2 = ApTable.create();
+tbl_input_2.setTarget();
+var txt_desc = ApText.create("상세 내용 ");
+var txt_imp = ApText.create("중요도 ");
+var cbo_level = ApCombo.create("난이도");
+var txt_blank = ApText.create("비고 ");
+//setDisabled
+txt_category.setDisabled(true);
+txt_reqNm.setDisabled(true);
+txt_blank.setDisabled(true);
+
+pnl_input.divideV(tbl_input_1, tbl_input_2);
+pnl_input.setSize(0, 200);
 
 //pnl_grid
 var gridData = Ext.create('Ext.data.ArrayStore', {
@@ -45,24 +59,20 @@ var gridData = Ext.create('Ext.data.ArrayStore', {
         ['aaa4', '구 기능 수정', '구기능을 수정하는 요구사항이다.']
     ]
 });
-
+var tbl_grid = ApTable.create();
+tbl_grid.setTarget();
+var btn_add = ApButton.create("추가");
 var grd_a = ApGrid.create();
 
 grd_a.addColumn('text', '업무영역', 'CATEGORY', 200);
-grd_a.addColumn('text', '요구사항', 'REQNM', 500);
-grd_a.addColumn('text', '비고', 'BLANK', 300);
+grd_a.addColumn('text', '요구사항', 'REQNM', 200);
+grd_a.addColumn('text', '개요', 'SUMMARY', 300);
+grd_a.addColumn('text', '상세 내용', 'DESCRIPTION', 300);
+grd_a.addColumn('text', '중요도', 'IMPORTANT', 100);
+grd_a.addColumn('num', '난이도', 'LEVEL', 100);
 grd_a.reconfigure(gridData);
-gridData.add(reqData, ['aaa5', '추가추가추가1', '구기능을 수정하는 요구사항이다.']);
-gridData.add(reqData, ['aaa6', '추가추가추가2', '구기능을 수정하는 요구사항이다.']);
 
-gridData.add(reqData, ['aaa7', '추가추가추가3', '구기능을 수정하는 요구사항이다.']);
-gridData.add(reqData, ['aaa8', '추가추가추가4', '구기능을 수정하는 요구사항이다.']);
-gridData.add(reqData, ['aaa6', '추가추가추가2', '구기능을 수정하는 요구사항이다.']);
-
-gridData.add(reqData, ['aaa7', '추가추가추가3', '구기능을 수정하는 요구사항이다.']);
-gridData.add(reqData, ['aaa8', '추가추가추가4', '구기능을 수정하는 요구사항이다.']);
-
-pnl_grid.full(grd_a);
+pnl_grid.divideV(grd_a, tbl_grid);
 
 
 

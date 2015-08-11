@@ -33,15 +33,9 @@ var btn_ok = ApButton.create("추가");
 btn_ok.eClick();
 var btn_clrear = ApButton.create("삭제");
 btn_clrear.eClick();
-//var btn = Ext.create('Ext.button.Button', {
-//    text: 'sd',
-//    listeners: [{
-//        click: function () {
-//            Ext.Msg.alert("sdsd");
-//        }
-//    }]
-//});
+
 pnl_input.full(tbl_input);
+pnl_input.setSize(0,200);
 
 //pnl_grid
 var gridData = Ext.create('Ext.data.ArrayStore', {
@@ -53,7 +47,9 @@ var gridData = Ext.create('Ext.data.ArrayStore', {
         ['aaa4', '구 기능 수정', '구기능을 수정하는 요구사항이다.']
     ]
 });
-
+var tbl_grid = ApTable.create();
+tbl_grid.setTarget();
+var btn_del = ApButton.create("그리드 삭제");
 var grd_a = ApGrid.create();
 
 grd_a.addColumn('text', '업무영역', 'CATEGORY', 200);
@@ -61,7 +57,8 @@ grd_a.addColumn('text', '요구사항', 'REQNM', 500);
 grd_a.addColumn('text', '비고', 'BLANK', 300);
 grd_a.reconfigure(gridData);
 
-pnl_grid.full(grd_a);
+
+pnl_grid.divideV(grd_a,tbl_grid);
 
 
 
