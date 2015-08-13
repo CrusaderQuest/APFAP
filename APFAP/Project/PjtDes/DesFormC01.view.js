@@ -4,11 +4,49 @@
 //
 
 //View 단 정의 영역 시작
-var pnl_proNM = ApPanel.create('Project Name');
-//var pnl_proUP = ApPanel.create('table나와야지');
+
+//여기는 화면정의에 대한 부분임(이미지 삽입해서 보여주는거)
+
+/// <reference path="../../Resource/Scripts/ext-all-debug.js" />
+/// <reference path="../../Resource/Scripts/component.js" />
+/// <reference path="../../Resource/Scripts/noncomponent.js" />
+//
+
+//View 단 정의 영역 시작
+
+//여기는 화면정의에 대한 부분임(이미지 삽입해서 보여주는거)
+
+var pnl_sub = ApTree.create('Screen 이름을 button', '', true, false);
+var node1 = getNode('Menu Parent', true, false, true);
+var node2 = getNode('Menu Child 1', true, false);
+var node3 = getNode('Menu Child 2', true, false);
+pnl_sub.bindNode(node1, 1, false);
+pnl_sub.bindNode(node2, 2, false);
+pnl_sub.bindNode(node3, 2, false);
+
+
+////var btn_insert = ApButton.create('insert');
+//var tbl_tree = ApTable.create(1);
+//tbl_tree.setTarget();
+//var btn_main = ApButton.create('메인화면');
+//var btn_page2 = ApButton.create('두번째화면');
+//var btn_page3 = ApButton.create('세번째화면');
+
+//var tbl_bottom = ApTable.create(2);
+//tbl_bottom.setTarget();
+//var btn_insert = ApButton.create('insert');
+//btn_insert.setWidth(85);
+//var btn_delete = ApButton.create('delete');
+//btn_delete.setWidth(85);
+//pnl_sub.divideV(tbl_tree, tbl_bottom);
+
+var pnl_detail = ApPanel.create('밖의 껍데기');
+var pnl_detail_grid = Ext.create('Ext.panel.Panel', { title: 'grid + button', buttons: [{ text: 'insert image' }, { text: 'delete image' }] });
+var pnl_detail_image = ApPanel.create('SCREEN IMAGE');
 Ext.define('systemArchi', {
     extend: 'Ext.data.Model',
     fields: [
+        { name: 'PROJECTNM' },
         { name: 'DATE', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'CHECK', type: 'boolean' },
         { name: 'SUMMARY' }
@@ -18,87 +56,35 @@ Ext.define('systemArchi', {
 var gridData = Ext.create('Ext.data.ArrayStore', {
     model: 'systemArchi',
     data: [
-        ['2015-07-29', false, '이건 업로드가 안된거여']
+        ['메인화면', '2015-07-29', false, '이건 업로드가 안된거여']
+    ]
+});
+var gridData1 = Ext.create('Ext.data.ArrayStore', {
+    model: 'systemArchi',
+    data: [
+        ['두번째 화면', '2015-07-29', false, '이건 바뀐거여']
+    ]
+});
+var gridData2 = Ext.create('Ext.data.ArrayStore', {
+    model: 'systemArchi',
+    data: [
+        ['세번째 화면', '2015-07-29', false, '이건 또 바뀐거여']
     ]
 });
 
-var grd = ApGrid.create();
 
+var grd = ApGrid.create();
+grd.addColumn('text', '프로젝트 이름', 'PROJECTNM', 200)
 grd.addColumn('date', '날짜', 'DATE', 200);
 grd.addColumn('check', '업로드 여부', 'CHECK', 200);
-grd.addColumn('text', 'Summary', 'SUMMARY', 910);
+grd.addColumn('text', 'summary', 'SUMMARY', 530);
 
 grd.reconfigure(gridData);
-//pnl_proUP.divideV(grd,);
-var pnl_in_pnl = Ext.create('Ext.panel.Panel', { title: 'button추가된 panel', buttons: [{ text: 'insert image' }, { text: 'delete image' }] });
-pnl_in_pnl.add(grd);
+pnl_detail_grid.add(grd);
 grd.setWidth('fit');
-pnl_proNM.full(pnl_in_pnl);
 
-
-//var pnl_proDown = ApPanel.create('버튼만나옴');
-//var fake2 = ApTable.create(2);
-//fake2.setTarget();
-//var insert2 = ApButton.create('insert image');
-//var delete2 = ApButton.create('delete image');
-//pnl_proDown.full(fake2);
-//pnl_proNM.divideV(pnl_proUP, pnl_proDown);
-
-
-
-
-var pnl_sysArchi = ApPanel.create('System Architecture Image');
-//var fake = ApTable.create(2);
-//fake.setTarget();
-
-//var insertbtn = ApButton.create('insert image');
-//var deletebtn = ApButton.create('delete image');
-//pnl_sysArchi.full(fake);
-viewPanel.divideV(pnl_proNM, pnl_sysArchi);
-pnl_proNM.setHeight(250);
-
-
-
-//insertbtn.setHeight(430);
-//insertbtn.setWidth(1360);
-
-//var comboStore = Ext.create('Ext.data.ArrayStore', {
-//    fields: ['HIDEDATA', 'SHOWDATA'],
-//    data: [
-//        ['aa', 'AAA'],
-//        ['bb', 'BBB'],
-//        ['cc', 'CCC'],
-//        ['dd', 'DDD'],
-//        ['ee', 'EEEE']
-//    ]
-//});
-
-//Ext.define('testData', {
-//    extend: 'Ext.data.Model',
-//    fields: [
-//{ name: 'USERID' },
-//{ name: 'CHECK', type: 'boolean' },
-//{ name: 'DATE', type: 'date', dateFormat: 'Y-m-d' },
-//{ name: 'SEQ', type: 'number' },
-//{ name: 'COMBO' }
-//    ]
-//});
-//var gridData = Ext.create('Ext.data.ArrayStore', {
-//    model: 'testData',
-//    data: [
-//        ['aaa1', false, '2015-07-29', 30.24, 'AAA'],
-//        ['aaa2', false, '2015-07-29', 30.24, 'BBB'],
-//        ['aaa3', true, '2015-07-29', 30.24, 'CCC'],
-//        ['aaa4', true, '2015-07-29', 30.24, 'AAA'],
-//        ['aaa5', false, '2015-07-29', 30.24, 'AAA'],
-//        ['aaa6', false, '2015-07-29', 30.24, 'BBB'],
-//    ]
-//});
-//var grd = ApGrid.create();  
-//grd.addColumn('text', '텍스트', 'USERID', 200);
-//grd.addColumn('num', '넘버', 'SEQ', 200);
-//grd.addColumn('date', '날짜', 'DATE', 200);
-//grd.addColumn('check', '체크', 'CHECK', 200);
-//grd.addColumn('combo', '콤보', ['COMBO', comboStore], 200);
-//grd.reconfigure(gridData);
-//viewPanel.full(grd);
+pnl_detail.divideV(pnl_detail_grid, pnl_detail_image);
+pnl_detail_grid.setHeight(200);
+viewPanel.divideH(pnl_sub, pnl_detail);
+pnl_sub.setWidth(200);
+//grid 밑에 업로드 한 이미지를 삽입함
