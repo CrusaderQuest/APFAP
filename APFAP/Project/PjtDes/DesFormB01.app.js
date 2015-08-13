@@ -10,11 +10,22 @@ grd.eSelectionChange = function (record, rowindex, paramId) {
         grd_Detail.reconfigure(gridData_second);
         grd_Example.reconfigure(gridData_example2);
 
+        btn_insert.eClick = function () {
+            gridData_second.add("''");
+        }
     }
     if (rowindex == 1) {
         console.log('1번row index 클릭!');
         grd_Detail.reconfigure(gridData);
         grd_Example.reconfigure(gridData_example);
 
+        btn_insert.eClick = function () {
+            gridData.add("''");
+        }
     }
+}
+
+btn_delete.eClick = function () {
+    gridData.remove(grd_Detail.getSelection());
+    gridData_second.remove(grd_Detail.getSelection());
 }
