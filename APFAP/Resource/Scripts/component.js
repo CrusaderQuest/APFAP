@@ -18,6 +18,7 @@ _setTarget = function (component) {
         },
         items: [component]
     }))
+    _tempTableTarget.itemLength++;
 }
 
 Ext.define('ApMapArray', {
@@ -488,7 +489,7 @@ Ext.define('ApPanel', {
 });
 ApPanel.prototype.full = function (panel) {
     this.add(panel)
-}
+};
 /*
     @brief : 가로 분할
     @param : (패널1, 패널2, 붙일 패널)
@@ -501,7 +502,6 @@ ApPanel.prototype.divideH = function (panel1, panel2, panel) {
     }
     if (panel == undefined || panel == panel1) {
         panel1.setRegion('west');
-        panel1.setWidth('50%');
         panel2.setRegion('center');
     } else {
         panel2.setRegion('east');
@@ -541,6 +541,7 @@ var ApPanel = {
             ComponentType: 'Panel',
             region: 'center',
             flex: false,
+            header: false,
             collapsible: false,
             title: title,
         })
@@ -556,15 +557,26 @@ Ext.define('ApTable', {
 ApTable.prototype.setTarget = function () {
     _tempTableTarget = this;
 }
+ApTable.prototype.cellShare = function (count) {
+    for (var i = 1 ; i < count ; i++) {
+        var _Shareitem = _tempTableTarget.items.items[_tempTableTarget.itemLength - count + 1].items.items[0];
+        _tempTableTarget.items.items[_tempTableTarget.itemLength - count].add(_Shareitem);
+        _tempTableTarget.remove(_tempTableTarget.items.items[_tempTableTarget.itemLength - count + 1]);
+    }
+    for (var i = 1 ; i < count ; i++) {
+        _tempTableTarget.itemLength--;
+    }
+}
 var ApTable = {
-    create: function (colsize) {
+    create: function (colSize) {
         var _ApTable = Ext.create('ApTable', {
             layout:{
                 type: 'table',
-                columns : colsize
+                columns: colSize
             },
             region: 'center',
-            items: []
+            items: [],
+            itemLength: 0
         });
         return _ApTable;
     }
@@ -767,12 +779,18 @@ ApText.prototype.eChange = function (newValue, oldValue) {
 ApText.prototype.eKeyDown = function (e) {
 
 }
+ApText.prototype.setFeildLabelWidth = function (width) {
+    this.labelEl.setWidth(width)
+};
 var ApText = {
-    create: function (label, paramId) {
+    create: function (label, paramId, labelWidth) {
+        if (labelWidth == undefined) labelWidth = 80;
         var _ApText = Ext.create('ApText', {
             labelWidth: 80,
             width: 180,
             fieldLabel: label,
+            labelWidth : labelWidth,
+            labelStyle: 'white-space: nowrap;',
             paramId: paramId
         });
         _ApText.on('afterrender', function (me, eOpts) {
@@ -813,13 +831,18 @@ ApCombo.prototype.eChange = function (me) {
 };
 ApCombo.prototype.eKeyDown = function (e) {
 };
+ApCombo.prototype.setFeildLabelWidth = function (width) {
+    this.labelEl.setWidth(width)
+};
 var ApCombo = {
     create: function (label, paramId) {
+        if (labelWidth == undefined) labelWidth = 80;
         var _ApCombo = Ext.create('ApCombo', {
             labelWidth: 80,
             width: 180,
             displayField: 'SHOWVALUE',
             fieldLabel: label,
+            labelWidth: labelWidth,
             forceSelection: true,
             paramId: paramId,
             items: []
@@ -869,6 +892,9 @@ Ext.define('ApCheck', {
     componentType: 'check'
 });
 ApCheck.prototype.eChange = function (newValue, oldValue) { };
+ApCheck.prototype.setFeildLabelWidth = function (width) {
+    this.labelEl.setWidth(width)
+};
 var ApCheck = {
     create: function (text, paramId) {
         var _ApCheck = Ext.create('ApCheck', {
@@ -884,8 +910,24 @@ var ApCheck = {
         return _ApCheck;
     }
 }
-ApEvent = {
-    onlaod: function () {
-
+//label
+Ext.define('ApLabel', {
+    extend: 'Ext.form.Label',
+});
+ApLabel.prototype.eClick = function () {
+    console.log('labelClick');
+}
+var ApLabel = {
+    create: function (text) {
+        var _ApLabel = Ext.create('ApLabel', {
+            text: text,
+            listeners: {
+                click: function (a, b) {
+                    this.eClick();
+                }
+            }
+        })
+        _setTarget(_ApLabel);
+        return _ApLabel;
     }
 }
