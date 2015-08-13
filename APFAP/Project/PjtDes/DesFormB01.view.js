@@ -26,9 +26,20 @@ grd.reconfigure(gridData_table_name);
 
 pnl_DBname.full(grd);
 
+///////////////////////////////////////////////////////////
+var pnl_DBdetail_down = ApPanel.create('Down');
+var tbl_button = ApTable.create(2);
+tbl_button.setTarget();
+var btn_insert = ApButton.create('insert');
+var btn_delete = ApButton.create('delete');
+tbl_button.setPosition(740, 0, null);
+pnl_DBdetail_down.full(tbl_button);
+
 
 
 var pnl_DBdetail = ApPanel.create('table Detail');
+var pnl_DBdetail_OUT = ApPanel.create('Up');
+
 
 Ext.define('tableDetail', {
     extend: 'Ext.data.Model',
@@ -49,19 +60,19 @@ Ext.define('tableDetail', {
 var gridData = Ext.create('Ext.data.ArrayStore', {
     model: 'tableDetail',
     data: [
-        ['gusColumn', 'varchar(12)', true, false, '거스컬럼', 'K000000000000', 'K000000000000', 'K000000000000', 'K000000000000'],
-        ['jinsungColumn', 'varchar(12)', true, false, '진성컬럼', 'K000000000000', 'K000000000000', 'K000000000000', 'K000000000000'],
-        ['junheeColumn', 'varchar(MAX)', false, true, '준희컬럼', 'K000000000000', 'K000000000000', 'K000000000000', 'K000000000000'],
-        ['giniColumn', 'varchar(12)', false, true, '기니컬럼', 'K000000000000', 'K000000000000', 'K000000000000', 'K000000000000']
+        ['gusColumn', 'varchar(12)', true, false, '거스컬럼'],
+        ['jinsungColumn', 'varchar(12)', true, false, '진성컬럼'],
+        ['junheeColumn', 'varchar(MAX)', false, true, '준희컬럼'],
+        ['giniColumn', 'varchar(12)', false, true, '기니컬럼']
     ]
 });
 var gridData_second = Ext.create('Ext.data.ArrayStore', {
     model: 'tableDetail',
     data: [
-        ['유진성', 'varchar(12)', true, false, '거스컬럼', 'K000000000000', 'K000000000000', 'K000000000000', 'K000000000000'],
-        ['핵바보', 'varchar(12)', true, false, '진성컬럼', 'K000000000000', 'K000000000000', 'K000000000000', 'K000000000000'],
-        ['발냄새', 'varchar(MAX)', false, true, '준희컬럼', 'K000000000000', 'K000000000000', 'K000000000000', 'K000000000000'],
-        ['꿀꿀이', 'varchar(12)', false, true, '기니컬럼', 'K000000000000', 'K000000000000', 'K000000000000', 'K000000000000']
+        ['유진성', 'varchar(12)', true, false, '거스컬럼'],
+        ['핵바보', 'varchar(12)', true, false, '진성컬럼'],
+        ['발냄새', 'varchar(MAX)', false, true, '준희컬럼'],
+        ['꿀꿀이', 'varchar(12)', false, true, '기니컬럼']
     ]
 });
 
@@ -112,8 +123,9 @@ grd_Example.addColumn('text', 'giniColumn', 'example_4', 100);
 
 grd_Example.reconfigure(gridData_example);
 
-
-pnl_DBdetail.divideV(grd_Detail, grd_Example);
+pnl_DBdetail_OUT.divideV(grd_Detail, pnl_DBdetail_down);
+grd_Detail.setHeight(300);
+pnl_DBdetail.divideV(pnl_DBdetail_OUT, grd_Example);
 
 
 
