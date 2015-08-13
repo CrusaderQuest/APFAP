@@ -5,10 +5,55 @@
 
 //View 단 정의 영역 시작
 
-var currentBtn=0;
+
 //-------------------폼 내 모듈-시작----------------
+Ext.define('MyApp.view.MyWindow', {
+    extend: 'Ext.window.Window',
+
+    height: 160,
+    width: 270,
+    layout: {
+        type: 'border'
+    },
+    initComponent: function () {
+        var me = this;
+
+        Ext.applyIf(me, {
+            items: [{
+                xtype: 'form',
+                bodyPadding: 10,
+                region: 'center'
+            }, {
+                xtype: 'panel',
+                height: 140,
+                width: 260,
+                items: [{
+                    xtype: 'button',
+                    text: 'OK',
+                    x: 30,
+                    y: 80,
+                    handler: function () {
+                        me.hide();
+                    }
+                }, {
+                    xtype: 'button',
+                    text: 'Cancle',
+                    region: 'right',
+                    x: 150,
+                    y: 80,
+                    handler: function () {
+                        me.hide();
+                    }
+                }]
+            }]
+        });
+
+        me.callParent(arguments);
+    }
+});
 
 
+var currentBtn = 0;
 
 //-------------------폼 내 모듈 끝------------------
 var pnl_top = ApPanel.create();
@@ -100,6 +145,7 @@ var sampleData = Ext.create('Ext.data.ArrayStore', {
 //------------------------그리드 시작----------------------
 
 //PROJECT_USER 에서 프로젝트에 속한 유저들 가져와야함.
+//call GET_PROJECT_USER
 var comboStoreWorker = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEDATA', 'SHOWDATA'],
     data: [

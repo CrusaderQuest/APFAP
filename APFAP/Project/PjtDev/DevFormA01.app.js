@@ -10,7 +10,7 @@ btn_server.eClick = function () {
     grd.reconfigure(dData);
     if (currentBtn != 0) {
         //window form 호출
-
+        Ext.create('MyApp.view.MyWindow').show();
         currentBtn = 0;
     }
 }
@@ -18,21 +18,21 @@ btn_db.eClick = function () {
     grd.reconfigure(sampleData);
     if (currentBtn != 1) {
 
-
+        Ext.create('MyApp.view.MyWindow').show();
         currentBtn = 1;
     }
 }
 btn_ui.eClick = function () {
     if (currentBtn != 2) {
 
-
+        Ext.create('MyApp.view.MyWindow').show();
         currentBtn = 2;
     }
 }
 btn_etc.eClick = function () {
     if (currentBtn != 3) {
 
-
+        Ext.create('MyApp.view.MyWindow').show();
         currentBtn = 3;
     }
 }
