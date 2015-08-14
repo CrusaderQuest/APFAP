@@ -39,7 +39,7 @@ var tbl_input_2 = ApTable.create();
 tbl_input_2.setTarget();
 var txt_desc = ApText.create("상세 내용 ");
 var txt_imp = ApText.create("중요도 ");
-var cbo_level = ApCombo.create("난이도");
+//var cbo_level = ApCombo.create("난이도");
 var txt_blank = ApText.create("비고 ");
 //setDisabled
 txt_category.setDisabled(true);
