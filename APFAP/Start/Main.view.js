@@ -33,6 +33,7 @@ var txt_TEAMNAME = ApText.create('팀명', 'tset', 30);
 txt_TEAMNAME.setStyle('padding-left', '20px')
 txt_TEAMNAME.setReadOnly(true);
 tbl_header.cellShare(2);
+var cbo_imp = ApCombo.create("중요도");
 //txt_TEAMNAME.setFeildLabelWidth(50);
 var mainPanel = ApPanel.create();
 
@@ -45,7 +46,7 @@ tbl_login.setStyle('padding-left', '10px');
 var lbl_login = ApLabel.create('거니니 님 환영합니다.');
 var lbl_Member = ApLabel.create('접속자 : 지니니, 으니니, 주니니.');
 
-var tbl_content= ApTable.create(1);
+var tbl_content = ApTable.create(1);
 tbl_content.setTarget();
 var btn_messenger = ApButton.create('메신져');
 var btn_context = ApButton.create('공지사항');

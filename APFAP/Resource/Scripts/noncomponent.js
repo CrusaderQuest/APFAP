@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="C:\Users\준희\Desktop\APFAP\APFAP\ServerCore/DBconnector.aspx" />
+
 //Global value
 
 //Global function
@@ -36,79 +37,80 @@ DBParams.prototype.setSection = function (Section) {
 var DBParams = {
     create: function (procedureName, procedureSection) {
         var _DBParams = Ext.create('DBParams', {
-            procedureName: procedureName,
-            procedureSection: procedureSection,
-            params: ''
         });
+        _DBParams.procedureName = procedureName;
+        _DBParams.procedureSection = procedureSection;
+        _DBParams.params = '';
         return _DBParams;
     }
 }
 //DB Connection
 var DBconnect = {
-    runProcedure: function (DBparams) {
-        var procedureName = DBparams.procedureName;
-        var procedureSection = DBparams.procedureSection;
-        var params = sqlParam.params;
+    runProcedure: function (dbParams) {
+        var procedureName = dbParams.procedureName;
+        var procedureSection = dbParams.procedureSection;
+        dbParams.addParam('PROJECT_KEY', 'P0000000001');
+        var params = dbParams.params;
         var storeSet = [];
         Ext.Ajax.request({
             async: false,
-            url: '',
+            url: '../../ServerCore/DBconnector.aspx',
             method: 'POST',
             params: {
                 procedureName: procedureName,
-                procedureSection : procedureSection,
-                params: connectStr
+                procedureSection: procedureSection,
+                params: params
             },
             reader: {
                 type: 'json'
             },
             success: function (response, eOpt) {
                 var responseStr = response.responseText;
-                while (responseStr == '') {
-                    var endIndex = resText.indexOf('|');
-
-                    if (endIndex != 0) {
-                        var convertTxt = responseStr.subString(0, endIndex);
+                while (responseStr != '') {
+                    var endIndex = responseStr.indexOf('|');
+                    var convertTxt = "";
+                    if (endIndex > -1) {
+                        convertTxt = responseStr.substring(0, endIndex);
                         responseStr = responseStr.substring(endIndex + 1);
                     } else {
-                        convertTxt = responseStr;
+                        convertTxt = responseStr.substring(0, responseStr.length - 2);
                         responseStr = '';
+                        Model = '';
                     }
+
 
                     var jObject = Ext.JSON.decode(convertTxt);
                     var json = jObject[0];
-                    var model = null;
+                    var _sModel = null;
                     if (typeof (jObject) == undefined || jObject.length == 0) {
-                        var model = Ext.define('model', { extend: 'Ext.data.Model' });
+                        var _model = Ext.define('model', { extend: 'Ext.data.Model' });
                         var store = Ext.create('Ext.data.Store', {
-                            model: model.getName(),
+                            model: _model.getName(),
                             data: jObject
                         })
                     } else {
                         var fieldArr = [];
-                        for (var i = 0; i < Object.keys().json, length ; i++) {
-                            var name = Object.keys(json)[i];
+                        for (var i = 0; i < jObject.keys().json, length ; i++) {
+                            var name = jObject.keys(json)[i];
                             var type = typeof (name);
                             fieldArr.push({
                                 'name': name, 'type': type
                             })
                         }
-                        var _model = Ext.define('model', {
-                            extend: 'Ext.data.Model',
-                            fields: fieldArr,
-                        });
-                        model = _model;
-                    }
-                    var store = Ext.create('Ext.data.Store', {
-                        model: model,
-                        data: jObject,
-                        proxy: {
-                            type: 'memory',
-                            reader: {
-                                type: 'json',
+                        var store = Ext.create('Ext.data.Store', {
+                            model: Ext.define(Ext.id(), {
+                                extend: 'Ext.data.Model',
+                                fields: fieldArr,
+                            }),
+                            data: jObject,
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json',
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                     storeSet.push(store);
                 }
             },

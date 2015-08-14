@@ -485,7 +485,7 @@ Ext.define('ApPanel', {
     layout: 'fit',
     height: '100%',
     width: '100%',
-    border:1
+    border: 1
 });
 ApPanel.prototype.full = function (panel) {
     this.add(panel)
@@ -570,7 +570,7 @@ ApTable.prototype.cellShare = function (count) {
 var ApTable = {
     create: function (colSize) {
         var _ApTable = Ext.create('ApTable', {
-            layout:{
+            layout: {
                 type: 'table',
                 columns: colSize
             },
@@ -585,7 +585,7 @@ var ApTable = {
 /* 그리드 컴포넌트 **********************************************************/
 Ext.define('ApGrid', {
     extend: 'Ext.grid.Panel',
-    ComponentType : 'grid'
+    ComponentType: 'grid'
 })
 ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) {
     var columnType = null;
@@ -672,7 +672,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
             });
             break;
     }
-    this.headerCt.insert(this.columns.length-2, columnType);
+    this.headerCt.insert(this.columns.length - 2, columnType);
     this.getView().refresh();
 }
 ApGrid.prototype.eFocus = function () {
@@ -738,9 +738,9 @@ var ApGrid = {
                 },
                 edit: function (editor, e, eOpts) {
                     try {
-                    var record = this.getStore().getAt(e.rowIdx);
-                    dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(e.colIdx).dataIndex;
-                    _ApGrid.eUpdate(record, e.rowIdx, dataIndex);
+                        var record = this.getStore().getAt(e.rowIdx);
+                        dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(e.colIdx).dataIndex;
+                        _ApGrid.eUpdate(record, e.rowIdx, dataIndex);
                     } catch (e) {
 
                     }
@@ -772,7 +772,7 @@ Ext.define('ApText', {
     extend: 'Ext.form.field.Text',
     ComponentType: 'text'
 });
-ApText.prototype.eFocus = function(){
+ApText.prototype.eFocus = function () {
 };
 ApText.prototype.eChange = function (newValue, oldValue) {
 };
@@ -789,7 +789,7 @@ var ApText = {
             labelWidth: 80,
             width: 180,
             fieldLabel: label,
-            labelWidth : labelWidth,
+            labelWidth: labelWidth,
             labelStyle: 'white-space: nowrap;',
             paramId: paramId
         });
@@ -835,7 +835,7 @@ ApCombo.prototype.setFeildLabelWidth = function (width) {
     this.labelEl.setWidth(width)
 };
 var ApCombo = {
-    create: function (label, paramId) {
+    create: function (label, paramId, labelWidth) {
         if (labelWidth == undefined) labelWidth = 80;
         var _ApCombo = Ext.create('ApCombo', {
             labelWidth: 80,
@@ -873,7 +873,7 @@ var ApButton = {
     create: function (text, paramId) {
         var _ApButton = Ext.create('ApButton', {
             labelWidth: 80,
-            text : text,
+            text: text,
             width: 180,
             paramId: paramId
         });
