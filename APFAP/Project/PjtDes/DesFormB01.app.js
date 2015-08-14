@@ -9,7 +9,6 @@ grd.eSelectionChange = function (record, rowindex, paramId) {
         console.log('2번row index 클릭!');
         grd_Detail.reconfigure(gridData_second);
         grd_Example.reconfigure(gridData_example2);
-
         btn_insert.eClick = function () {
             gridData_second.add("''");
         }
