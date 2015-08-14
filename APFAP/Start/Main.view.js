@@ -33,8 +33,7 @@ var txt_TEAMNAME = ApText.create('팀명', 'tset', 30);
 txt_TEAMNAME.setStyle('padding-left', '20px')
 txt_TEAMNAME.setReadOnly(true);
 tbl_header.cellShare(2);
-var cbo_imp = ApCombo.create("중요도");
-//txt_TEAMNAME.setFeildLabelWidth(50);
+//var cbo_imp = ApCombo.create("중요도");
 var mainPanel = ApPanel.create();
 
 var headerPanelSub = ApPanel.create();
@@ -87,6 +86,7 @@ var menu = Ext.create('Ext.panel.Panel', {
     }]
 });
 var grd_form = ApGrid.create();
+grd_form.setLockColumns('CODE_D_KEY', 'CODE_D_NM');
 grd_form.addColumn('text', '폼코드', 'CODE_D_KEY', 200);
 grd_form.addColumn('text', '타이틀', 'CODE_D_NM', 200);
 
