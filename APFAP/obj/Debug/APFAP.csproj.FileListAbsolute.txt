@@ -146,3 +146,7 @@ C:\Users\준희\Desktop\APFAP\APFAP\bin\Microsoft.AspNet.FriendlyUrls.xml
 C:\Users\준희\Desktop\APFAP\APFAP\obj\Debug\APFAP.csprojResolveAssemblyReference.cache
 C:\Users\준희\Desktop\APFAP\APFAP\obj\Debug\APFAP.dll
 C:\Users\준희\Desktop\APFAP\APFAP\obj\Debug\APFAP.pdb
+C:\Users\준희\Desktop\APFAP\APFAP\bin\Newtonsoft.Json.dll
+C:\Users\준희\Desktop\APFAP\APFAP\bin\Newtonsoft.Json.pdb
+C:\Users\준희\Desktop\APFAP\APFAP\bin\Newtonsoft.Json.xml
+C:\Users\JinSung\Documents\Visual Studio 2013\Projects\APFAP\APFAP\bin\Newtonsoft.Json.dll
