@@ -544,7 +544,6 @@ var ApPanel = {
             header: false,
             collapsible: false,
             title: title,
-           // bodyStyle: null,
         })
         return _panel;
     }
