@@ -33,6 +33,7 @@ var txt_TEAMNAME = ApText.create('팀명', 'tset', 30);
 txt_TEAMNAME.setStyle('padding-left', '20px')
 txt_TEAMNAME.setReadOnly(true);
 tbl_header.cellShare(2);
+var cbo_imp = ApCombo.create("중요도");
 //txt_TEAMNAME.setFeildLabelWidth(50);
 var mainPanel = ApPanel.create();
 
@@ -45,7 +46,7 @@ tbl_login.setStyle('padding-left', '10px');
 var lbl_login = ApLabel.create('거니니 님 환영합니다.');
 var lbl_Member = ApLabel.create('접속자 : 지니니, 으니니, 주니니.');
 
-var tbl_content= ApTable.create(1);
+var tbl_content = ApTable.create(1);
 tbl_content.setTarget();
 var btn_messenger = ApButton.create('메신져');
 var btn_context = ApButton.create('공지사항');
@@ -85,7 +86,13 @@ var menu = Ext.create('Ext.panel.Panel', {
         html: 'Panel content!'
     }]
 });
+var grd_form = ApGrid.create();
+grd_form.addColumn('text', '폼코드', 'CODE_D_KEY', 200);
+grd_form.addColumn('text', '타이틀', 'CODE_D_NM', 200);
+
 var tab_main = ApTab.create();
+
+
 ApEvent.onlaod = function () {
     viewPanel.divideV(headerPanel, mainPanel, headerPanel);
     headerPanel.setHeight(100);
@@ -95,7 +102,8 @@ ApEvent.onlaod = function () {
     headerPanelSub.divideH(tbl_login, tbl_content);
     tbl_Logo.setWidth(100);
     mainPanel.divideH(menu, tab_main, menu);
-    tab_main.addTab('메인')
+    tab_main.addTab('메인').full(grd_form);
     menu.setWidth(200);
     SYS_INIT();
+    TREE_LOAD();
 }
