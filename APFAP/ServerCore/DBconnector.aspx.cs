@@ -14,14 +14,14 @@ namespace APFAP.ServerCore
 {
     public partial class DBconnector : System.Web.UI.Page
     {
-        public Dictionary<string, string> paramList;
+        public Dictionary<string, string> paramString = new Dictionary<string, string>();
         protected void Page_Load(object sender, EventArgs e)
         {
-            string dbServer = "";
-            string dbPort = "";
-            string dbName = "";
-            string dbUser = "";
-            string dbPass = "";
+            string dbServer = "ms1201.gabiadb.com";
+            string dbPort = "1433";
+            string dbName = "apfap";
+            string dbUser = "masterplan";
+            string dbPass = "apfap1234[]";
             StringBuilder BuildStr = new StringBuilder();
             string connectStr = "";
             string returnJsonStr = "";
@@ -37,7 +37,7 @@ namespace APFAP.ServerCore
                     string[] pr = itemList[i].Split(new string[] { "※" }, StringSplitOptions.None);
                     if (pr.Length == 2 && pr[0] != "")
                     {
-                        paramList.Add(pr[0], pr[1]);
+                        paramString.Add(pr[0], pr[1]);
                     }
                 }
             }
@@ -60,11 +60,12 @@ namespace APFAP.ServerCore
                 param.SqlDbType = SqlDbType.NVarChar;
                 cmd.Parameters.Add(param);
             }
-            foreach (string key in paramList.Keys)
+
+            foreach (string key in paramString.Keys)
             {
                 param = new SqlParameter();
                 param.ParameterName = "@" + key;
-                param.Value = paramList[key];
+                param.Value = paramString[key];
                 param.SqlDbType = SqlDbType.NVarChar;
                 cmd.Parameters.Add(param);
             }
