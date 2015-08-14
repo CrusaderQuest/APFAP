@@ -10,7 +10,7 @@ function TREE_LOAD() {
     var pr = DBParams.create('SP_COMMAIN', 'SEARCH_TREE');
     //데이터셋
     var ds = DBconnect.runProcedure(pr);
-    console.log(ds[0].data.items[0].data);
+    grd_form.reconfigure(ds[0]);
 }
 
 function SYS_INIT() {

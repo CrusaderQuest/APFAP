@@ -86,7 +86,13 @@ var menu = Ext.create('Ext.panel.Panel', {
         html: 'Panel content!'
     }]
 });
+var grd_form = ApGrid.create();
+grd_form.addColumn('text', '폼코드', 'CODE_D_KEY', 200);
+grd_form.addColumn('text', '타이틀', 'CODE_D_NM', 200);
+
 var tab_main = ApTab.create();
+
+
 ApEvent.onlaod = function () {
     viewPanel.divideV(headerPanel, mainPanel, headerPanel);
     headerPanel.setHeight(100);
@@ -96,7 +102,8 @@ ApEvent.onlaod = function () {
     headerPanelSub.divideH(tbl_login, tbl_content);
     tbl_Logo.setWidth(100);
     mainPanel.divideH(menu, tab_main, menu);
-    tab_main.addTab('메인')
+    tab_main.addTab('메인').full(grd_form);
     menu.setWidth(200);
     SYS_INIT();
+    TREE_LOAD();
 }
