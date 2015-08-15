@@ -117,12 +117,15 @@ var menu = Ext.create('Ext.panel.Panel', {
         items: [tre_EVL]
     }]
 });
-var grd_form = ApGrid.create();
+var grd_form = ApGrid.create(true);
 //grd_form.setLockColumns('CODE_D_KEY', 'CODE_D_NM');
 grd_form.addColumn('text', '폼코드', 'CODE_D_KEY', 200);
 grd_form.addColumn('text', '타이틀', 'CODE_D_NM', 200);
+grd_form.addColumn('num', '타이틀', 'CODE_D_NMd', 200);
 
 var tab_main = ApTab.create();
+
+var homePanel = ApPanel.create();
 
 
 ApEvent.onlaod = function () {
@@ -134,7 +137,7 @@ ApEvent.onlaod = function () {
     headerPanelSub.divideH(tbl_login, tbl_content);
     tbl_Logo.setWidth(100);
     mainPanel.divideH(menu, tab_main, menu);
-    tab_main.addTab('메인').full(grd_form);
+    tab_main.addTab('메인').full(homePanel);
     menu.setWidth(200);
     SYS_INIT();
     TREE_LOAD();
