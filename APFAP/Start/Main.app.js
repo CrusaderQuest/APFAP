@@ -1,6 +1,6 @@
-﻿/// <reference path="../Resource/Script/ext-all-debug.js" />
-/// <reference path="../Resource/Script/component.js" />
-/// <reference path="../Resource/Script/noncomponent.js" />
+﻿/// <reference path="../Resource/Scripts/ext-all-debug.js" />
+/// <reference path="../Resource/Scripts/component.js" />
+/// <reference path="../Resource/Scripts/noncomponent.js" />
 /// <reference path="Main.view.js" />
 
 //App 단 정의 영역 시작
@@ -60,9 +60,60 @@ function TREE_LOAD() {
     grd_form.reconfigure(ds[0]);
 }
 
+//메인탭에 폼 추가하는 함수
+function MAINTAB_CONTROLLER(node, pjtType) {
+    var exist = true;
+    for (var i = 0; i < tab_main.items.length; i++) {
+        if (tab_main.items.items[i].title == node.text)
+            exist = false;
+    }
+    if (exist) {
+        tab_main.addTab(node.text, true).full({
+            html: '<iframe src="../Project/Pjt' + pjtType + '/' + node.value.getValue('FORMCD') + '.html?" id=' + node.value.getValue('FORMCD') + '" width="100%" height="100%" frameborder="0"></iframe>',
+            closable: true,
+            header: false,
+            id: node.value.getValue('FORMCD'),
+            title: node.text
+        });
+        tab_main.setActiveTab(tab_main.items.items.length - 1)
+    } else {
+        for (var i = 0; i < tab_main.items.length; i++) {
+            if (tab_main.items.items[i].title == node.text)
+                tab_main.setActiveTab(i);
+        }
+
+    }
+}
+
+
 function SYS_INIT() {
     txt_TEAMNAME.setValue('Master Plan');
 }
 
 //**이벤트 영역
 //tre
+tre_COM.eDbclick = function (node) {
+    MAINTAB_CONTROLLER(node, 'Com');
+}
+
+tre_DEF.eDbclick = function (node) {
+    MAINTAB_CONTROLLER(node, 'Def');
+}
+
+tre_ANL.eDbclick = function (node) {
+    MAINTAB_CONTROLLER(node, 'Anl');
+}
+
+tre_DES.eDbclick = function (node) {
+    MAINTAB_CONTROLLER(node, 'Des');
+}
+tre_DEV.eDbclick = function (node) {
+    MAINTAB_CONTROLLER(node, 'Dev');
+}
+
+tre_EVL.eDbclick = function (node) {
+    MAINTAB_CONTROLLER(node, 'Evl');
+}
+tre_TES.eDbclick = function (node) {
+    MAINTAB_CONTROLLER(node, 'Tes');
+}
