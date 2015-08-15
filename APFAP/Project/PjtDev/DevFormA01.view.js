@@ -6,6 +6,7 @@
 //View 단 정의 영역 시작
 //-------------------폼 전역변수 시작---------------
 var currentBtn = 0;
+var saveBtnState = 0;
 Ext.define('D_Data', {
     extend: 'Ext.data.Model',
     fields: [
@@ -74,7 +75,7 @@ tbl_top.setTarget();
 
 var pnl_title = ApLabel.create("개발 진척도");
 var pnl_summary = ApLabel.create("개발 진행 상황에 대한 내역을 관리할 수 있습니다.");
-var btn_save = ApButton.create("Save");
+var btn_save = ApButton.create("수정");
 
 var pnl_graph = ApPanel.create("전체,개발자별 그래프 패널");
 var pnl_gridTab = ApPanel.create("탭(버튼),그리드 패널");
@@ -117,6 +118,9 @@ ApEvent.onlaod = function () {
     btn_insert.setWidth(100);
     btn_delete.setWidth(100);
     btn_save.setWidth(100);
+    for (var i = 0; i < 4; i++) {
+        initBtnColor(i);
+    }
     pnl_btn.full(tbl_btn);
 
     pnl_grd.full(grd);
@@ -126,4 +130,7 @@ ApEvent.onlaod = function () {
     dbLoad();
     dbUserLoad();
     grd.reconfigure(dTableArray.data.items[0].data);
+    selBtnColor(0);
+
+    pnl_content.setDisabled(true);
 }

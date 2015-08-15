@@ -104,42 +104,81 @@ function getUserNm(key) {
 
     return nm;
 }
+function initBtnColor(i) {
+    if (i == 0) {
+        btn_server.setStyle('background-color', '#0000ff');
+    } else if (i == 1) {
+        btn_db.setStyle('background-color', '#0000ff');
+    } else if (i == 2) {
+        btn_ui.setStyle('background-color', '#0000ff');
+    } else {
+        btn_etc.setStyle('background-color', '#0000ff');
+    }
+}
+function selBtnColor(i) {
+    if (i == 0) {
+        btn_server.setStyle('background-color', '#00ffff');
+    } else if (i == 1) {
+        btn_db.setStyle('background-color', '#00ffff');
+    } else if (i == 2) {
+        btn_ui.setStyle('background-color', '#00ffff');
+    } else {
+        btn_etc.setStyle('background-color', '#00ffff');
+    }
+}
 //4개 탭
 btn_server.eClick = function () {
     if (currentBtn != 0) {
         grd.reconfigure(dTableArray.data.items[0].data);
+        initBtnColor(currentBtn);
         currentBtn = 0;
+        selBtnColor(currentBtn);
     }
 }
 btn_db.eClick = function () {
     if (currentBtn != 1) {
         grd.reconfigure(dTableArray.data.items[1].data);
+        initBtnColor(currentBtn);
         currentBtn = 1;
+        selBtnColor(currentBtn);
     }
 }
 btn_ui.eClick = function () {
     if (currentBtn != 2) {
         grd.reconfigure(dTableArray.data.items[2].data);
+        initBtnColor(currentBtn);
         currentBtn = 2;
+        selBtnColor(currentBtn);
     }
 }
 btn_etc.eClick = function () {
     if (currentBtn != 3) {
         grd.reconfigure(dTableArray.data.items[3].data);
+        initBtnColor(currentBtn);
         currentBtn = 3;
+        selBtnColor(currentBtn);
     }
 }
 
 //3개 버튼
 btn_save.eClick = function () {
-    //DB 통신 insert, update, delete.
-    if (dbSave()) {
-        //다시 로드. deletelist 초기화
-        deleteArray.clearData();
-        dTableArray.clearData();
-        dbLoad();
-        grd.reconfigure(dTableArray.data.items[0].data);
-        currentBtn = 0;
+    if (saveBtnState == 0) {
+        pnl_content.setDisabled(false);
+        btn_save.setText("저장");
+        saveBtnState = 1;
+    } else {
+        pnl_content.setDisabled(true);
+        btn_save.setText("수정");
+        saveBtnState = 0;
+        //DB 통신 insert, update, delete.
+        if (dbSave()) {
+            //다시 로드. deletelist 초기화
+            deleteArray.clearData();
+            dTableArray.clearData();
+            dbLoad();
+            grd.reconfigure(dTableArray.data.items[0].data);
+            currentBtn = 0;
+        }
     }
 }
 btn_insert.eClick = function () {
