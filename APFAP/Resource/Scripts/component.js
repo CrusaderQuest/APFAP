@@ -556,7 +556,7 @@ Ext.define('ApTable', {
 });
 ApTable.prototype.setTarget = function () {
     _tempTableTarget = this;
-}
+};
 ApTable.prototype.cellShare = function (count) {
     for (var i = 1 ; i < count ; i++) {
         var _Shareitem = _tempTableTarget.items.items[_tempTableTarget.itemLength - count + 1].items.items[0];
@@ -566,7 +566,7 @@ ApTable.prototype.cellShare = function (count) {
     for (var i = 1 ; i < count ; i++) {
         _tempTableTarget.itemLength--;
     }
-}
+};
 var ApTable = {
     create: function (colSize) {
         var _ApTable = Ext.create('ApTable', {
