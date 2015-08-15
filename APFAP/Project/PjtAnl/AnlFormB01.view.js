@@ -8,9 +8,6 @@ var pnl_contents = ApPanel.create("REQ_DOC");
 var pnl_input = ApPanel.create("Input");
 var pnl_grid = ApPanel.create("Grid");
 
-pnl_contents.divideV(pnl_input, pnl_grid);
-
-
 //data-type
 
 var gridData;
@@ -87,6 +84,7 @@ viewPanel.full(pnl_contents);
 
 ApEvent.onlaod = function () {
 
+    pnl_contents.divideV(pnl_input, pnl_grid);
     pnl_input.divideV(tbl_input, tbl_input2);
     tbl_input.bodyStyle = 'padding: 10px 10px';
     tbl_input2.bodyStyle = 'padding: 10px 10px';
