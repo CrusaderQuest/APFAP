@@ -1,7 +1,7 @@
 ﻿/// <reference path="../../Resource/Scripts/ext-all-debug.js" />
 /// <reference path="../../Resource/Scripts/component.js" />
 /// <reference path="../../Resource/Scripts/noncomponent.js" />
-//
+/// <reference path="AnlFormB01.app.js" />
 
 //View 단 정의 영역 시작
 var pnl_contents = ApPanel.create("REQ_DOC");
@@ -76,10 +76,6 @@ cbo_imp.addItem('H', 'HIGH');
 cbo_imp.addItem('M', 'MIDDLE');
 cbo_imp.addItem('L', 'LOW');
 
-pnl_input.divideV(tbl_input,tbl_input2);
-tbl_input.bodyStyle = 'padding: 10px 10px';
-tbl_input2.bodyStyle = 'padding: 10px 10px';
-
 //pnl_grid
 var gridData = Ext.create('Ext.data.ArrayStore', {
     model: 'reqData',
@@ -101,18 +97,17 @@ grd_a.addColumn('text', '상세', 'DESCRIPTION', 300);
 grd_a.addColumn('text', '중요도', 'IMPORTANT', 100);
 grd_a.addColumn('text', '난이도', 'LEVEL', 100);
 grd_a.addColumn('text', '비고', 'BLANK', 300);
-grd_a.reconfigure(gridData);
-
-
-pnl_grid.divideV(grd_a, tbl_grid);
-
 
 
 viewPanel.full(pnl_contents);
 //grd.reconfigure(gridData);
 
+ApEvent.onlaod = function () {
 
+    pnl_input.divideV(tbl_input, tbl_input2);
+    tbl_input.bodyStyle = 'padding: 10px 10px';
+    tbl_input2.bodyStyle = 'padding: 10px 10px';
+    pnl_grid.divideV(grd_a, tbl_grid);
 
-Ext.onReady(function () {
-
-});
+    GRD_LOAD();
+}

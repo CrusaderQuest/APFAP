@@ -4,6 +4,14 @@
 /// <reference path="AnlFormB01.view.js" />
 
 //View 단 정의 영역 시작
+function GRD_LOAD() {
+    //데이터생성
+    var pr = DBParams.create('MAIN_REQ', 'SEARCH_TABLE');
+    //데이터셋
+    var ds = DBconnect.runProcedure(pr);
+    grd_a.reconfigure(ds[0]);
+}
+
 var i = 0;
 btn_ok.eClick = function () {
     if (txt_reqNm.getValue() == '') {
