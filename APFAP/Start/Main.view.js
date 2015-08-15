@@ -59,11 +59,27 @@ var tre_EVL = ApTree.create('');
 var tre_TES = ApTree.create('');
 
 var menu = Ext.create('Ext.panel.Panel', {
-    title: 'Accordion Layout',
+    //header: {
+    //    xtype: 'header',
+    //    titlePosition: 0,
+    //    defaults: {
+    //        margin: '0 10px'
+    //    },
+    //    items: [
+    //        {
+    //            xtype: 'button',
+    //            text: "Test Button",
+    //            iconCls: 'add',
+    //            handler: Ext.bind(function() {
+    //                console.log('does something');
+    //            }, this)
+    //        }
+    //    ]
+    //},
     layout: 'accordion',
     defaults: {
         // applied to each contained panel
-        bodyStyle: 'padding:15px'
+        bodyStyle: 'padding:5px'
     },
     layoutConfig: {
         // layout-specific configs go here
@@ -102,7 +118,7 @@ var menu = Ext.create('Ext.panel.Panel', {
     }]
 });
 var grd_form = ApGrid.create();
-grd_form.setLockColumns('CODE_D_KEY', 'CODE_D_NM');
+//grd_form.setLockColumns('CODE_D_KEY', 'CODE_D_NM');
 grd_form.addColumn('text', '폼코드', 'CODE_D_KEY', 200);
 grd_form.addColumn('text', '타이틀', 'CODE_D_NM', 200);
 

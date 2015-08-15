@@ -25,7 +25,7 @@ DBParams.prototype.addParam = function (paramName, paramValue) {
     if (this.params == '') {
         this.params = paramName + '※' + paramValue;
     } else {
-        this.param = + '|' + paramName + '※' + paramValue;
+        this.param += '|' + paramName + '※' + paramValue;
     }
 }
 DBParams.prototype.setName = function (procedureName) {

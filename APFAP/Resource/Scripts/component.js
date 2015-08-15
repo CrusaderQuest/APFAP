@@ -690,6 +690,11 @@ ApGrid.prototype.setUnLockColumns = function () {
         }
     }
 }
+ApGrid.prototype.addRow = function () {
+    //var record = Ext.ClassManager.get(this.store.model.getName());
+    var record = this.getStore().getModel();
+    this.getStore().insert(this.getStore().getCount(), record);
+}
 ApGrid.prototype.eFocus = function () {
     console.log('focus');
 };

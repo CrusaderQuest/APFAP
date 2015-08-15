@@ -10,6 +10,12 @@
  * @autor JuneJobs
 */
 
+//**전역변수영역
+
+
+//**일반함수영역
+
+
 //카테고리 별로 컨텐츠 가져오기
 function GET_CONTENT() {
     var pr = DBParams.create('SP_COMMAIN', 'SEARCH_CONTENT');
@@ -57,3 +63,6 @@ function TREE_LOAD() {
 function SYS_INIT() {
     txt_TEAMNAME.setValue('Master Plan');
 }
+
+//**이벤트 영역
+//tre
