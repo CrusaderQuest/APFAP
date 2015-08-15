@@ -585,7 +585,8 @@ var ApTable = {
 /* 그리드 컴포넌트 **********************************************************/
 Ext.define('ApGrid', {
     extend: 'Ext.grid.Panel',
-    ComponentType: 'grid'
+    ComponentType: 'grid',
+    columnsMap: []
 })
 ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) {
     var columnType = null;
@@ -675,6 +676,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
             });
             break;
     }
+    this.columnsMap.push(columnType);
     this.headerCt.insert(this.columns.length - 2, columnType);
     this.getView().refresh();
 }
@@ -690,10 +692,25 @@ ApGrid.prototype.setUnLockColumns = function () {
         }
     }
 }
+ApGrid.prototype.getEmptyRecord = function () {
+    var data = []
+    for (var i = 0; i < this.columnsMap.length; i++) {
+        data.push('');
+    }
+    var newRecord = Ext.create('Ext.data.Store', {
+        model: this.getStore().getModel(),
+        data: data
+    });
+    return newRecord;
+}
 ApGrid.prototype.addRow = function () {
-    //var record = Ext.ClassManager.get(this.store.model.getName());
-    var record = this.getStore().getModel();
-    this.getStore().insert(this.getStore().getCount(), record);
+    this.getStore().add(this.getEmptyRecord());
+}
+ApGrid.prototype.getRow = function (rowIndex) {
+    return this.store.getAt(rowIndex);
+}
+ApGrid.prototype.setRow = function (rowIndex, paramId, value) {
+    this.getRow(rowIndex).set(paramId, value)
 }
 ApGrid.prototype.eFocus = function () {
     console.log('focus');
