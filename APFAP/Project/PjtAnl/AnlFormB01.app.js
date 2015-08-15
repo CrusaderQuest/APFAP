@@ -6,7 +6,7 @@
 //View 단 정의 영역 시작
 function GRD_LOAD() {
     //데이터생성
-    var pr = DBParams.create('MAIN_REQ', 'SEARCH_TABLE');
+    var pr = DBParams.create('REQ_DOC', 'GET_TABLE');
     //데이터셋
     var ds = DBconnect.runProcedure(pr);
     grd_a.reconfigure(ds[0]);
