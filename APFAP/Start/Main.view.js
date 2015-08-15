@@ -33,8 +33,7 @@ var txt_TEAMNAME = ApText.create('팀명', 'tset', 30);
 txt_TEAMNAME.setStyle('padding-left', '20px')
 txt_TEAMNAME.setReadOnly(true);
 tbl_header.cellShare(2);
-var cbo_imp = ApCombo.create("중요도");
-//txt_TEAMNAME.setFeildLabelWidth(50);
+//var cbo_imp = ApCombo.create("중요도");
 var mainPanel = ApPanel.create();
 
 var headerPanelSub = ApPanel.create();
@@ -51,12 +50,36 @@ tbl_content.setTarget();
 var btn_messenger = ApButton.create('메신져');
 var btn_context = ApButton.create('공지사항');
 
+var tre_COM = ApTree.create('');
+var tre_DEF = ApTree.create('');
+var tre_ANL = ApTree.create('');
+var tre_DES = ApTree.create('');
+var tre_DEV = ApTree.create('');
+var tre_EVL = ApTree.create('');
+var tre_TES = ApTree.create('');
+
 var menu = Ext.create('Ext.panel.Panel', {
-    title: 'Accordion Layout',
+    //header: {
+    //    xtype: 'header',
+    //    titlePosition: 0,
+    //    defaults: {
+    //        margin: '0 10px'
+    //    },
+    //    items: [
+    //        {
+    //            xtype: 'button',
+    //            text: "Test Button",
+    //            iconCls: 'add',
+    //            handler: Ext.bind(function() {
+    //                console.log('does something');
+    //            }, this)
+    //        }
+    //    ]
+    //},
     layout: 'accordion',
     defaults: {
         // applied to each contained panel
-        bodyStyle: 'padding:15px'
+        bodyStyle: 'padding:5px'
     },
     layoutConfig: {
         // layout-specific configs go here
@@ -65,28 +88,43 @@ var menu = Ext.create('Ext.panel.Panel', {
         activeOnTop: true
     },
     items: [{
+        title: '공통',
+        layout: 'fit',
+        items: [tre_COM]
+    },{
         title: '정의',
-        height: 300,
-        html: 'Panel content!'
+        layout: 'fit',
+        items:[tre_DEF]
     }, {
         title: '분석',
-        height: 300,
-        html: 'Panel content!'
+        layout: 'fit',
+        items: [tre_ANL]
     }, {
         title: '설계',
-        height: 300,
-        html: 'Panel content!'
+        layout: 'fit',
+        items: [tre_DES]
     }, {
         title: '개발',
-        height: 300,
-        html: 'Panel content!'
+        layout: 'fit',
+        items: [tre_DEV]
+    }, {
+        title: '테스트',
+        layout: 'fit',
+        items: [tre_TES]
     }, {
         title: '평가',
-        height: 300,
-        html: 'Panel content!'
+        layout: 'fit',
+        items: [tre_EVL]
     }]
 });
+var grd_form = ApGrid.create();
+//grd_form.setLockColumns('CODE_D_KEY', 'CODE_D_NM');
+grd_form.addColumn('text', '폼코드', 'CODE_D_KEY', 200);
+grd_form.addColumn('text', '타이틀', 'CODE_D_NM', 200);
+
 var tab_main = ApTab.create();
+
+
 ApEvent.onlaod = function () {
     viewPanel.divideV(headerPanel, mainPanel, headerPanel);
     headerPanel.setHeight(100);
@@ -96,7 +134,9 @@ ApEvent.onlaod = function () {
     headerPanelSub.divideH(tbl_login, tbl_content);
     tbl_Logo.setWidth(100);
     mainPanel.divideH(menu, tab_main, menu);
-    tab_main.addTab('메인')
+    tab_main.addTab('메인').full(grd_form);
     menu.setWidth(200);
     SYS_INIT();
+    TREE_LOAD();
+    GET_CONTENT();
 }
