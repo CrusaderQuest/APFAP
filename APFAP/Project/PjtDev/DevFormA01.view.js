@@ -6,6 +6,7 @@
 //View 단 정의 영역 시작
 //-------------------폼 전역변수 시작---------------
 var currentBtn = 0;
+var saveBtnState = 0;
 Ext.define('D_Data', {
     extend: 'Ext.data.Model',
     fields: [
@@ -69,11 +70,12 @@ grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 var pnl_top = ApPanel.create();
 var pnl_content = ApPanel.create();
 
-var tbl_top = ApTable.create(2);
+var tbl_top = ApTable.create(3);
 tbl_top.setTarget();
 
 var pnl_title = ApLabel.create("개발 진척도");
 var pnl_summary = ApLabel.create("개발 진행 상황에 대한 내역을 관리할 수 있습니다.");
+var btn_save = ApButton.create("수정");
 
 var pnl_graph = ApPanel.create("전체,개발자별 그래프 패널");
 var pnl_gridTab = ApPanel.create("탭(버튼),그리드 패널");
@@ -84,12 +86,10 @@ var pnl_grd = ApPanel.create("그리드");
 var pnl_tab = ApPanel.create();
 var pnl_btn = ApPanel.create();
 
-var tbl_btn = ApTable.create(4);
+var tbl_btn = ApTable.create(2);
 tbl_btn.setTarget();
 var btn_insert = ApButton.create("Add");
 var btn_delete = ApButton.create("Delete");
-var btn_save = ApButton.create("Save");
-var btn_reload = ApButton.create("Reload");
 
 var tab = ApTable.create(4);
 tab.setTarget();
@@ -118,7 +118,9 @@ ApEvent.onlaod = function () {
     btn_insert.setWidth(100);
     btn_delete.setWidth(100);
     btn_save.setWidth(100);
-    btn_reload.setWidth(100);
+    for (var i = 0; i < 4; i++) {
+        initBtnColor(i);
+    }
     pnl_btn.full(tbl_btn);
 
     pnl_grd.full(grd);
@@ -128,4 +130,7 @@ ApEvent.onlaod = function () {
     dbLoad();
     dbUserLoad();
     grd.reconfigure(dTableArray.data.items[0].data);
+    selBtnColor(0);
+
+    pnl_content.setDisabled(true);
 }
