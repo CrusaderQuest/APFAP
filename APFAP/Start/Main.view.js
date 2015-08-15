@@ -125,6 +125,8 @@ grd_form.addColumn('num', '타이틀', 'CODE_D_NMd', 200);
 
 var tab_main = ApTab.create();
 
+var homePanel = ApPanel.create();
+
 
 ApEvent.onlaod = function () {
     viewPanel.divideV(headerPanel, mainPanel, headerPanel);
@@ -135,7 +137,7 @@ ApEvent.onlaod = function () {
     headerPanelSub.divideH(tbl_login, tbl_content);
     tbl_Logo.setWidth(100);
     mainPanel.divideH(menu, tab_main, menu);
-    tab_main.addTab('메인').full(grd_form);
+    tab_main.addTab('메인').full(homePanel);
     menu.setWidth(200);
     SYS_INIT();
     TREE_LOAD();

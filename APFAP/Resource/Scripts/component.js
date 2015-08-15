@@ -48,7 +48,9 @@ ApMapArray.prototype.remove = function (key) {
 
 var ApMapArray = {
     create: function () {
-        return Ext.create('ApMapArray');
+        var _ApMapArray = Ext.create('ApMapArray');
+        _ApMapArray.clear();
+        return _ApMapArray;
     }
 }
 
@@ -86,7 +88,7 @@ function getNode(text, leaf, expanded, check) {
         children: [],
         leaf: leaf,
         text: text,
-        value: Ext.create('ApMapArray'),
+        value: ApMapArray.create(),
         expanded: expanded
     };
     if (check != undefined && check != "") {
@@ -165,9 +167,9 @@ Ext.define('ApTree', {
 });
 ApTree.prototype.eContextMenu = function (x, y, width, height) { };
 ApTree.prototype.eEnter = function (s, r) { };
-ApTree.prototype.eClick = function (selected) { };
-ApTree.prototype.eSelectionChange = function (r) { };
-ApTree.prototype.eDbclick = function (s, r) { };
+ApTree.prototype.eClick = function (node) { };
+ApTree.prototype.eSelectionChange = function (node) { };
+ApTree.prototype.eDbclick = function (node) { };
 ApTree.prototype.eExpand = function (s) { };
 ApTree.prototype.eCollapse = function (s) { };
 ApTree.prototype.setFocus = function (key, value) {
@@ -386,11 +388,12 @@ var ApTree = {
 
         _ApTree.on('afterrender', function (me, eOpts) {
             _ApTree.on('itemdblclick', function (s, r, a, b, e) {
-                _ApTree.eDbclick(r);
+                _ApTree.selected = r;
+                _ApTree.eDbclick(r.data);
             });
             _ApTree.on('itemclick', function (s, r) {
                 _ApTree.selected = r;
-                _ApTree.eClick(r);
+                _ApTree.eClick(r.data);
             });
             _ApTree.on('checkchange', function (node, checked, eOpts) {
                 node.cascadeBy(function (node) {
@@ -444,10 +447,11 @@ ApTab.prototype.eTabchange = function (tabPanel, newCard) {
     @brief : 탭추가 함수
     @param : (타이틀)
 */
-ApTab.prototype.addTab = function (title) {
+ApTab.prototype.addTab = function (title, closable) {
+    if (closable == undefined) closable = false;
     var _tabPage = ApPanel.create();
     _tabPage.title = title;
-    _tabPage.tabConfig = { xtype: 'tab', width: this.tabWidth };
+    _tabPage.tabConfig = { xtype: 'tab', width: this.tabWidth, closable: closable };
     this.add(_tabPage);
     this.setActiveTab(0);
     return _tabPage;
