@@ -4,45 +4,100 @@
 /// <reference path="DevFormA01.view.js" />
 
 //App 단 정의 영역 시작
-//개발 진척 상황
 
+//DB 통신
+function dbLoad() {
+    var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    var ds = DBconnect.runProcedure(pr);
+    for (var i = 0; i < 4; i++) {
+        dTableArray.add(ds[i]);
+        deleteArray.add(Ext.create('Ext.data.ArrayStore', {
+            model: 'delete_Array'
+        }));
+    }
+}
+function getDB(i) {
+    var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    var ds = DBconnect.runProcedure(pr);
+    return ds[i];
+}
+function dbSave() {
+    dbInsertUpdate();
+    dbDelete();
+}
+function dbUserLoad() {
+    var pr = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
+    var ds = DBconnect.runProcedure(pr);
+    comboStoreUser = ds[0];
+    //combo 모듈 수정되면 추가.
+}
+//DB 통신 private
+function dbInsertUpdate() {
+
+}
+function dbDelete() {
+
+}
+
+//4개 탭
 btn_server.eClick = function () {
-    grd.reconfigure(dData);
     if (currentBtn != 0) {
-        //window form 호출
-        Ext.create('MyApp.view.MyWindow').show();
+        grd.reconfigure(dTableArray.data.items[0].data);
         currentBtn = 0;
     }
 }
 btn_db.eClick = function () {
-    grd.reconfigure(sampleData);
     if (currentBtn != 1) {
-
-        Ext.create('MyApp.view.MyWindow').show();
+        grd.reconfigure(dTableArray.data.items[1].data);
         currentBtn = 1;
     }
 }
 btn_ui.eClick = function () {
     if (currentBtn != 2) {
-
-        Ext.create('MyApp.view.MyWindow').show();
+        grd.reconfigure(dTableArray.data.items[2].data);
         currentBtn = 2;
     }
 }
 btn_etc.eClick = function () {
     if (currentBtn != 3) {
-
-        Ext.create('MyApp.view.MyWindow').show();
+        grd.reconfigure(dTableArray.data.items[3].data);
         currentBtn = 3;
     }
 }
+
+//4개 버튼
 btn_insert.eClick = function () {
-    dData.add("''");
+    dTableArray.data.items[currentBtn].data.add("''");
 }
 btn_delete.eClick = function () {
-    dData.remove(grd.getSelection());
+    //deletelist추가
+    for (var i = 0; i < grd.getSelection().length; i++) {
+        var tempNo = grd.getSelection()[i].data.D_DEV_NO;
+        deleteArray.data.items[currentBtn].data.add(tempNo);
+    }
+    dTableArray.data.items[currentBtn].data.remove(grd.getSelection());
 }
+btn_save.eClick = function () {
+    //DB 통신 insert, update, delete.
+}
+btn_reload.eClick = function () {
+    //deletelist 초기화.
+    deleteArray.data.items[currentBtn].data.clearData();
+    //store 초기화, 리로딩.
+    dTableArray.data.items[currentBtn].data.clearData();
+    dTableArray.data.items[currentBtn].data = getDB(currentBtn);
+    grd.reconfigure(dTableArray.data.items[currentBtn].data);
+}
+
 /*
+function TREE_LOAD() {
+    //데이터생성
+    var pr = DBParams.create('SP_COMMAIN', 'SEARCH_TREE');
+    //데이터셋
+    var ds = DBconnect.runProcedure(pr);
+    grd_form.reconfigure(ds[0]);
+}
+
 btn_aa.eClick = function () {
     if (chk_aa.getValue()) {
         chk_aa.setValue(false);
