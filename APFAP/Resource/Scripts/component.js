@@ -598,7 +598,8 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 text: columnText,
                 xtype: 'textcolumn',
                 dataIndex: paramId,
-                align: 'center',
+                align: 'left',
+                style: 'text-align:center',
                 width: width,
                 editor: {
                     xtype: 'textfield',
@@ -613,7 +614,8 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 xtype: 'numbercolumn',
                 dataIndex: paramId,
                 width: width,
-                align: 'center',
+                align: 'right',
+                style: 'text-align:center',
                 editor: {
                     xtype: 'numberfield',
                     align: 'right',
@@ -660,7 +662,8 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 text: columnText,
                 width: width,
                 dataIndex: paramId[0],
-                align: 'center',
+                align: 'left',
+                style: 'text-align:center',
                 //store: comboStore,
                 //renderer: Ext.util.Format.usMoney,
                 editor: {
@@ -674,6 +677,18 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
     }
     this.headerCt.insert(this.columns.length - 2, columnType);
     this.getView().refresh();
+}
+ApGrid.prototype.setLockColumns = function(){
+    for (var i = 0; i < arguments.length; i++) {
+        this.lockColumns.push(arguments[i]);
+    }
+}
+ApGrid.prototype.setUnLockColumns = function () {
+    for (var i = 0; i < arguments.length; i++) {
+        if (this.lockColumns.indexOf(arguments[i]) != -1) {
+            this.lockColumns.splice(this.lockColumns.indexOf(arguments[i]), 1);
+        }
+    }
 }
 ApGrid.prototype.eFocus = function () {
     console.log('focus');
@@ -690,13 +705,18 @@ ApGrid.prototype.eUpdate = function (record, rowIndex, paramId) { };
 ApGrid.prototype.eCellClick = function (store, rowIndex, paramId, record) { };
 
 var ApGrid = {
-    create: function () {
+    create: function (check) {
+        var selModel = '';
+        if (check) {
+            selModel = Ext.create('Ext.selection.CheckboxModel');
+        }
         var _ApGrid = Ext.create('ApGrid', {
             //store: store,
             width: 'fit',
             title: 'TEST',
+            lockColumns : [],
             border: 1,
-            selModel: Ext.create('Ext.selection.CheckboxModel'),
+            selModel: selModel,
             columns: [Ext.create('Ext.grid.RowNumberer')],
             plugins: [Ext.create('Ext.grid.plugin.CellEditing', {
                 clicksToEdit: 2
@@ -736,10 +756,15 @@ var ApGrid = {
                         }
                     }
                 },
+                beforeedit : function(editor, e ,eOpts){
+                    var dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(e.colIdx).dataIndex;
+                    if (this.lockColumns.indexOf(dataIndex) != -1) {
+                        return false;
+                    }
+                },
                 edit: function (editor, e, eOpts) {
                     try {
                         var record = this.getStore().getAt(e.rowIdx);
-                        dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(e.colIdx).dataIndex;
                         _ApGrid.eUpdate(record, e.rowIdx, dataIndex);
                     } catch (e) {
 
@@ -747,22 +772,6 @@ var ApGrid = {
                 }
             }
         })
-        //_ApGrid.on('afterrender', function (me, eOpts) {
-        //    _ApGrid.getEl().on('keyup', function (e, t, eOpts) {
-        //        var cellindex = 0;
-        //        var dataIndex = null;
-        //        var recode = null;
-        //        var code = e.getCharCode();
-        //        if (_ApGrid.selModel.getCurrentPosition()) {
-        //            cellindex = _ApGrid.selModel.getCurrentPosition().column;
-        //            dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(cellindex).dataIndex;
-        //            recode = _ApGrid.store.getAt(_ApGrid.selModel.getCurrentPosition().row);
-        //            if (code == 38 || code == 40) {
-        //                _ApGrid.eSelectionChange(recode, _ApGrid.selModel.getCurrentPosition().row, dataIndex);
-        //            }
-        //        }
-        //    });
-        //});
         return _ApGrid;
     }
 }
