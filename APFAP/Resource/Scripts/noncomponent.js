@@ -25,7 +25,7 @@ DBParams.prototype.addParam = function (paramName, paramValue) {
     if (this.params == '') {
         this.params = paramName + '※' + paramValue;
     } else {
-        this.param = + '|' + paramName + '※' + paramValue;
+        this.param += '|' + paramName + '※' + paramValue;
     }
 }
 DBParams.prototype.setName = function (procedureName) {
@@ -83,11 +83,11 @@ var DBconnect = {
                     var json = jObject[0];
                     var _sModel = null;
                     if (typeof (jObject) == undefined || jObject.length == 0) {
-                        var _model = Ext.define('model', { extend: 'Ext.data.Model' });
-                        var store = Ext.create('Ext.data.Store', {
-                            model: _model.getName(),
-                            data: jObject
-                        })
+                        //var _model = Ext.define('model', { extend: 'Ext.data.Model' });
+                        //var store = Ext.create('Ext.data.Store', {
+                        //    model: _model.getName(),
+                        //    data: jObject
+                        //})
                     } else {
                         var fieldArr = [];
                         for (var i = 0; i < jObject.keys().json, length ; i++) {
