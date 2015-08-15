@@ -9,7 +9,9 @@ btn_ok.eClick = function () {
     if (txt_reqNm.getValue() == '') {
         Ext.Msg.alert("경고 창", "요구사항을 입력해주세요!");
     } else {
-        gridData.add({ USERID: 'aaa' + i++, CATEGORY: txt_category.getValue(), REQNM: txt_reqNm.getValue(), BLANK: txt_blank.getValue() });
+        gridData.add({ USERID: 'aaa' + i++, CATEGORY: txt_category.getValue(), REQNM: txt_reqNm.getValue(), 
+            SUMMARY: txt_summary.getValue(), DESCRIPTION: txt_desc.getValue(), IMPORTANT: cbo_imp.getValue(),
+            LEVEL: cbo_lev.getValue(), BLANK: txt_blank.getValue() });
     }
 }
 btn_del.eClick = function () {
@@ -23,4 +25,9 @@ btn_clrear.eClick = function () {
     txt_category.setValue(null);
     txt_reqNm.setValue(null);
     txt_blank.setValue(null);
+    txt_category.setValue(null);
+    txt_summary.setValue(null);
+    txt_desc.setValue(null);
+    cbo_imp.setValue(null);
+    cbo_lev.setValue(null);
 }
