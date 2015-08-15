@@ -50,6 +50,14 @@ tbl_content.setTarget();
 var btn_messenger = ApButton.create('메신져');
 var btn_context = ApButton.create('공지사항');
 
+var tre_COM = ApTree.create('');
+var tre_DEF = ApTree.create('');
+var tre_ANL = ApTree.create('');
+var tre_DES = ApTree.create('');
+var tre_DEV = ApTree.create('');
+var tre_EVL = ApTree.create('');
+var tre_TES = ApTree.create('');
+
 var menu = Ext.create('Ext.panel.Panel', {
     title: 'Accordion Layout',
     layout: 'accordion',
@@ -64,25 +72,26 @@ var menu = Ext.create('Ext.panel.Panel', {
         activeOnTop: true
     },
     items: [{
+        title: '공통',
+        items: tre_COM
+    },{
         title: '정의',
-        height: 300,
-        html: 'Panel content!'
+        items:tre_DEF
     }, {
         title: '분석',
-        height: 300,
-        html: 'Panel content!'
+        items: tre_ANL
     }, {
         title: '설계',
-        height: 300,
-        html: 'Panel content!'
+        items: tre_DES
     }, {
         title: '개발',
-        height: 300,
-        html: 'Panel content!'
+        items: tre_DEV
+    }, {
+        title: '테스트',
+        items: tre_TES
     }, {
         title: '평가',
-        height: 300,
-        html: 'Panel content!'
+        items: tre_EVL
     }]
 });
 var grd_form = ApGrid.create();
@@ -106,4 +115,5 @@ ApEvent.onlaod = function () {
     menu.setWidth(200);
     SYS_INIT();
     TREE_LOAD();
+    GET_CONTENT();
 }

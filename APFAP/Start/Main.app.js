@@ -15,17 +15,26 @@ function GET_CONTENT() {
     var pr = DBParams.create('SP_COMMAIN', 'SEARCH_CONTENT');
     //데이터셋
     var ds = DBconnect.runProcedure(pr);
-    var arr_DEF = [], //정의
+    var arr_COM = [], //공통
+        arr_DEF = [], //정의
         arr_ANL = [], //분석
         arr_DES = [], //설계
         arr_DEV = [], //개발
         arr_TES = [], //테스트
         arr_EVL = []; //평가
     for (var i = 0; i < ds[0].data.items.length; i++) {
-        var categoryType = ds[0].data.getAt(i).data.FORMCD.subStr(0, 3);
-        if (categoryType == 'DEF') arr_DEF.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+        var categoryType = ds[0].data.getAt(i).data.FORMCD.substr(0, 3);
+        if (categoryType == 'COM') arr_COM.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+        else if (categoryType == 'DEF') arr_DEF.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
         else if (categoryType == 'ANL') arr_ANL.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+        else if (categoryType == 'DES') arr_DES.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+        else if (categoryType == 'DEV') arr_DEV.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+        else if (categoryType == 'TES') arr_TES.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+        else if (categoryType == 'EVL') arr_EVL.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+        else console.error('이상한컨텐츠명 포함되어있음. 공통코드 확인필요');
     }
+    console.log(arr_COM, arr_DEF, arr_ANL, arr_DES, arr_DEV, arr_TES, arr_EVL);
+    var node = getNode()
 
 }
 
