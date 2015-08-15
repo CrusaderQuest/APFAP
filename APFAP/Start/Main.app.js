@@ -5,8 +5,29 @@
 
 //App 단 정의 영역 시작
 /*
-    d
+ * 메인화면 비즈니스로직 
+ * @date  2015-08-15
+ * @autor JuneJobs
 */
+
+//카테고리 별로 컨텐츠 가져오기
+function GET_CONTENT() {
+    var pr = DBParams.create('SP_COMMAIN', 'SEARCH_CONTENT');
+    //데이터셋
+    var ds = DBconnect.runProcedure(pr);
+    var arr_DEF = [], //정의
+        arr_ANL = [], //분석
+        arr_DES = [], //설계
+        arr_DEV = [], //개발
+        arr_TES = [], //테스트
+        arr_EVL = []; //평가
+    for (var i = 0; i < ds[0].data.items.length; i++) {
+        var categoryType = ds[0].data.getAt(i).data.FORMCD.subStr(0, 3);
+        if (categoryType == 'DEF') arr_DEF.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+        else if (categoryType == 'ANL') arr_ANL.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
+    }
+
+}
 
 
 //폼 렌더링시 초기화
