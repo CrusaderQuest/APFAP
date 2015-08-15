@@ -33,9 +33,15 @@ function GET_CONTENT() {
         else if (categoryType == 'EVL') arr_EVL.push([ds[0].data.getAt(i).data.FORMCD, ds[0].data.getAt(i).data.FORMNM]);
         else console.error('이상한컨텐츠명 포함되어있음. 공통코드 확인필요');
     }
-    console.log(arr_COM, arr_DEF, arr_ANL, arr_DES, arr_DEV, arr_TES, arr_EVL);
-    var node = getNode()
-
+    var arr_CONTENT = [arr_COM, arr_DEF, arr_ANL, arr_DES, arr_DEV, arr_TES, arr_EVL];
+    var arr_CONTENTREE = [tre_COM, tre_DEF, tre_ANL, tre_DES, tre_DEV, tre_TES, tre_EVL];
+    for (var i = 0; i < arr_CONTENT.length; i++) {
+        for (var j = 0; j < arr_CONTENT[i].length; j++) {
+            var node = getNode(arr_CONTENT[i][j][1], true);
+            node.value.setValue('FORMCD', arr_CONTENT[i][j][0]);
+            arr_CONTENTREE[i].bindNode(node, 1, true);
+        }
+    }
 }
 
 

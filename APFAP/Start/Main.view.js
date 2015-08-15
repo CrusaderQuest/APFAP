@@ -73,25 +73,32 @@ var menu = Ext.create('Ext.panel.Panel', {
     },
     items: [{
         title: '공통',
-        items: tre_COM
+        layout: 'fit',
+        items: [tre_COM]
     },{
         title: '정의',
-        items:tre_DEF
+        layout: 'fit',
+        items:[tre_DEF]
     }, {
         title: '분석',
-        items: tre_ANL
+        layout: 'fit',
+        items: [tre_ANL]
     }, {
         title: '설계',
-        items: tre_DES
+        layout: 'fit',
+        items: [tre_DES]
     }, {
         title: '개발',
-        items: tre_DEV
+        layout: 'fit',
+        items: [tre_DEV]
     }, {
         title: '테스트',
-        items: tre_TES
+        layout: 'fit',
+        items: [tre_TES]
     }, {
         title: '평가',
-        items: tre_EVL
+        layout: 'fit',
+        items: [tre_EVL]
     }]
 });
 var grd_form = ApGrid.create();
