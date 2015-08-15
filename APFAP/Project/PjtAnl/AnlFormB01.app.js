@@ -19,9 +19,9 @@ btn_ok.eClick = function () {
         Ext.Msg.alert("경고 창", "요구사항을 입력해주세요!");
     } else {
         gridData.add({
-            USERID: 'aaa' + i++, CATEGORY: txt_category.getValue(), REQNM: txt_reqNm.getValue(),
+            USERID: 'aaa' + i++, CATEGORY: txt_category.getValue(), REQ_NM: txt_reqNm.getValue(),
             SUMMARY: txt_summary.getValue(), DESCRIPTION: txt_desc.getValue(), IMPORTANT: cbo_imp.getValue(),
-            LEVEL: cbo_lev.getValue(), BLANK: txt_blank.getValue() });
+            LEV: cbo_lev.getValue(), BLANK: txt_blank.getValue() });
     }
 }
 btn_del.eClick = function () {
@@ -39,7 +39,15 @@ btn_del.eClick = function () {
 //        icon: Ext.Msg.QUESTION,
 //        fn: function(btn) {
 //            if (btn === 'yes') {
-//                pr.addParam('UPDATE_TABLE', 'gridData');
+//                var prU = DBParams.create('sp_ANLFORMB01', 'INSERT_TABLE');
+//                //데이터셋
+//                prU.addParam('CATEGORY', gridData.data.items[12].data.CATEGORY);
+//                prU.addParam('REQ_NM', gridData.data.items[12].data.REQ_NM);
+//                prU.addParam('SUMMARY', gridData.data.items[12].data.SUMMARY);
+//                prU.addParam('DESCRIPTION', gridData.data.items[12].data.DESCRIPTION);
+//                prU.addParam('IMPORTANT', gridData.data.items[12].data.IMPORTANT);
+//                prU.addParam('BLANK', gridData.data.items[12].data.BLANK);
+//                var ds = DBconnect.runProcedure(prU);
 //                Ext.Msg.alert('Yes','정직하시군요발냄새를더나게해드리죠.');
 //            } else{
 
