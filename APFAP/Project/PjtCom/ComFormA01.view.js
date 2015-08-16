@@ -6,8 +6,9 @@
 //View 단 정의 영역 시작
 
 //-------------------폼 전역변수 시작-----------------
-var comboStoreCategory = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA'],
+var saveBtnState = 0;
+var deleteArray = Ext.create('Ext.data.ArrayStore', {
+    fields: [{ name:'REQ_NO', type:'int' }]
 });
 var comboStoreState = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEDATA', 'SHOWDATA'],
@@ -21,7 +22,6 @@ Ext.define('customerReqData', {
     fields: [
         { name: 'REQ_NO' },
         { name: 'REQ_DT', type: 'date', dateFormat: 'Ymd' },
-        { name: 'CATEGORY' },
         { name: 'SUMMARY' },
         { name: 'CONTENT' },
         { name: 'STATE_NM' },
@@ -34,7 +34,6 @@ var grdData = Ext.create('Ext.data.ArrayStore', {
 });
 var grd = ApGrid.create(true);
 grd.addColumn('date', '요청 날짜', 'REQ_DT', 120);
-grd.addColumn('combo', '카테고리', ['CATEGORY', comboStoreCategory], 120);
 grd.addColumn('text', '요약', 'SUMMARY', 200);
 grd.addColumn('text', '상세 내용', 'CONTENT', 700);
 grd.addColumn('combo', '상태', ['STATE_NM', comboStoreState], 120);
@@ -77,6 +76,5 @@ ApEvent.onlaod = function () {
 
     dbLoad();
     dbUserLoad();
-    dbCategoryLoad();
     dbStateLoad();
 }

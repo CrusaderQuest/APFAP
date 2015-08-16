@@ -177,7 +177,9 @@ btn_save.eClick = function () {
             dTableArray.clearData();
             dbLoad();
             grd.reconfigure(dTableArray.data.items[0].data);
+            initBtnColor(currentBtn);
             currentBtn = 0;
+            selBtnColor(currentBtn);
         }
     }
 }
