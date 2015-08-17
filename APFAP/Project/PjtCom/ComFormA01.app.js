@@ -71,14 +71,16 @@ function convertUSER_KEY(input) {
             return comboUser.data.items[i].data.HIDEDATA;
     }
 }
+/*
 function convertDate(input) {
     return (input.substr(0, 4) + input.substr(5, 2) + input.substr(8, 2));
 }
+*/
 function dbInsertUpdate() {
     for (var i = 0; i < grdData.data.length; i++) {
         //튜블 수 loop
         var pr;
-        if (grdData.data.items[i].data.REQ_NO == null) {//insert
+        if (grdData.data.items[i].data.REQ_NO == 0) {//insert
             pr = DBParams.create('sp_ComFormA01', 'INSERT_TABLE');
         } else {//update
             pr = DBParams.create('sp_ComFormA01', 'UPDATE_TABLE');
