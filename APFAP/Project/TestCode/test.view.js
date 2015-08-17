@@ -53,20 +53,25 @@ var gridData = Ext.create('Ext.data.ArrayStore', {
         ['aaa6', false, '2015-07-29', 30.24, 'BBB'],
     ]
 });
-var grd = ApGrid.create();
+
+
+var pr = DBParams.create('SP_COMMAIN', 'SEARCH_Detail');
+//데이터셋
+var ds = DBconnect.runProcedure(pr);
+
+var grd = ApGrid.create(true);
 grd.addColumn('text', '텍스트', 'USERID', 200);
 grd.addColumn('num', '넘버', 'SEQ', 200);
-grd.addColumn('date', '날짜', 'DATE', 200);
-grd.addColumn('check', '체크', 'CHECK', 200);
-grd.addColumn('combo', '콤보', ['COMBO', comboStore], 200);
-grd.reconfigure(gridData);
+grd.addColumn('date', '날짜', 'DATE1', 200);
+grd.addColumn('check', '체크', 'CHECK1', 200);
+grd.addColumn('combo', '콤보', ['COMBO', ds[0]], 200);
+grd.reconfigure(ds[1]);
 
 var panel1 = ApPanel.create('aaa');
 var panel2 = ApPanel.create('bbb');
-
 ApEvent.onlaod = function () {
     var tab = ApTab.create();
-    tab.addTab('안녕').divideV(panel1, panel2);
+    tab.addTab('안녕').full(grd);
     tab.addTab('하이').full(tbl_H);
     tab.addTab('헬로우').full(tre_CUSTOMTREE);
     viewPanel.full(tab);

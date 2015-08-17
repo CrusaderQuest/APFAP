@@ -4,6 +4,16 @@
 
 //Global function
 
+var ApFn = {
+    toDbTyoe: function (type, value) {
+        if (type == 'date') {
+            return value.substr(0, 4) + value.substr(5, 2) + value.substr(8, 2);
+        } else if (type == 'bool') {
+            return value == true ? 'T' : 'F';
+        }
+    }
+}
+
 //DB parameters
 
 //Ext.define('Student',
@@ -83,16 +93,25 @@ var DBconnect = {
                     var json = jObject[0];
                     var _sModel = null;
                     if (typeof (jObject) == undefined || jObject.length == 0) {
-                        //var _model = Ext.define('model', { extend: 'Ext.data.Model' });
-                        //var store = Ext.create('Ext.data.Store', {
-                        //    model: _model.getName(),
-                        //    data: jObject
-                        //})
+                        var _model = Ext.define('model', { extend: 'Ext.data.Model' });
+                        var store = Ext.create('Ext.data.Store', {
+                            model: _model.getName(),
+                            data: jObject
+                        })
                     } else {
                         var fieldArr = [];
-                        for (var i = 0; i < jObject.keys().json, length ; i++) {
-                            var name = jObject.keys(json)[i];
-                            var type = typeof (name);
+                        for (var i = 0; i < Object.keys(json).length ; i++) {
+                            var name = Object.keys(json)[i];
+                            var type = typeof (json[Object.keys(json)[i]]);
+                            if (json[Object.keys(json)[i]] == 'T' || json[Object.keys(json)[i]] == 'F') {
+                                type = 'bool';
+                                for (var j = 0; j < jObject.length;j++) {
+                                    if (jObject[j][Object.keys(json)[i]] == 'T') jObject[j][Object.keys(json)[i]] = true;
+                                    if (jObject[j][Object.keys(json)[i]] == 'F') jObject[j][Object.keys(json)[i]] = false;
+                                    
+                                }
+
+                            }
                             fieldArr.push({
                                 'name': name, 'type': type
                             })
