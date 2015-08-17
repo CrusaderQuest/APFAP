@@ -642,25 +642,26 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 renderer: Ext.util.Format.dateRenderer('Y-m-d'),
                 editor: {
                     xtype: 'datefield',
-                    format: 'Y-m-d'
+                    format: 'Y-m-d',
+                    submitFormat: 'c' 
                 }
             });
             break;
         case 'check':
-            columnType = Ext.create('Ext.grid.column.Column', {
+            columnType = {
                 text: columnText,
                 xtype: 'checkcolumn',
                 width: width,
                 dataIndex: paramId,
                 align: 'center',
-                trueText: 'Yes',
-                falseText: 'No',
+                trueText: 'true',
+                falseText: 'false',
                 align: 'center',
                 editor: {
                     xtype: 'checkfield',
                     selectOnFocus: true,
                 }
-            });
+            };
             break;
         case 'combo':
             columnType = Ext.create('Ext.grid.column.Column', {
@@ -791,6 +792,9 @@ var ApGrid = {
                 edit: function (editor, e, eOpts) {
                     try {
                         var record = this.getStore().getAt(e.rowIdx);
+                        if (editor.context.column.xtype == 'datecolumn') {
+                            record.set(editor.context.column.dataIndex, Ext.Date.dateFormat(editor.context.value, 'Y-m-d'));
+                        }
                         _ApGrid.eUpdate(record, e.rowIdx, dataIndex);
                     } catch (e) {
 
