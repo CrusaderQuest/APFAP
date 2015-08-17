@@ -17,11 +17,11 @@ Ext.define('customerReqData', {
     extend: 'Ext.data.Model',
     fields: [
         { name: 'REQ_NO' },
-        { name: 'REQ_DT', type: 'date', dateFormat: 'Ymd' },
+        { name: 'REQ_DT', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'SUMMARY' },
         { name: 'CONTENT' },
         { name: 'STATE_NM' },
-        { name: 'END_DT', type: 'date', dateFormat: 'Ymd' },
+        { name: 'END_DT', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'USER_NM' }
     ]
 });
