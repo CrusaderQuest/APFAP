@@ -7,10 +7,7 @@
 var ApFn = {
     toDbTyoe: function (type, value) {
         if (type == 'date') {
-            if (value.length > 10) {
-                return value.substring(0, 4), value.substring(4, 6) - 1, value.substring(6);
-            }
-            Ext.Date.dateFormat(value, 'Ymd');
+            return value.substr(0, 4) + value.substr(5, 2) + value.substr(8, 2);
         } else if (type == 'bool') {
             return value == true ? 'T' : 'F';
         }
