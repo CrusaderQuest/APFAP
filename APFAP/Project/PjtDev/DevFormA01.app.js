@@ -39,7 +39,6 @@ function dbUserLoad() {
     var pr = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
     var ds = DBconnect.runProcedure(pr);
     comboStoreUser = ds[0];
-    //combo 모듈 수정되면 추가.
 }
 //DB 통신 private
 function isErrInTuple(i) {
@@ -65,24 +64,26 @@ function dbInsertUpdate() {
         //서버,DB,UI,기타 loop
         for (var j = 0; j < dTableArray.data.items[i].data.data.length; j++) {
             //각 탭 튜블 수 loop
+            var pr;
             if (dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO == null) {//insert
-                var pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
+                pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
                 pr.addParam('H_DEV_NO', i);
 
             } else {//update
-                var pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
+                pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
                 pr.addParam('D_DEV_NO', dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO);
 
             }
             pr.addParam('D_DEV_NM', dTableArray.data.items[i].data.data.items[j].data.D_DEV_NM);
-            pr.addParam('START_DT', dTableArray.data.items[i].data.data.items[j].data.START_DT);
+            pr.addParam('START_DT', convertDate( dTableArray.data.items[i].data.data.items[j].data.START_DT) );
             pr.addParam('DEV_VALUE', dTableArray.data.items[i].data.data.items[j].data.DEV_VALUE);
             pr.addParam('TEST_VALUE', dTableArray.data.items[i].data.data.items[j].data.TEST_VALUE);
-            pr.addParam('DEADLINE', dTableArray.data.items[i].data.data.items[j].data.DEADLINE);
-            pr.addParam('USER_KEY', dTableArray.data.items[i].data.data.items[j].data.USER_KEY);
+            pr.addParam('DEADLINE', convertDate( dTableArray.data.items[i].data.data.items[j].data.DEADLINE) );
+            pr.addParam('USER_KEY', convertUSER_KEY(dTableArray.data.items[i].data.data.items[j].data.USER_NM));
             //pr.addParam('USER_KEY', 
             //              getUserNm(dTableArray.data.items[i].data.data.items[j].data.USER_KEY));
-            pr.addParam('END_DT', dTableArray.data.items[i].data.data.items[j].data.END_DT);
+            if (dTableArray.data.items[i].data.data.items[j].data.END_DT != null)
+                pr.addParam('END_DT', convertDate( dTableArray.data.items[i].data.data.items[j].data.END_DT) );
 
             var ds = DBconnect.runProcedure(pr);
         }
@@ -99,10 +100,14 @@ function dbDelete() {
         }
     }
 }
-function getUserNm(key) {
-    var nm;
-
-    return nm;
+function convertUSER_KEY(input) {
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        if (comboStoreUser.data.items[i].data.SHOWDATA == input)
+            return comboStoreUser.data.items[i].data.HIDEDATA;
+    }
+}
+function convertDate(input) {
+    return ( input.substr(0,4) + input.substr(5,2) + input.substr(8,2) );
 }
 function initBtnColor(i) {
     if (i == 0) {
@@ -177,15 +182,17 @@ btn_save.eClick = function () {
             dTableArray.clearData();
             dbLoad();
             grd.reconfigure(dTableArray.data.items[0].data);
+            initBtnColor(currentBtn);
             currentBtn = 0;
+            selBtnColor(currentBtn);
         }
     }
 }
 btn_insert.eClick = function () {
     //새 튜플 추가.
     dTableArray.data.items[currentBtn].data.add({
-        D_DEV_NM: '', START_DT: '', DEV_VALUE: '', TEST_VALUE: '', DEADLINE: '',
-        USER_KEY: '', USER_NM: '', END_DT: ''
+        D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null, DEADLINE: null,
+        USER_KEY: null, USER_NM: null, END_DT: null
     });
 }
 btn_delete.eClick = function () {
@@ -202,9 +209,12 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
     console.log(paramId, record.data, rowIndex);
     text_cc.setValue(record.data.USERID);
 }
-grd.eUpdate = function (record, rowIndex, paramId) {
-    console.log(paramId, record.data, rowIndex);
-}
 */
 
-
+grd.eUpdate = function (record, rowIndex, paramId) {
+    if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
+        var t1Date = record.get(paramId);
+        var t2Date = Ext.Date.dateFormat(t1Date, 'Y-m-d');
+        record.set(paramId, t2Date);
+    }
+}

@@ -6,26 +6,22 @@
 //View 단 정의 영역 시작
 
 //-------------------폼 전역변수 시작-----------------
-var comboStoreCategory = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA'],
-});
-var comboStoreState = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA'],
-});
-var comboStoreUser = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA'],
+var saveBtnState = 0;
+var comboState;
+var comboUser;
+var deleteArray = Ext.create('Ext.data.ArrayStore', {
+    fields: [{ name:'REQ_NO', type:'int' }]
 });
 
 Ext.define('customerReqData', {
     extend: 'Ext.data.Model',
     fields: [
         { name: 'REQ_NO' },
-        { name: 'REQ_DT', type: 'date', dateFormat: 'Ymd' },
-        { name: 'CATEGORY' },
+        { name: 'REQ_DT', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'SUMMARY' },
         { name: 'CONTENT' },
         { name: 'STATE_NM' },
-        { name: 'END_DT', type: 'date', dateFormat: 'Ymd' },
+        { name: 'END_DT', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'USER_NM' }
     ]
 });
@@ -33,13 +29,6 @@ var grdData = Ext.create('Ext.data.ArrayStore', {
     model: 'customerReqData'
 });
 var grd = ApGrid.create(true);
-grd.addColumn('date', '요청 날짜', 'REQ_DT', 120);
-grd.addColumn('combo', '카테고리', ['CATEGORY', comboStoreCategory], 120);
-grd.addColumn('text', '요약', 'SUMMARY', 200);
-grd.addColumn('text', '상세 내용', 'CONTENT', 700);
-grd.addColumn('combo', '상태', ['STATE_NM', comboStoreState], 120);
-grd.addColumn('date', '완료 날짜', 'END_DT', 120);
-grd.addColumn('combo', '담당자', ['USER_NM', comboStoreUser], 120);
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
@@ -72,11 +61,21 @@ ApEvent.onlaod = function () {
     pnl_content.divideV(pnl_btn, pnl_grid);
     pnl_btn.full(tbl_btn);
     tbl_btn.setPosition(1000, 0, null);
+    
     pnl_grid.full(grd);
     pnl_btn.setHeight(100);
 
-    dbLoad();
     dbUserLoad();
-    dbCategoryLoad();
     dbStateLoad();
+
+    grd.addColumn('date', '요청 날짜', 'REQ_DT', 120);
+    grd.addColumn('text', '요약', 'SUMMARY', 200);
+    grd.addColumn('text', '상세 내용', 'CONTENT', 700);
+    grd.addColumn('combo', '상태', ['STATE_NM', comboState], 120);
+    grd.addColumn('date', '완료 날짜', 'END_DT', 120);
+    grd.addColumn('combo', '담당자', ['USER_NM', comboUser], 120);
+
+    dbLoad();
+
+    pnl_content.setDisabled(true);
 }
