@@ -39,7 +39,6 @@ function dbUserLoad() {
     var pr = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
     var ds = DBconnect.runProcedure(pr);
     comboStoreUser = ds[0];
-    //combo 모듈 수정되면 추가.
 }
 //DB 통신 private
 function isErrInTuple(i) {
@@ -65,12 +64,13 @@ function dbInsertUpdate() {
         //서버,DB,UI,기타 loop
         for (var j = 0; j < dTableArray.data.items[i].data.data.length; j++) {
             //각 탭 튜블 수 loop
+            var pr;
             if (dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO == null) {//insert
-                var pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
+                pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
                 pr.addParam('H_DEV_NO', i);
 
             } else {//update
-                var pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
+                pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
                 pr.addParam('D_DEV_NO', dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO);
 
             }
@@ -79,7 +79,7 @@ function dbInsertUpdate() {
             pr.addParam('DEV_VALUE', dTableArray.data.items[i].data.data.items[j].data.DEV_VALUE);
             pr.addParam('TEST_VALUE', dTableArray.data.items[i].data.data.items[j].data.TEST_VALUE);
             pr.addParam('DEADLINE', dTableArray.data.items[i].data.data.items[j].data.DEADLINE);
-            pr.addParam('USER_KEY', dTableArray.data.items[i].data.data.items[j].data.USER_KEY);
+            pr.addParam('USER_KEY', convertUSER_KEY(dTableArray.data.items[i].data.data.items[j].data.USER_NM));
             //pr.addParam('USER_KEY', 
             //              getUserNm(dTableArray.data.items[i].data.data.items[j].data.USER_KEY));
             pr.addParam('END_DT', dTableArray.data.items[i].data.data.items[j].data.END_DT);
@@ -99,10 +99,11 @@ function dbDelete() {
         }
     }
 }
-function getUserNm(key) {
-    var nm;
-
-    return nm;
+function convertUSER_KEY(input) {
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        if (comboStoreUser.data.items[i].data.SHOWDATA == input)
+            return comboStoreUser.data.items[i].data.HIDEDATA;
+    }
 }
 function initBtnColor(i) {
     if (i == 0) {
@@ -186,8 +187,8 @@ btn_save.eClick = function () {
 btn_insert.eClick = function () {
     //새 튜플 추가.
     dTableArray.data.items[currentBtn].data.add({
-        D_DEV_NM: '', START_DT: '', DEV_VALUE: '', TEST_VALUE: '', DEADLINE: '',
-        USER_KEY: '', USER_NM: '', END_DT: ''
+        D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null, DEADLINE: null,
+        USER_KEY: null, USER_NM: null, END_DT: null
     });
 }
 btn_delete.eClick = function () {

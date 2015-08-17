@@ -7,6 +7,7 @@
 //-------------------폼 전역변수 시작---------------
 var currentBtn = 0;
 var saveBtnState = 0;
+var comboStoreUser;
 Ext.define('D_Data', {
     extend: 'Ext.data.Model',
     fields: [
@@ -16,7 +17,6 @@ Ext.define('D_Data', {
         { name: 'DEV_VALUE' },
         { name: 'TEST_VALUE' },
         { name: 'DEADLINE', type: 'date', dateFormat: 'Ymd' },
-        { name: 'USER_KEY' },
         { name: 'USER_NM' },
         { name: 'END_DT', type: 'date', dateFormat: 'Ymd' }
     ]
@@ -30,9 +30,6 @@ Ext.define('delete_Array', {
 });
 var deleteArray = Ext.create('Ext.data.ArrayStore', {
     fields: [delete_Array]
-});
-var comboStoreUser = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA']
 });
 /*
 var comboStoreUser = Ext.create('Ext.data.ArrayStore', {
@@ -53,13 +50,7 @@ var comboStoreValue = Ext.create('Ext.data.ArrayStore', {
     ]
 });
 var grd = ApGrid.create(true);
-grd.addColumn('text', '개발 단위', 'D_DEV_NM', 200);
-grd.addColumn('date', '시작 날짜', 'START_DT', 120);
-grd.addColumn('combo', '개발 상태', ['DEV_VALUE', comboStoreValue], 120);
-grd.addColumn('combo', '테스트 상태', ['TEST_VALUE', comboStoreValue], 120);
-grd.addColumn('date', '데드라인', 'DEADLINE', 120);
-grd.addColumn('combo', '담당자', ['USER_NM', comboStoreUser], 120);
-grd.addColumn('date', '완료 날짜', 'END_DT', 120);
+
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
@@ -125,6 +116,13 @@ ApEvent.onlaod = function () {
 
     dbLoad();
     dbUserLoad();
+    grd.addColumn('text', '개발 단위', 'D_DEV_NM', 200);
+    grd.addColumn('date', '시작 날짜', 'START_DT', 120);
+    grd.addColumn('combo', '개발 상태', ['DEV_VALUE', comboStoreValue], 120);
+    grd.addColumn('combo', '테스트 상태', ['TEST_VALUE', comboStoreValue], 120);
+    grd.addColumn('date', '데드라인', 'DEADLINE', 120);
+    grd.addColumn('combo', '담당자', ['USER_NM', comboStoreUser], 120);
+    grd.addColumn('date', '완료 날짜', 'END_DT', 120);
     grd.reconfigure(dTableArray.data.items[0].data);
     selBtnColor(0);
 

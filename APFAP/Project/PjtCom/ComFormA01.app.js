@@ -16,17 +16,18 @@ function dbLoad() {
     var pr = DBParams.create('sp_ComFormA01', 'GET_TABLE');
     var ds = DBconnect.runProcedure(pr);
     grdData = ds[0];
+    convertDBDate();
     grd.reconfigure(grdData);
 }
 function dbUserLoad() {
     var pr = DBParams.create('sp_ComFormA01', 'GET_PROJECT_USER');
     var ds = DBconnect.runProcedure(pr);
-    comboStoreUser = ds[0];
+    comboUser = ds[0];
 }
 function dbStateLoad() {
     var pr = DBParams.create('sp_ComFormA01', 'GET_STATE');
     var ds = DBconnect.runProcedure(pr);
-    comboStoreState = ds[0];
+    comboState = ds[0];
 }
 function dbSave() {
     var errTuple;
@@ -59,29 +60,52 @@ function isErrInTuple() {
 
     return false;
 }
-function convertSTATE_CD() {
-
-    return;
+function convertSTATE_CD(input) {
+    for (var i = 0; i < comboState.data.length; i++) {
+        if (comboState.data.items[i].data.SHOWDATA == input)
+            return comboState.data.items[i].data.HIDEDATA;
+    }
 }
-function convertUSER_KEY() {
-
-    return;
+function convertUSER_KEY(input) {
+    for (var i = 0; i < comboUser.data.length; i++) {
+        if (comboUser.data.items[i].data.SHOWDATA == input)
+            return comboUser.data.items[i].data.HIDEDATA;
+    }
+}
+function convertDate(input) {
+    return Ext.Date.dateFormat(input, 'Ymd');
+}
+function convertDBDate() {
+    for (var i = 0; i < grdData.data.length; i++) {
+        var tempREQ_DT = grdData.data.items[i].data.REQ_DT;
+        var tempEND_DT = grdData.data.items[i].data.END_DT;
+        var modiREQ_DT = new Date();
+        var modiEND_DT = new Date();
+        modiREQ_DT.setYear(tempREQ_DT.substr(0, 4));
+        modiEND_DT.setYear(tempEND_DT.substr(0, 4));
+        modiREQ_DT.setMonth(tempREQ_DT.substr(4, 2));
+        modiEND_DT.setMonth(tempEND_DT.substr(4, 2));
+        modiREQ_DT.setDate(tempREQ_DT.substr(6, 2));
+        modiEND_DT.setDate(tempEND_DT.substr(6, 2));
+        grdData.data.items[i].data.REQ_DT = modiREQ_DT;
+        grdData.data.items[i].data.END_DT = modiEND_DT;
+    }
 }
 function dbInsertUpdate() {
     for (var i = 0; i < grdData.data.length; i++) {
         //튜블 수 loop
+        var pr;
         if (grdData.data.items[i].data.REQ_NO == null) {//insert
-            var pr = DBParams.create('sp_ComFormA01', 'INSERT_TABLE');
+            pr = DBParams.create('sp_ComFormA01', 'INSERT_TABLE');
         } else {//update
-            var pr = DBParams.create('sp_ComFormA01', 'UPDATE_TABLE');
+            pr = DBParams.create('sp_ComFormA01', 'UPDATE_TABLE');
             pr.addParam('REQ_NO', grdData.data.items[i].data.REQ_NO);
-
         }
-        pr.addParam('REQ_DT', grdData.data.items[i].data.REQ_DT);
+        pr.addParam('REQ_DT', convertDate(grdData.data.items[i].data.REQ_DT));
         pr.addParam('SUMMARY', grdData.data.items[i].data.SUMMARY);
         pr.addParam('DESCRIPTION', grdData.data.items[i].data.CONTENT);
         pr.addParam('STATE_CD', convertSTATE_CD(grdData.data.items[i].data.STATE_NM));
-        pr.addParam('END_DT', grdData.data.items[i].data.DEADLINE);
+        pr.addParam('END_DT', convertDate(grdData.data.items[i].data.END_DT));
         pr.addParam('USER_KEY', convertUSER_KEY(grdData.data.items[i].data.USER_NM));
 
         var ds = DBconnect.runProcedure(pr);
@@ -97,9 +121,6 @@ function dbDelete() {
 }
 
 btn_save.eClick = function () {
-    //dbSave() 호출하고 true면 저장된거. false면 안된거.
-    //저장 된거면 다시 로드해서 뿌려주기.
-    //deletelist 초기화.
     if (saveBtnState == 0) {
         pnl_content.setDisabled(false);
         btn_save.setText("저장");
@@ -120,15 +141,15 @@ btn_save.eClick = function () {
 btn_insert.eClick = function () {
     //grdData.addRow();
     grdData.add({
-        REQ_NO: '', REQ_DT: '', SUMMARY: '', CONTENT: '', STATE_NM: '',
-        END_DT: '', USER_NM: ''
+        REQ_NO: null, REQ_DT: null, SUMMARY: null, CONTENT: null, STATE_NM: null,
+        END_DT: null, USER_NM: null
     });
 }
 btn_delete.eClick = function () {
     //스토어에서 뺴고, deletelist 추가.
-    for (var i = 0; i < grdData.getSelection().length; i++) {
+    for (var i = 0; i < grd.getSelection().length; i++) {
         var tempNo = grd.getSelection()[i].data.REQ_NO;
         deleteArray.add(tempNo);
     }
-    dTableArray.remove(grd.getSelection());
+    grdData.remove(grd.getSelection());
 }
