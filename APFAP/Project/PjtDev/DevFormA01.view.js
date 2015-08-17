@@ -13,12 +13,12 @@ Ext.define('D_Data', {
     fields: [
         { name: 'D_DEV_NO' },
         { name: 'D_DEV_NM' },
-        { name: 'START_DT', type: 'date', dateFormat: 'Ymd' },
+        { name: 'START_DT', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'DEV_VALUE' },
         { name: 'TEST_VALUE' },
-        { name: 'DEADLINE', type: 'date', dateFormat: 'Ymd' },
+        { name: 'DEADLINE', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'USER_NM' },
-        { name: 'END_DT', type: 'date', dateFormat: 'Ymd' }
+        { name: 'END_DT', type: 'date', dateFormat: 'Y-m-d' }
     ]
 });
 var dTableArray = Ext.create('Ext.data.ArrayStore', {

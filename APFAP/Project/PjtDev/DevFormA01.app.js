@@ -75,14 +75,15 @@ function dbInsertUpdate() {
 
             }
             pr.addParam('D_DEV_NM', dTableArray.data.items[i].data.data.items[j].data.D_DEV_NM);
-            pr.addParam('START_DT', dTableArray.data.items[i].data.data.items[j].data.START_DT);
+            pr.addParam('START_DT', convertDate( dTableArray.data.items[i].data.data.items[j].data.START_DT) );
             pr.addParam('DEV_VALUE', dTableArray.data.items[i].data.data.items[j].data.DEV_VALUE);
             pr.addParam('TEST_VALUE', dTableArray.data.items[i].data.data.items[j].data.TEST_VALUE);
-            pr.addParam('DEADLINE', dTableArray.data.items[i].data.data.items[j].data.DEADLINE);
+            pr.addParam('DEADLINE', convertDate( dTableArray.data.items[i].data.data.items[j].data.DEADLINE) );
             pr.addParam('USER_KEY', convertUSER_KEY(dTableArray.data.items[i].data.data.items[j].data.USER_NM));
             //pr.addParam('USER_KEY', 
             //              getUserNm(dTableArray.data.items[i].data.data.items[j].data.USER_KEY));
-            pr.addParam('END_DT', dTableArray.data.items[i].data.data.items[j].data.END_DT);
+            if (dTableArray.data.items[i].data.data.items[j].data.END_DT != null)
+                pr.addParam('END_DT', convertDate( dTableArray.data.items[i].data.data.items[j].data.END_DT) );
 
             var ds = DBconnect.runProcedure(pr);
         }
@@ -104,6 +105,9 @@ function convertUSER_KEY(input) {
         if (comboStoreUser.data.items[i].data.SHOWDATA == input)
             return comboStoreUser.data.items[i].data.HIDEDATA;
     }
+}
+function convertDate(input) {
+    return ( input.substr(0,4) + input.substr(5,2) + input.substr(8,2) );
 }
 function initBtnColor(i) {
     if (i == 0) {
@@ -205,9 +209,12 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
     console.log(paramId, record.data, rowIndex);
     text_cc.setValue(record.data.USERID);
 }
-grd.eUpdate = function (record, rowIndex, paramId) {
-    console.log(paramId, record.data, rowIndex);
-}
 */
 
-
+grd.eUpdate = function (record, rowIndex, paramId) {
+    if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
+        var t1Date = record.get(paramId);
+        var t2Date = Ext.Date.dateFormat(t1Date, 'Y-m-d');
+        record.set(paramId, t2Date);
+    }
+}

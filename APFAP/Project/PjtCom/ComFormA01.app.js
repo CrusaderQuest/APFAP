@@ -16,7 +16,6 @@ function dbLoad() {
     var pr = DBParams.create('sp_ComFormA01', 'GET_TABLE');
     var ds = DBconnect.runProcedure(pr);
     grdData = ds[0];
-    convertDBDate();
     grd.reconfigure(grdData);
 }
 function dbUserLoad() {
@@ -73,23 +72,7 @@ function convertUSER_KEY(input) {
     }
 }
 function convertDate(input) {
-    return Ext.Date.dateFormat(input, 'Ymd');
-}
-function convertDBDate() {
-    for (var i = 0; i < grdData.data.length; i++) {
-        var tempREQ_DT = grdData.data.items[i].data.REQ_DT;
-        var tempEND_DT = grdData.data.items[i].data.END_DT;
-        var modiREQ_DT = new Date();
-        var modiEND_DT = new Date();
-        modiREQ_DT.setYear(tempREQ_DT.substr(0, 4));
-        modiEND_DT.setYear(tempEND_DT.substr(0, 4));
-        modiREQ_DT.setMonth(tempREQ_DT.substr(4, 2));
-        modiEND_DT.setMonth(tempEND_DT.substr(4, 2));
-        modiREQ_DT.setDate(tempREQ_DT.substr(6, 2));
-        modiEND_DT.setDate(tempEND_DT.substr(6, 2));
-        grdData.data.items[i].data.REQ_DT = modiREQ_DT;
-        grdData.data.items[i].data.END_DT = modiEND_DT;
-    }
+    return (input.substr(0, 4) + input.substr(5, 2) + input.substr(8, 2));
 }
 function dbInsertUpdate() {
     for (var i = 0; i < grdData.data.length; i++) {
@@ -105,8 +88,9 @@ function dbInsertUpdate() {
         pr.addParam('SUMMARY', grdData.data.items[i].data.SUMMARY);
         pr.addParam('DESCRIPTION', grdData.data.items[i].data.CONTENT);
         pr.addParam('STATE_CD', convertSTATE_CD(grdData.data.items[i].data.STATE_NM));
-        pr.addParam('END_DT', convertDate(grdData.data.items[i].data.END_DT));
         pr.addParam('USER_KEY', convertUSER_KEY(grdData.data.items[i].data.USER_NM));
+        if (grdData.data.items[i].data.END_DT != null)
+            pr.addParam('END_DT', convertDate(grdData.data.items[i].data.END_DT));
 
         var ds = DBconnect.runProcedure(pr);
     }
@@ -152,4 +136,11 @@ btn_delete.eClick = function () {
         deleteArray.add(tempNo);
     }
     grdData.remove(grd.getSelection());
+}
+grd.eUpdate = function (record, rowIndex, paramId) {
+    if (paramId == 'REQ_DT' || paramId == 'END_DT') {
+        var t1Date = record.get(paramId);
+        var t2Date = Ext.Date.dateFormat(t1Date, 'Y-m-d');
+        record.set(paramId, t2Date);
+    }
 }
