@@ -5,7 +5,8 @@
 
 //View 단 정의 영역 시작
 var pnl_contents = ApPanel.create("TITLE");
-
+//data
+var dbData;
 //title
 var tbl_title = ApTable.create(3);
 tbl_title.setTarget();
@@ -29,7 +30,7 @@ txta_subtitle.setMargin(30);
 ApEvent.onlaod = function () {
     pnl_contents.full(tbl_title);
     viewPanel.full(pnl_contents);
+    GRD_LOAD();
     txt_title.setDisabled(true);
     txta_subtitle.setDisabled(true);
-    //GRD_LOAD();
 }
