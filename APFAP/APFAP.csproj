@@ -148,9 +148,13 @@
     <Content Include="Project\PjtAnl\AnlFormC01.html" />
     <Content Include="Project\PjtAnl\AnlFormC01.view.js" />
     <Content Include="Project\PjtCom\calendarSrc\App.js" />
+    <Content Include="Project\PjtCom\ComFormC01.html" />
+    <Content Include="Project\PjtCom\ComFormC01-공지사항관리.css" />
     <Content Include="Project\PjtCom\ComFormA01-고객요청폼.css" />
+    <Content Include="Project\PjtCom\ComFormC01.app.js" />
     <Content Include="Project\PjtCom\ComFormA01.app.js" />
     <Content Include="Project\PjtCom\ComFormA01.html" />
+    <Content Include="Project\PjtCom\ComFormC01.view.js" />
     <Content Include="Project\PjtCom\ComFormA01.view.js" />
     <Content Include="Project\PjtCom\ComFormB01-캘린더폼.css" />
     <Content Include="Project\PjtCom\ComFormB01.app.js" />
@@ -209,6 +213,7 @@
     <Content Include="Project\TestCode\test.html" />
     <Content Include="Project\TestCode\test.view.js" />
     <Content Include="Resource\Scripts\ext-all-debug.js" />
+    <Content Include="Resource\Scripts\ext-charts.js" />
     <Content Include="Resource\Scripts\ext-theme-crisp.js" />
     <Content Include="Resource\Scripts\app-실행기.css" />
     <Content Include="Resource\Scripts\app.js" />
@@ -218,6 +223,7 @@
     <Content Include="Resource\Scripts\noncomponent-컴포넌트 외 모듈.css" />
     <Content Include="Resource\Scripts\noncomponent.js" />
     <Content Include="Resource\Scripts\options-toolbar.js" />
+    <Content Include="Resource\Themes\ApStyle.css" />
     <Content Include="Resource\Themes\calendar.css" />
     <Content Include="Resource\Themes\examples.css" />
     <Content Include="Resource\Themes\ext-theme-crisp-all-debug.css" />

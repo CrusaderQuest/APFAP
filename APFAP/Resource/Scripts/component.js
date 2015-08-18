@@ -859,7 +859,6 @@ var ApTextArea = {
     create: function (label, paramId, labelWidth) {
         if (labelWidth == undefined) labelWidth = 80;
         var _ApTextArea = Ext.create('ApTextArea', {
-            labelWidth: 80,
             width: 180,
             fieldLabel: label,
             labelWidth: labelWidth,
@@ -880,13 +879,43 @@ var ApTextArea = {
         return _ApTextArea;
     }
 }
+//날짜선택
+Ext.define('ApDate', {
+    extend: 'Ext.form.field.Date',
+    ComponentType: 'date'
+});
+ApDate.prototype.eChange = function (Value) { };
+ApDate.prototype.eKeyDown = function (e) { };
+var ApDate = {
+    create: function (label, paramId, labelWidth) {
+        if (labelWidth == undefined) labelWidth = 80;
+        var _ApDate = Ext.create('ApDate', {
+            width: 190,
+            fieldLabel: label,
+            labelWidth: labelWidth,
+            format: 'Y-m-d',
+            paramId: paramId
+        });
+        _ApDate.on('afterrender', function (me, eOpts) {
+            _ApDate.on('change', function (me, newValue, oldValue, eOpts) {
+                _animationTarget = this;
+                _CmDate.eChange(newValue);
+            });
+            _ApDate.getEl().on('keydown', function (e, t, eOpts) {
+                _CmDate.eKeyDown(e);
+            });
+        });
+        _setTarget(_ApDate);
+        return _ApDate;
+    }
+}
+
 //콤보박스
 Ext.define('ApCombo', {
     extend: 'Ext.form.ComboBox',
     ComponentType: 'combo'
 });
 ApCombo.prototype.eventChange = function (newValue, oldValue) { };
-ApCombo.prototype.eventKeyDown = function (e) { };
 
 ApCombo.prototype.addItem = function (showValue, hideValue) {
 
@@ -902,10 +931,11 @@ ApCombo.prototype.addItem = function (showValue, hideValue) {
 }
 ApCombo.prototype.eFocus = function () {
 };
-ApCombo.prototype.eChange = function (me) {
+ApCombo.prototype.eChange = function (record) {
 };
 ApCombo.prototype.eKeyDown = function (e) {
 };
+
 ApCombo.prototype.setFeildLabelWidth = function (width) {
     this.labelEl.setWidth(width)
 };
@@ -929,7 +959,7 @@ var ApCombo = {
             _ApCombo.getEl().on('keydown', function (e, t, eOpts) {
                 _ApCombo.eKeyDown(e);
             });
-            _ApCombo.on('select', function (me, records, eOpts) {
+            _ApCombo.on('select', function (me) {
                 _ApCombo.eChange(me);
             });
         });
