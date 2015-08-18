@@ -17,20 +17,21 @@ function GRD_LOAD() {
 }
 
 btn_change.eClick = function () {
-    txt_title.setDisabled(false);
-    txta_subtitle.setDisabled(false);
-    btn_change.setVisible(false)
-    btn_change2.setVisible(true);
+    set_txt(false);
 }
+
 btn_change2.eClick = function () {
     var prUp = DBParams.create('sp_DEFFORMA01', 'UPDATE_TABLE');
     //데이터셋
     prUp.addParam("TITLE", txt_title.getValue());
     prUp.addParam("SUBTITLE", txta_subtitle.getValue());
     var ds = DBconnect.runProcedure(prUp);
+    set_txt(true);
+}
 
-    txt_title.setDisabled(true);
-    txta_subtitle.setDisabled(true);
-    btn_change2.setVisible(false);
-    btn_change.setVisible(true);
+set_txt = function(bool){
+    txt_title.setDisabled(bool);
+    txta_subtitle.setDisabled(bool);
+    btn_change2.setVisible(!bool);
+    btn_change.setVisible(bool);
 }
