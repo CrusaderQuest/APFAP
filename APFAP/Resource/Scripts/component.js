@@ -642,25 +642,26 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 renderer: Ext.util.Format.dateRenderer('Y-m-d'),
                 editor: {
                     xtype: 'datefield',
-                    format: 'Y-m-d'
+                    format: 'Y-m-d',
+                    submitFormat: 'c' 
                 }
             });
             break;
         case 'check':
-            columnType = Ext.create('Ext.grid.column.Column', {
+            columnType = {
                 text: columnText,
                 xtype: 'checkcolumn',
                 width: width,
                 dataIndex: paramId,
                 align: 'center',
-                trueText: 'Yes',
-                falseText: 'No',
+                trueText: 'true',
+                falseText: 'false',
                 align: 'center',
                 editor: {
                     xtype: 'checkfield',
                     selectOnFocus: true,
                 }
-            });
+            };
             break;
         case 'combo':
             columnType = Ext.create('Ext.grid.column.Column', {
@@ -791,6 +792,9 @@ var ApGrid = {
                 edit: function (editor, e, eOpts) {
                     try {
                         var record = this.getStore().getAt(e.rowIdx);
+                        if (editor.context.column.xtype == 'datecolumn') {
+                            record.set(editor.context.column.dataIndex, Ext.Date.dateFormat(editor.context.value, 'Y-m-d'));
+                        }
                         _ApGrid.eUpdate(record, e.rowIdx, dataIndex);
                     } catch (e) {
 
@@ -843,11 +847,47 @@ var ApText = {
         return _ApText;
     }
 }
+//텍스트에어리어
+Ext.define('ApTextArea', {
+    extend: 'Ext.form.field.TextArea',
+    ComponentType: 'textArea'
+});
+ApTextArea.prototype.eFocus = function () { };
+ApTextArea.prototype.eChange = function (newValue, oldValue) { };
+ApTextArea.prototype.eKeyDown = function (e) { };
+var ApTextArea = {
+    create: function (label, paramId, labelWidth) {
+        if (labelWidth == undefined) labelWidth = 80;
+        var _ApTextArea = Ext.create('ApTextArea', {
+            labelWidth: 80,
+            width: 180,
+            fieldLabel: label,
+            labelWidth: labelWidth,
+            paramId: paramId
+        });
+        _ApTextArea.on('afterrender', function (me, eOpts) {
+            _ApTextArea.on('focus', function (me, eOpts) {
+                _ApTextArea.eFocus();
+            });
+            _ApTextArea.on('change', function (me, newValue, oldValue) {
+                _ApTextArea.eChange(newValue, oldValue);
+            })
+            _ApTextArea.getEl().on('keydown', function (e, t, eOpts) {
+                _ApTextArea.eKeyDown(e);
+            });
+        });
+        _setTarget(_ApTextArea);
+        return _ApTextArea;
+    }
+}
 //콤보박스
 Ext.define('ApCombo', {
     extend: 'Ext.form.ComboBox',
     ComponentType: 'combo'
 });
+ApCombo.prototype.eventChange = function (newValue, oldValue) { };
+ApCombo.prototype.eventKeyDown = function (e) { };
+
 ApCombo.prototype.addItem = function (showValue, hideValue) {
 
     this.items.push({
