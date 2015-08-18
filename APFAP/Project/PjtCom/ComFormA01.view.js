@@ -16,7 +16,7 @@ var deleteArray = Ext.create('Ext.data.ArrayStore', {
 Ext.define('customerReqData', {
     extend: 'Ext.data.Model',
     fields: [
-        { name: 'REQ_NO' },
+        { name: 'REQ_NO', type: 'int'},
         { name: 'REQ_DT', type: 'date', dateFormat: 'Y-m-d' },
         { name: 'SUMMARY' },
         { name: 'CONTENT' },

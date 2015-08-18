@@ -71,26 +71,28 @@ function convertUSER_KEY(input) {
             return comboUser.data.items[i].data.HIDEDATA;
     }
 }
+/*
 function convertDate(input) {
     return (input.substr(0, 4) + input.substr(5, 2) + input.substr(8, 2));
 }
+*/
 function dbInsertUpdate() {
     for (var i = 0; i < grdData.data.length; i++) {
         //튜블 수 loop
         var pr;
-        if (grdData.data.items[i].data.REQ_NO == null) {//insert
+        if (grdData.data.items[i].data.REQ_NO == 0) {//insert
             pr = DBParams.create('sp_ComFormA01', 'INSERT_TABLE');
         } else {//update
             pr = DBParams.create('sp_ComFormA01', 'UPDATE_TABLE');
             pr.addParam('REQ_NO', grdData.data.items[i].data.REQ_NO);
         }
-        pr.addParam('REQ_DT', convertDate(grdData.data.items[i].data.REQ_DT));
+        pr.addParam('REQ_DT', ApFn.toDbTyoe('date', grdData.data.items[i].data.REQ_DT));
         pr.addParam('SUMMARY', grdData.data.items[i].data.SUMMARY);
         pr.addParam('DESCRIPTION', grdData.data.items[i].data.CONTENT);
         pr.addParam('STATE_CD', convertSTATE_CD(grdData.data.items[i].data.STATE_NM));
         pr.addParam('USER_KEY', convertUSER_KEY(grdData.data.items[i].data.USER_NM));
         if (grdData.data.items[i].data.END_DT != null)
-            pr.addParam('END_DT', convertDate(grdData.data.items[i].data.END_DT));
+            pr.addParam('END_DT', ApFn.toDbTyoe('date',grdData.data.items[i].data.END_DT));
 
         var ds = DBconnect.runProcedure(pr);
     }
@@ -137,6 +139,7 @@ btn_delete.eClick = function () {
     }
     grdData.remove(grd.getSelection());
 }
+/*
 grd.eUpdate = function (record, rowIndex, paramId) {
     if (paramId == 'REQ_DT' || paramId == 'END_DT') {
         var t1Date = record.get(paramId);
@@ -144,3 +147,4 @@ grd.eUpdate = function (record, rowIndex, paramId) {
         record.set(paramId, t2Date);
     }
 }
+*/

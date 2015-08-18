@@ -65,7 +65,7 @@ function dbInsertUpdate() {
         for (var j = 0; j < dTableArray.data.items[i].data.data.length; j++) {
             //각 탭 튜블 수 loop
             var pr;
-            if (dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO == null) {//insert
+            if (dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO == 0) {//insert
                 pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
                 pr.addParam('H_DEV_NO', i);
 
@@ -75,15 +75,15 @@ function dbInsertUpdate() {
 
             }
             pr.addParam('D_DEV_NM', dTableArray.data.items[i].data.data.items[j].data.D_DEV_NM);
-            pr.addParam('START_DT', convertDate( dTableArray.data.items[i].data.data.items[j].data.START_DT) );
+            pr.addParam('START_DT', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.START_DT));
             pr.addParam('DEV_VALUE', dTableArray.data.items[i].data.data.items[j].data.DEV_VALUE);
             pr.addParam('TEST_VALUE', dTableArray.data.items[i].data.data.items[j].data.TEST_VALUE);
-            pr.addParam('DEADLINE', convertDate( dTableArray.data.items[i].data.data.items[j].data.DEADLINE) );
+            pr.addParam('DEADLINE', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.DEADLINE));
             pr.addParam('USER_KEY', convertUSER_KEY(dTableArray.data.items[i].data.data.items[j].data.USER_NM));
             //pr.addParam('USER_KEY', 
             //              getUserNm(dTableArray.data.items[i].data.data.items[j].data.USER_KEY));
             if (dTableArray.data.items[i].data.data.items[j].data.END_DT != null)
-                pr.addParam('END_DT', convertDate( dTableArray.data.items[i].data.data.items[j].data.END_DT) );
+                pr.addParam('END_DT', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.END_DT));
 
             var ds = DBconnect.runProcedure(pr);
         }
@@ -106,9 +106,11 @@ function convertUSER_KEY(input) {
             return comboStoreUser.data.items[i].data.HIDEDATA;
     }
 }
+/*
 function convertDate(input) {
     return ( input.substr(0,4) + input.substr(5,2) + input.substr(8,2) );
 }
+*/
 function initBtnColor(i) {
     if (i == 0) {
         btn_server.setStyle('background-color', '#0000ff');
@@ -210,7 +212,7 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
     text_cc.setValue(record.data.USERID);
 }
 */
-
+/*
 grd.eUpdate = function (record, rowIndex, paramId) {
     if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
         var t1Date = record.get(paramId);
@@ -218,3 +220,4 @@ grd.eUpdate = function (record, rowIndex, paramId) {
         record.set(paramId, t2Date);
     }
 }
+*/
