@@ -5,13 +5,14 @@
 
 //App 단 정의 영역 시작
 //고객 보수 내역
+//------------------------WINDOW------------------------------
 function msgShow(i) {
     Ext.Msg.show({
         message: (i + 1) + '번째 튜플 오류',
         icon: Ext.Msg.WARNING,
     });
 }
-
+//------------------------DB------------------------------
 function dbLoad() {
     var pr = DBParams.create('sp_ComFormA01', 'GET_TABLE');
     var ds = DBconnect.runProcedure(pr);
@@ -39,7 +40,7 @@ function dbSave() {
         return 1;
     }
 }
-//DB private
+//------------------------DB private--------------------------
 function isErrInTuple() {
     //튜플들이 정상인지. return ( 에러x: 0 에러o: 튜플번호.)
     for (var i = 0; i < grdData.data.length; i++) {
@@ -105,7 +106,7 @@ function dbDelete() {
         var ds = DBconnect.runProcedure(pr);
     }
 }
-
+//------------------------BUTTON EVENT--------------------------
 btn_save.eClick = function () {
     if (saveBtnState == 0) {
         pnl_content.setDisabled(false);
