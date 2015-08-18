@@ -847,11 +847,47 @@ var ApText = {
         return _ApText;
     }
 }
+//텍스트에어리어
+Ext.define('ApTextArea', {
+    extend: 'Ext.form.field.TextArea',
+    ComponentType: 'textArea'
+});
+ApTextArea.prototype.eFocus = function () { };
+ApTextArea.prototype.eChange = function (newValue, oldValue) { };
+ApTextArea.prototype.eKeyDown = function (e) { };
+var ApTextArea = {
+    create: function (label, paramId, labelWidth) {
+        if (labelWidth == undefined) labelWidth = 80;
+        var _ApTextArea = Ext.create('ApTextArea', {
+            labelWidth: 80,
+            width: 180,
+            fieldLabel: label,
+            labelWidth: labelWidth,
+            paramId: paramId
+        });
+        _ApTextArea.on('afterrender', function (me, eOpts) {
+            _ApTextArea.on('focus', function (me, eOpts) {
+                _ApTextArea.eFocus();
+            });
+            _ApTextArea.on('change', function (me, newValue, oldValue) {
+                _ApTextArea.eChange(newValue, oldValue);
+            })
+            _ApTextArea.getEl().on('keydown', function (e, t, eOpts) {
+                _ApTextArea.eKeyDown(e);
+            });
+        });
+        _setTarget(_ApTextArea);
+        return _ApTextArea;
+    }
+}
 //콤보박스
 Ext.define('ApCombo', {
     extend: 'Ext.form.ComboBox',
     ComponentType: 'combo'
 });
+ClassCmTextArea.prototype.eventChange = function (newValue, oldValue) { };
+ClassCmTextArea.prototype.eventKeyDown = function (e) { };
+
 ApCombo.prototype.addItem = function (showValue, hideValue) {
 
     this.items.push({
