@@ -38,6 +38,7 @@ pnl_DBdetail_down.full(tbl_button);
 
 
 var pnl_DBdetail = ApPanel.create('table Detail');
+
 var pnl_DBdetail_OUT = ApPanel.create('Up');
 
 
@@ -49,11 +50,7 @@ Ext.define('tableDetail', {
         { name: 'dataType' },
         { name: 'primaryKey', type: 'boolean' },
         { name: 'nullCheck', type: 'boolean' },
-        { name: 'summary' },
-        { name: 'example_1' },
-        { name: 'example_2' },
-        { name: 'example_3' },
-        { name: 'example_4' },
+        { name: 'summary' }
     ]
 });
 
@@ -75,7 +72,9 @@ var gridData_second = Ext.create('Ext.data.ArrayStore', {
         ['꿀꿀이', 'varchar(12)', false, true, '기니컬럼']
     ]
 });
-
+var tbl_grd = ApTable.create(1);
+tbl_grd.setTarget();
+var txt_test = ApText.create('');
 var grd_Detail = ApGrid.create();
 grd_Detail.addColumn('text', 'column Name', 'columnName', 100);
 grd_Detail.addColumn('text', 'data Type', 'dataType', 100);
@@ -83,6 +82,7 @@ grd_Detail.addColumn('check', 'primary Key', 'primaryKey', 100);
 grd_Detail.addColumn('check', 'null check', 'nullCheck', 100);
 
 grd_Detail.reconfigure(gridData);
+tbl_grd.add(grd_Detail);
 /////////////////////////////////////////////////////
 
 Ext.define('tableExample', {
@@ -123,8 +123,9 @@ grd_Example.addColumn('text', 'giniColumn', 'example_4', 100);
 
 grd_Example.reconfigure(gridData_example);
 
-pnl_DBdetail_OUT.divideV(grd_Detail, pnl_DBdetail_down);
-grd_Detail.setHeight(300);
+//pnl_DBdetail_OUT.divideV(grd_Detail, pnl_DBdetail_down);
+pnl_DBdetail_OUT.divideV(tbl_grd, pnl_DBdetail_down);
+tbl_grd.setHeight(300);
 pnl_DBdetail.divideV(pnl_DBdetail_OUT, grd_Example);
 
 
