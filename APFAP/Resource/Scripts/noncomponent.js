@@ -11,6 +11,10 @@ var ApFn = {
         } else if (type == 'bool') {
             return value == true ? 'T' : 'F';
         }
+    },
+    setImportColor: function (text) {
+        var tag = "<font color='red'>" + text + '</font>';
+        return tag
     }
 }
 
