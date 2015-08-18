@@ -59,23 +59,6 @@ var tre_EVL = ApTree.create('');
 var tre_TES = ApTree.create('');
 
 var menu = Ext.create('Ext.panel.Panel', {
-    //header: {
-    //    xtype: 'header',
-    //    titlePosition: 0,
-    //    defaults: {
-    //        margin: '0 10px'
-    //    },
-    //    items: [
-    //        {
-    //            xtype: 'button',
-    //            text: "Test Button",
-    //            iconCls: 'add',
-    //            handler: Ext.bind(function() {
-    //                console.log('does something');
-    //            }, this)
-    //        }
-    //    ]
-    //},
     layout: 'accordion',
     defaults: {
         // applied to each contained panel

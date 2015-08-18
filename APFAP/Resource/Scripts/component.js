@@ -885,8 +885,8 @@ Ext.define('ApCombo', {
     extend: 'Ext.form.ComboBox',
     ComponentType: 'combo'
 });
-ClassCmTextArea.prototype.eventChange = function (newValue, oldValue) { };
-ClassCmTextArea.prototype.eventKeyDown = function (e) { };
+ApCombo.prototype.eventChange = function (newValue, oldValue) { };
+ApCombo.prototype.eventKeyDown = function (e) { };
 
 ApCombo.prototype.addItem = function (showValue, hideValue) {
 
