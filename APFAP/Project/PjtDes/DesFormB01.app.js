@@ -12,6 +12,8 @@ grd.eSelectionChange = function (record, rowindex, paramId) {
         btn_insert.eClick = function () {
             gridData_second.add("''");
         }
+        console.log(grd.getRow(2));
+        txt_test.setValue(grd.getRow(2).data.tableName);
     }
     if (rowindex == 1) {
         console.log('1번row index 클릭!');
