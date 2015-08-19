@@ -750,6 +750,19 @@ ApGrid.prototype.getRowIndex = function (record) {
 ApGrid.prototype.addRow = function () {
     this.getStore().add(this.getEmptyRecord());
 }
+ApGrid.prototype.deleteRow = function (records) {
+    for (var i = 0; i < records.length; i++) {
+        this.deleted.push(records[i]);
+        this.getStore().remove(records[i]);
+    }
+}
+ApGrid.prototype.getDeletedRecords = function () {
+    return this.deleted;
+}
+ApGrid.prototype.reconfig = function (store) {
+    this.reconfigure(store);
+    this.deleted = [];
+}
 ApGrid.prototype.getRow = function (rowIndex) {
     return this.getStore().getAt(rowIndex);
 }
@@ -818,6 +831,7 @@ var ApGrid = {
             title: '',
             //header: true,
             lockColumns: [],
+            deleted:[],
             dockedItems: toolbar,
             border: 1,
             selModel: selModel,

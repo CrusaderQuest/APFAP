@@ -11,7 +11,8 @@
 */
 
 //**전역변수영역
-
+var pr = DBParams.create('sp_ComFormC01', 'SEARCH_USER');
+var NOTICE_USER = DBconnect.runProcedure(pr);
 
 //**일반함수영역
 //-------------------컴포넌트 시작--------------------
@@ -39,9 +40,7 @@ var grd_H = ApGrid.create(true, true);
 grd_H.addColumn('hide', '', 'NOTICE_KEY');
 grd_H.addColumn('text', '분류', 'NOTICE_TYPE', 150);
 
-var pr = DBParams.create('sp_ComFormC01', 'SEARCH_USER');
-var ds = DBconnect.runProcedure(pr);
-grd_H.addColumn('combo', '등록자', ['NOTICE_USER', ds[0]], 100);
+grd_H.addColumn('combo', '등록자', ['NOTICE_USER', NOTICE_USER[0]], 100);
 
 ApEvent.onlaod = function () {
     viewPanel.divideV(tbl_main, pnl_main, tbl_main);

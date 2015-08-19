@@ -7,18 +7,22 @@
 btn_SAVE.eClick = function(){
     ASYNC_DB_H();
 }
-
-//그리드 초기값 바인드
-function SYS_INIT() {
+//헤더그리드 조회
+function SEARCH_H() {
     var pr = DBParams.create('sp_ComFormC01', 'SEARCH_H');
     var ds = DBconnect.runProcedure(pr);
-    grd_H.reconfigure(ds[0]);
+    grd_H.reconfig(ds[0]);
+}
+
+//초기값 바인드
+function SYS_INIT() {
+    SEARCH_H();
 }
 // DB와 동기화 하기전 빈값이 있는지 에러체크
 function ASYNC_ERR_H(selectedRecords) {
     for (var i = 0; i < selectedRecords.length; i++) {
         //특정 셀의 값을 확인
-        if (selectedRecords[i].get('NOTICE_TYPE') == undefined) {
+        if (selectedRecords[i].get('NOTICE_TYPE') == undefined || selectedRecords[i].get('NOTICE_TYPE') == '') {
             var index = grd_H.getRowIndex(selectedRecords[i]);
             //에러메세지 띄움
             ApMsg.warning(index + 1 + '번째 행의 분류를 넣어주세요.', function () {
@@ -40,8 +44,14 @@ function ASYNC_DB_H() {
     var pr = '';
     var ds = '';
     for (var i = 0; i < selectedRecords.length; i++) {
-        if (selectedRecords[i].get('NOTICE_KEY') == undefined) {
-            pr = DBParams.create('sp_ComFormC01', 'SEARCH_H');
+        if (selectedRecords[i].get('NOTICE_H_KEY') == undefined || selectedRecords[i].get('NOTICE_H_KEY') == 0) {
+            pr = DBParams.create('sp_ComFormC01', 'INSERT_H');
+            pr.addParam('NOTICE_TYPE', selectedRecords[i].get('NOTICE_TYPE'));
+            pr.addParam('NOTICE_USER', selectedRecords[i].get('NOTICE_USER'));
+            ds = DBconnect.runProcedure(pr);
+        } else {
+            pr = DBParams.create('sp_ComFormC01', 'UPDATE_H');
+            pr.addParam('NOTICE_H_KEY', selectedRecords[i].get('NOTICE_H_KEY'));
             pr.addParam('NOTICE_TYPE', selectedRecords[i].get('NOTICE_TYPE'));
             pr.addParam('NOTICE_USER', selectedRecords[i].get('NOTICE_USER'));
             ds = DBconnect.runProcedure(pr);
@@ -50,10 +60,24 @@ function ASYNC_DB_H() {
 
 
     //삭제된 행
+    var deletedRecords = grd_H.getDeletedRecords();
+    for (var i = 0; i < deletedRecords.length; i++) {
+        if (deletedRecords[i].get('NOTICE_H_KEY') != undefined || deletedRecords[i].get('NOTICE_H_KEY') != 0) {
+            pr = DBParams.create('sp_ComFormC01', 'DELETE_H');
+            pr.addParam('NOTICE_H_KEY', deletedRecords[i].get('NOTICE_H_KEY'));
+            ds = DBconnect.runProcedure(pr);
+        }
+    }
+    SEARCH_H();
 }
 
 //App 단 정의 영역 시작
 grd_H.eButtonAddClick = function () {
     grd_H.addRow();
     grd_H.getRow(grd_H.getTotalCount() - 1).set('NOTICE_USER', 'JuneJobs');
+}
+grd_H.eButtonDeleteClick = function () {
+    //체크된 레코드 가져오기
+    var selectedRecords = grd_H.getSelectedRecords();
+    grd_H.deleteRow(selectedRecords);
 }
