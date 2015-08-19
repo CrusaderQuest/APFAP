@@ -161,7 +161,7 @@ function dbDelete() {
         for (var j = 0; j < dDevDeleteArray.data.items[i].data.data.length; j++) {
             //각 탭 delete list 튜블 수 loop
             var pr = DBParams.create('sp_DevFormA01', 'DELETE_TABLE');
-            pr.addParam('D_DEV_NO', dDevDeleteArray.data.items[i].data.data.items[j].data.D_DEV_NO);
+            pr.addParam('D_DEV_NO', dDevDeleteArray.data.items[i].data.data.items[j].data);
             var ds = DBconnect.runProcedure(pr);
         }
     }
@@ -337,6 +337,33 @@ btn_etc.eClick = function () {
     }
 }
 //3개 버튼 (그리드)
+grd.eButtonAddClick = function () {
+    //새 튜플 추가.
+    //이제 insert,delete에 filterSotre에 되어도 dTable 에도 되어야함.
+    if (currentCat != '전체') {
+        filterStore.add({
+            D_DEV_NO: filterStoreCnt, CATEGORY_NM: currentCat, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
+            DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
+        });
+        filterStoreCnt = filterStoreCnt - 1;
+    } else {
+        dTableArray.data.items[currentBtn].data.add({
+            CATEGORY_NM: null, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
+            DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
+        });
+    }
+}
+grd.eButtonDeleteClick = function () {
+    //deletelist추가
+    for (var i = 0; i < grd.getSelection().length; i++) {
+        var tempNo = grd.getSelection()[i].data.D_DEV_NO;
+        dDevDeleteArray.data.items[currentBtn].data.add(tempNo);
+    }
+    if (currentCat != '전체') {
+        filterStore.remove(grd.getSelection());
+    }
+    dTableArray.data.items[currentBtn].data.remove(grd.getSelection());
+}
 btn_save.eClick = function () {
     if (saveBtnState == 0) {
         pnl_content.setDisabled(false);
@@ -366,33 +393,6 @@ btn_save.eClick = function () {
             cmb_catView.eChange(cmb_catView);
         }
     }
-}
-btn_insert.eClick = function () {
-    //새 튜플 추가.
-    //이제 insert,delete에 filterSotre에 되어도 dTable 에도 되어야함.
-    if (currentCat != '전체') {
-        filterStore.add({
-            D_DEV_NO: filterStoreCnt, CATEGORY_NM: currentCat, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
-            DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
-        });
-        filterStoreCnt = filterStoreCnt - 1;
-    } else {
-        dTableArray.data.items[currentBtn].data.add({
-            CATEGORY_NM: null, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
-            DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
-        });
-    }
-}
-btn_delete.eClick = function () {
-    //deletelist추가
-    for (var i = 0; i < grd.getSelection().length; i++) {
-        var tempNo = grd.getSelection()[i].data.D_DEV_NO;
-        dDevDeleteArray.data.items[currentBtn].data.add(tempNo);
-    }
-    if (currentCat != '전체') {
-        filterStore.remove(grd.getSelection());
-    }
-    dTableArray.data.items[currentBtn].data.remove(grd.getSelection());
 }
 //콤보박스 변경 이벤트.
 cmb_catView.eChange = function (record) {
