@@ -5,39 +5,43 @@
 
 //View 단 정의 영역 시작
 //data Base 설계 부분 
+var tab = ApTab.create();
+
 var pnl_DBname = ApPanel.create('table Name');
-Ext.define('tableName', {
-    extend: 'Ext.data.Model',
-    fields: [
-        { name: 'tableName' },
-    ]
-});
-
-var gridData_table_name = Ext.create('Ext.data.ArrayStore', {
-    model: 'tableName',
-    data: [
-        ['gusTable'], ['jinsungTable'], ['junheeTable'], ['giniTable']
-    ]
-});
-
 var grd = ApGrid.create();
-grd.addColumn('text', 'table Name', 'tableName', 195);
-grd.reconfigure(gridData_table_name);
+grd.addColumn('text', 'table Name', 'TABLE_NM', 195);
+//Ext.define('tableName', {
+//    extend: 'Ext.data.Model',
+//    fields: [
+//        { name: 'TABLE_NM' },
+//    ]
+//});
 
-pnl_DBname.full(grd);
+//var gridData_table_name = Ext.create('Ext.data.ArrayStore', {
+//    model: 'tableName',
+//    data: [
+//        ['gusTable'], ['jinsungTable'], ['junheeTable'], ['giniTable']
+//    ]
+//});
+
+
+//grd.reconfigure(gridData_table_name);
+
 
 ///////////////////////////////////////////////////////////
 var pnl_DBdetail_down = ApPanel.create('Down');
-var tbl_button = ApTable.create(2);
+var tbl_button = ApTable.create(3);
 tbl_button.setTarget();
 var btn_insert = ApButton.create('insert');
 var btn_delete = ApButton.create('delete');
-tbl_button.setPosition(740, 0, null);
+var btn_save = ApButton.create('save');
+tbl_button.setPosition(540, 0, null);
 pnl_DBdetail_down.full(tbl_button);
 
 
-
+var pnl_DBdetail_up = ApPanel.create('Up of up on grid');
 var pnl_DBdetail = ApPanel.create('table Detail');
+
 var pnl_DBdetail_OUT = ApPanel.create('Up');
 
 
@@ -49,11 +53,7 @@ Ext.define('tableDetail', {
         { name: 'dataType' },
         { name: 'primaryKey', type: 'boolean' },
         { name: 'nullCheck', type: 'boolean' },
-        { name: 'summary' },
-        { name: 'example_1' },
-        { name: 'example_2' },
-        { name: 'example_3' },
-        { name: 'example_4' },
+        { name: 'summary' }
     ]
 });
 
@@ -75,14 +75,19 @@ var gridData_second = Ext.create('Ext.data.ArrayStore', {
         ['꿀꿀이', 'varchar(12)', false, true, '기니컬럼']
     ]
 });
-
+var tbl_grd = ApTable.create(1);
+tbl_grd.setTarget();
+var txt_test = ApText.create('');
 var grd_Detail = ApGrid.create();
-grd_Detail.addColumn('text', 'column Name', 'columnName', 100);
-grd_Detail.addColumn('text', 'data Type', 'dataType', 100);
-grd_Detail.addColumn('check', 'primary Key', 'primaryKey', 100);
-grd_Detail.addColumn('check', 'null check', 'nullCheck', 100);
+grd_Detail.addColumn('text', 'column Name', 'COLUMN_NM', 100);
+grd_Detail.addColumn('text', 'data Type', 'DATA_TYPE', 100);
+grd_Detail.addColumn('check', 'primary Key', 'PRIMARY_CHECK', 100);
+grd_Detail.addColumn('check', 'null check', 'NULL_CHECK ', 100);
 
 grd_Detail.reconfigure(gridData);
+
+tbl_grd.add(grd_Detail);
+pnl_DBdetail_up.full(tbl_grd);
 /////////////////////////////////////////////////////
 
 Ext.define('tableExample', {
@@ -122,12 +127,27 @@ grd_Example.addColumn('text', 'junheeColumn', 'example_3', 100);
 grd_Example.addColumn('text', 'giniColumn', 'example_4', 100);
 
 grd_Example.reconfigure(gridData_example);
+var tblnm_save;
+var tbldetail_save;
 
-pnl_DBdetail_OUT.divideV(grd_Detail, pnl_DBdetail_down);
-grd_Detail.setHeight(300);
-pnl_DBdetail.divideV(pnl_DBdetail_OUT, grd_Example);
+///////////////////////////////////////////////////////////////////////////////////
 
+var pnl_search = ApPanel.create('search');
 
-
-viewPanel.divideH(pnl_DBname, pnl_DBdetail);
-pnl_DBname.setWidth(250);
+ApEvent.onlaod = function () {
+    tab.addTab('enroll').divideH(pnl_DBname, pnl_DBdetail);
+    tab.addTab('search');
+    pnl_DBdetail_OUT.divideV(pnl_DBdetail_up, pnl_DBdetail_down, pnl_DBdetail_up);
+    pnl_DBdetail_up.setHeight(280);
+    pnl_DBdetail.divideV(pnl_DBdetail_OUT, grd_Example);
+    //viewPanel.divideH(pnl_DBname, pnl_DBdetail);
+    pnl_DBname.full(grd);
+    pnl_DBname.setWidth(250);
+    getTable();
+    
+    viewPanel.full(tab);
+    /*for (var i = 0; i < tblnm_save.data.length; i++) {
+        grd.reconfigure(tblnm_save.data.items[i].data);
+    }
+    */
+}

@@ -88,6 +88,10 @@ function MAINTAB_CONTROLLER(node, pjtType) {
 
 function SYS_INIT() {
     txt_TEAMNAME.setValue('Master Plan');
+    var pr = DBParams.create('SP_COMMAIN', 'SEARCH_FORMTYPE');
+    //데이터셋
+    var ds = DBconnect.runProcedure(pr);
+    cbo_formType.bindStore(ds[0]);
 }
 
 //**이벤트 영역

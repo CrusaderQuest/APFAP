@@ -9,12 +9,9 @@
 
 
 var pnl_sub = ApTree.create('Screen 이름을 button', '', true, false);
-var node1 = getNode('Menu Parent', true, false, true);
-var node2 = getNode('Menu Child 1', true, false);
-var node3 = getNode('Menu Child 2', true, false);
-pnl_sub.bindNode(node1, 1, false);
-pnl_sub.bindNode(node2, 2, false);
-pnl_sub.bindNode(node3, 2, false);
+//var node1 = getNode('Menu Parent', true, false, true);
+
+//pnl_sub.bindNode(node1, 1, false);
 
 
 var pnl_detail = ApPanel.create('완전밖');
@@ -35,19 +32,21 @@ pnl_detail_btn.full(tbl_button);
 Ext.define('systemArchi', {
     extend: 'Ext.data.Model',
     fields: [
-        { name: 'PROJECTNM' },
-        { name: 'DATE', type: 'date', dateFormat: 'Y-m-d' },
-        { name: 'CHECK', type: 'boolean' },
+        { name: 'SCREEN_NM' },
+        { name: 'E_DT', type: 'date', dateFormat: 'Y-m-d' },
+        { name: 'CHECK_UPLOAD', type: 'boolean' },
         { name: 'SUMMARY' }
     ]
 });
-
+var grdData;
+/*
 var gridData = Ext.create('Ext.data.ArrayStore', {
     model: 'systemArchi',
     data: [
         ['메인화면', '2015-07-29', false, '이건 업로드가 안된거여']
     ]
 });
+*/
 var gridData1 = Ext.create('Ext.data.ArrayStore', {
     model: 'systemArchi',
     data: [
@@ -63,12 +62,12 @@ var gridData2 = Ext.create('Ext.data.ArrayStore', {
 
 
 var grd = ApGrid.create();
-grd.addColumn('text', '프로젝트 이름', 'PROJECTNM', 200);
-grd.addColumn('date', '날짜', 'DATE', 200);
-grd.addColumn('check', '업로드 여부', 'CHECK', 200);
+grd.addColumn('text', '화면이름', 'SCREEN_NM', 200);
+grd.addColumn('date', '날짜', 'E_DT', 200);
+grd.addColumn('check', '업로드 여부', 'CHECK_UPLOAD', 200);
 grd.addColumn('text', 'summary', 'SUMMARY', 510);
 
-grd.reconfigure(gridData);
+//grd.reconfigure(gridData);
 pnl_detail_grid.full(grd);
 grd.setWidth(1000);
 
@@ -85,3 +84,20 @@ pnl_detail_UP.setHeight(200);
 viewPanel.divideH(pnl_sub, pnl_detail);
 pnl_sub.setWidth(200);
 //grid 밑에 업로드 한 이미지를 삽입함
+//ApEvent.onload = function () {
+var grd_save;
+var tree_save;
+
+
+
+
+//}
+ApEvent.onlaod = function() {
+    getTable();
+    for (var i = 0; i < grd_save.data.length; i++) {
+        var node = getNode(grd_save.data.items[i].data.SCREEN_NM, true, false);
+        node.value.setValue('NO', grd_save.data.items[i].data.SCREEN_NO);
+        pnl_sub.bindNode(node, tree_save.data.items[i].data.DEPTH, false);
+    }
+   
+}

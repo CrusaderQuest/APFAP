@@ -5,7 +5,7 @@
 var headerPanel = ApPanel.create();
 var tbl_Logo = ApTable.create(1);
 tbl_Logo.setTarget();
-var CmLabel_usericon = {
+var icon = {
     xtype: 'image',
     src: 'http://placehold.it/100x100',
     height: 100, // Specifying height/width ensures correct layout
@@ -18,7 +18,7 @@ var CmLabel_usericon = {
     //    }
     //}
 }
-tbl_Logo.add(CmLabel_usericon);
+tbl_Logo.add(icon);
 var headerPanelDetail = ApPanel.create();
 
 var tbl_header = ApTable.create(1);
@@ -49,6 +49,7 @@ var tbl_content = ApTable.create(1);
 tbl_content.setTarget();
 var btn_messenger = ApButton.create('메신져');
 var btn_context = ApButton.create('공지사항');
+var cbo_formType = ApCombo.create('', 'test', 0);
 
 var tre_COM = ApTree.create('');
 var tre_DEF = ApTree.create('');
@@ -59,23 +60,6 @@ var tre_EVL = ApTree.create('');
 var tre_TES = ApTree.create('');
 
 var menu = Ext.create('Ext.panel.Panel', {
-    //header: {
-    //    xtype: 'header',
-    //    titlePosition: 0,
-    //    defaults: {
-    //        margin: '0 10px'
-    //    },
-    //    items: [
-    //        {
-    //            xtype: 'button',
-    //            text: "Test Button",
-    //            iconCls: 'add',
-    //            handler: Ext.bind(function() {
-    //                console.log('does something');
-    //            }, this)
-    //        }
-    //    ]
-    //},
     layout: 'accordion',
     defaults: {
         // applied to each contained panel
