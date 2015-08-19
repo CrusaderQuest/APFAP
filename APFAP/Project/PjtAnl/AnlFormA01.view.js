@@ -1,11 +1,11 @@
 ﻿/// <reference path="../../Resource/Scripts/ext-all-debug.js" />
 /// <reference path="../../Resource/Scripts/component.js" />
 /// <reference path="../../Resource/Scripts/noncomponent.js" />
-/// <reference path="AnlFormB01.app.js" />
+/// <reference path="AnlFormA01.app.js" />
 
 //View 단 정의 영역 시작
 var pnl_contents = ApPanel.create("UI_ANLYSIS");
-
+var deleteArray = [];
 //data-type
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWDATA','HIDEDATA'],

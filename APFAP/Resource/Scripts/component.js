@@ -561,6 +561,10 @@ Ext.define('ApTable', {
 ApTable.prototype.setTarget = function () {
     _tempTableTarget = this;
 };
+ApTable.prototype.setStyleSearch = function () {
+    this.addCls('tableStyle_search');
+    this.updateLayout();
+}
 ApTable.prototype.cellShare = function (count) {
     for (var i = 1 ; i < count ; i++) {
         var _Shareitem = _tempTableTarget.items.items[_tempTableTarget.itemLength - count + 1].items.items[0];
@@ -730,18 +734,52 @@ ApGrid.prototype.eBeforeEdit = function (store, rowIndex, paramId, record, value
 ApGrid.prototype.eSelectionChange = function (record, rowindex, paramId) { };
 ApGrid.prototype.eUpdate = function (record, rowIndex, paramId) { };
 ApGrid.prototype.eCellClick = function (store, rowIndex, paramId, record) { };
+ApGrid.prototype.eButtonAddClick = function () {
 
+}
+ApGrid.prototype.eButtonDeleteClick = function () {
+
+}
 var ApGrid = {
-    create: function (check) {
+    create: function (check, type) {
         var selModel = '';
         if (check) {
             selModel = Ext.create('Ext.selection.CheckboxModel');
         }
+        var toolbar = [];
+        if (type == undefined || false) {
+            toolbar = [];
+        } else if(type){
+            toolbar = [{
+                xtype: 'toolbar',
+                items: [{
+                    //iconCls: 'icon-add',
+                    text: '추가',
+                    scope: this,
+                    handler: function (event, toolEl, panel) {
+                        //alert('Do you need help?');
+                        _ApGrid.eButtonAddClick();
+                    }
+                }, {
+                    //iconCls: 'icon-delete',
+                    text: '삭제',
+                    //disabled: true,
+                    itemId: 'delete',
+                    scope: this,
+                    handler: function (event, toolEl, panel) {
+                        _ApGrid.eButtonDeleteClick();
+                        // show help here
+                    }
+                }]
+            }]
+        }
         var _ApGrid = Ext.create('ApGrid', {
             //store: store,
             width: 'fit',
-            title: 'TEST',
-            lockColumns : [],
+            title: '',
+            //header: true,
+            lockColumns: [],
+            dockedItems: toolbar,
             border: 1,
             selModel: selModel,
             columns: [Ext.create('Ext.grid.RowNumberer')],
@@ -859,7 +897,6 @@ var ApTextArea = {
     create: function (label, paramId, labelWidth) {
         if (labelWidth == undefined) labelWidth = 80;
         var _ApTextArea = Ext.create('ApTextArea', {
-            labelWidth: 80,
             width: 180,
             fieldLabel: label,
             labelWidth: labelWidth,
@@ -880,13 +917,43 @@ var ApTextArea = {
         return _ApTextArea;
     }
 }
+//날짜선택
+Ext.define('ApDate', {
+    extend: 'Ext.form.field.Date',
+    ComponentType: 'date'
+});
+ApDate.prototype.eChange = function (Value) { };
+ApDate.prototype.eKeyDown = function (e) { };
+var ApDate = {
+    create: function (label, paramId, labelWidth) {
+        if (labelWidth == undefined) labelWidth = 80;
+        var _ApDate = Ext.create('ApDate', {
+            width: 190,
+            fieldLabel: label,
+            labelWidth: labelWidth,
+            format: 'Y-m-d',
+            paramId: paramId
+        });
+        _ApDate.on('afterrender', function (me, eOpts) {
+            _ApDate.on('change', function (me, newValue, oldValue, eOpts) {
+                _animationTarget = this;
+                _CmDate.eChange(newValue);
+            });
+            _ApDate.getEl().on('keydown', function (e, t, eOpts) {
+                _CmDate.eKeyDown(e);
+            });
+        });
+        _setTarget(_ApDate);
+        return _ApDate;
+    }
+}
+
 //콤보박스
 Ext.define('ApCombo', {
     extend: 'Ext.form.ComboBox',
     ComponentType: 'combo'
 });
 ApCombo.prototype.eventChange = function (newValue, oldValue) { };
-ApCombo.prototype.eventKeyDown = function (e) { };
 
 ApCombo.prototype.addItem = function (showValue, hideValue) {
 
@@ -902,10 +969,11 @@ ApCombo.prototype.addItem = function (showValue, hideValue) {
 }
 ApCombo.prototype.eFocus = function () {
 };
-ApCombo.prototype.eChange = function (me) {
+ApCombo.prototype.eChange = function (record) {
 };
 ApCombo.prototype.eKeyDown = function (e) {
 };
+
 ApCombo.prototype.setFeildLabelWidth = function (width) {
     this.labelEl.setWidth(width)
 };
@@ -929,7 +997,7 @@ var ApCombo = {
             _ApCombo.getEl().on('keydown', function (e, t, eOpts) {
                 _ApCombo.eKeyDown(e);
             });
-            _ApCombo.on('select', function (me, records, eOpts) {
+            _ApCombo.on('select', function (me) {
                 _ApCombo.eChange(me);
             });
         });
@@ -949,7 +1017,7 @@ var ApButton = {
         var _ApButton = Ext.create('ApButton', {
             labelWidth: 80,
             text: text,
-            width: 180,
+            width: 90,
             paramId: paramId
         });
         _ApButton.on('afterrender', function (me, eOpts) {

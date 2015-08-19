@@ -8,20 +8,20 @@
 //    console.log(newValue);
 //}
 //체크버튼 클릭이벤트
-btn_aa.eClick = function () {
-    if (chk_aa.getValue()) {
-        chk_aa.setValue(false);
-    } else {
-        chk_aa.setValue(true);
-    }
-}
-btn_bb.eClick = function () {
-    tab.setActiveTab(1);
-}
-grd.eSelectionChange = function (record, rowIndex, paramId) {
-    console.log(paramId, record.data, rowIndex);
-    text_cc.setValue(record.data.USERID);
-}
-grd.eUpdate = function (record, rowIndex, paramId) {
-    console.log(paramId, record.data, rowIndex);
-}
+//btn_aa.eClick = function () {
+//    if (chk_aa.getValue()) {
+//        chk_aa.setValue(false);
+//    } else {
+//        chk_aa.setValue(true);
+//    }
+//}
+//btn_bb.eClick = function () {
+//    tab.setActiveTab(1);
+//}
+//grd.eSelectionChange = function (record, rowIndex, paramId) {
+//    console.log(paramId, record.data, rowIndex);
+//    text_cc.setValue(record.data.USERID);
+//}
+//grd.eUpdate = function (record, rowIndex, paramId) {
+//    console.log(paramId, record.data, rowIndex);
+//}
