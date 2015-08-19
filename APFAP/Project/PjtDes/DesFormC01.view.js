@@ -9,9 +9,9 @@
 
 
 var pnl_sub = ApTree.create('Screen 이름을 button', '', true, false);
-var node1 = getNode('Menu Parent', true, false, true);
+//var node1 = getNode('Menu Parent', true, false, true);
 
-pnl_sub.bindNode(node1, 1, false);
+//pnl_sub.bindNode(node1, 1, false);
 
 
 var pnl_detail = ApPanel.create('완전밖');
@@ -85,18 +85,19 @@ viewPanel.divideH(pnl_sub, pnl_detail);
 pnl_sub.setWidth(200);
 //grid 밑에 업로드 한 이미지를 삽입함
 //ApEvent.onload = function () {
-var a;
-function getTable() {
-    var pr = DBParams.create('sp_DesFormC01', 'GET_TABLE');
-    var ds = DBconnect.runProcedure(pr);
-    a = ds[0];
-    grdData = ds[0];
-    grd.reconfigure(grdData);
-}
-getTable();
+var grd_save;
+var tree_save;
 
-for (var i = 0; i < a.data.length; i++) {
-    var node = getNode(a.data.items[i].data.SCREEN_NM, true, false);
-    pnl_sub.bindNode(node, i+1, false);
-}
+
+
+
 //}
+ApEvent.onlaod = function() {
+    getTable();
+    for (var i = 0; i < grd_save.data.length; i++) {
+        var node = getNode(grd_save.data.items[i].data.SCREEN_NM, true, false);
+        node.value.setValue('NO', grd_save.data.items[i].data.SCREEN_NO);
+        pnl_sub.bindNode(node, tree_save.data.items[i].data.DEPTH, false);
+    }
+   
+}
