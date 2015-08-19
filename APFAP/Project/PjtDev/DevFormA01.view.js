@@ -12,6 +12,7 @@ var filterStoreCnt = -1;
 var comboStoreUser;
 var comboStoreCategory;
 var selComboStoreCategory;
+var filterStore;
 Ext.define('D_Data', {
     extend: 'Ext.data.Model',
     fields: [
@@ -25,9 +26,6 @@ Ext.define('D_Data', {
         { name: 'USER_NM' },
         { name: 'END_DT', type: 'date', dateFormat: 'Y-m-d' }
     ]
-});
-var filterStore = Ext.create('Ext.data.ArrayStore', {
-    model: 'D_Data'
 });
 var dTableArray = Ext.create('Ext.data.ArrayStore', {
     fields: [D_Data]

@@ -36,6 +36,7 @@ function catMsgShow() {
                         if (dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM == currentCat) {
                             dDevDeleteArray.data.items[i].data.add({ D_DEV_NO: dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO });
                             dTableArray.data.items[i].data.removeAt(j);
+                            j = j - 1;
                         }
                     }
 
@@ -64,9 +65,6 @@ function dbLoad() {
         dDevDeleteArray.add(Ext.create('Ext.data.ArrayStore', {
             model: 'devDelete_Array'
         }));
-        categoryDeleteArray.add(Ext.create('Ext.data.ArrayStore', {
-            model: 'catDelete_Array'
-        }));
     }
 }
 function dbSave() {
@@ -78,9 +76,13 @@ function dbSave() {
             return 0;
         }
     }
+    categoryInsertUpdate();
+    comboStoreCategory.clearData();
+    selComboStoreCategory.clearData();
+    dbCategoryLoad();
+
     dbInsertUpdate();
     dbDelete();
-    categoryInsertUpdate();
     categoryDelete();
     return 1;
 }
@@ -102,6 +104,7 @@ function getEmptyTable() {
     var pr2 = DBParams.create('sp_DevFormA01', 'GET_EMPTY_TABLE');
     var ds2 = DBconnect.runProcedure(pr2);
     filterStore = ds2[0];
+    filterStore.clearData();
 }
 //DB 통신 private
 function isErrInTuple(i) {
@@ -161,7 +164,7 @@ function dbDelete() {
         for (var j = 0; j < dDevDeleteArray.data.items[i].data.data.length; j++) {
             //각 탭 delete list 튜블 수 loop
             var pr = DBParams.create('sp_DevFormA01', 'DELETE_TABLE');
-            pr.addParam('D_DEV_NO', dDevDeleteArray.data.items[i].data.data.items[j].data);
+            pr.addParam('D_DEV_NO', dDevDeleteArray.data.items[i].data.data.items[j].data.D_DEV_NO);
             var ds = DBconnect.runProcedure(pr);
         }
     }
@@ -256,6 +259,7 @@ btn_catInsert.eClick = function () {
     }
 }
 btn_catSearch.eClick = function () {
+    dTableAdd();
     if (currentCat != '전체') {
         setFilterStore();
         grd.setLockColumns('CATEGORY_NM');
@@ -266,6 +270,7 @@ btn_catSearch.eClick = function () {
     }
 }
 btn_catDelete.eClick = function () {
+    dTableAdd();
     if (currentCat == '전체')
         totalMsgShow();
     else
@@ -380,10 +385,9 @@ btn_save.eClick = function () {
             categoryDeleteArray.clearData();
             dTableArray.clearData();
             filterStore.clearData();
-            comboStoreCategory.clearData();
-            selComboStoreCategory.clearData();
+            
             dbLoad();
-            dbCategoryLoad();
+            
             grd.columnsMap[0].getEditor().bindStore(selComboStoreCategory);
             grd.reconfigure(dTableArray.data.items[0].data);
             initBtnColor(currentBtn);
