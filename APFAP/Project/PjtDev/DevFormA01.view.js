@@ -53,7 +53,7 @@ var comboStoreValue = Ext.create('Ext.data.ArrayStore', {
         ['false', 'F']
     ]
 });
-var grd = ApGrid.create(true);
+var grd = ApGrid.create(true,true);
 
 //-------------------폼 전역변수 끝-----------------
 
@@ -82,16 +82,8 @@ var cmb_catView = ApCombo.create();
 var btn_catSearch = ApButton.create("조회");
 var btn_catDelete = ApButton.create("삭제");
 
-var pnl_tabBtn = ApPanel.create("탭");
+var pnl_tabBtn = ApPanel.create("탭버튼");
 var pnl_grd = ApPanel.create("그리드");
-
-var pnl_tab = ApPanel.create();
-var pnl_btn = ApPanel.create();
-
-var tbl_btn = ApTable.create(2);
-tbl_btn.setTarget();
-var btn_insert = ApButton.create("Add");
-var btn_delete = ApButton.create("Delete");
 
 var tab = ApTable.create(4);
 tab.setTarget();
@@ -118,18 +110,12 @@ ApEvent.onlaod = function () {
     pnl_gridTab.divideV(pnl_tabBtn, pnl_grd);
     pnl_tabBtn.setHeight(80);
 
-    pnl_tabBtn.divideV(pnl_tab, pnl_btn);
-
-    tbl_btn.setPosition(1000, 0, null);
-    btn_insert.setWidth(100);
-    btn_delete.setWidth(100);
     btn_save.setWidth(100);
     for (var i = 0; i < 4; i++) {
         initBtnColor(i);
     }
-    pnl_btn.full(tbl_btn);
+    pnl_tabBtn.full(tab);
     pnl_grd.full(grd);
-    pnl_tab.full(tab);
 
     dbLoad();
     getEmptyTable();
