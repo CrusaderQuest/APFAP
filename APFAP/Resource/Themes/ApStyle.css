@@ -10,3 +10,13 @@
     padding:0px 3px 3px 0px !important;
     background:#FFD101 !important;
 }
+
+.tableStyle_main {
+    margin: 0px !important;
+    background:#C2D3E7 !important;
+    /*padding: 3px !important;*/
+}
+.tableStyle_main >div:first-child  {
+    padding:3px 0px 3px 3px !important;
+    background:#C2D3E7 !important;
+}

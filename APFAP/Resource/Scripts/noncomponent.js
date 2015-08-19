@@ -97,7 +97,7 @@ var DBconnect = {
                     var json = jObject[0];
                     var _sModel = null;
                     if (typeof (jObject) == undefined || jObject.length == 0) {
-                        var _model = Ext.define('model', { extend: 'Ext.data.Model' });
+                        var _model = Ext.define(Ext.id(), { extend: 'Ext.data.Model' });
                         var store = Ext.create('Ext.data.Store', {
                             model: _model.getName(),
                             data: jObject

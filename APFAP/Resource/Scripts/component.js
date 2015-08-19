@@ -98,6 +98,19 @@ function getNode(text, leaf, expanded, check) {
     };
     return node;
 }
+//메세지 처리
+var ApMsg = {
+    warning : function (text, callback) {
+        Ext.Msg.show({
+        message: text,
+        icon: Ext.Msg.WARNING,
+        buttonText: {
+            yes : '확인'
+        },
+        fn : callback
+        })
+    }
+}
 
 //스토어 단 루트 보이기 숨기기 옵션 추가
 Ext.define('ApTreeStore', {
@@ -684,6 +697,15 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 }
             });
             break;
+            //하이드컬럼 테스트 필요
+        case 'hide':
+            columnType = Ext.create('Ext.grid.column.Column', {
+                text: columnText,
+                width: 0,
+                dataIndex: paramId[0]
+            });
+            columnType.isVisible(false);
+            break;
     }
     this.columnsMap.push(columnType);
     this.headerCt.insert(this.columns.length - 2, columnType);
@@ -701,6 +723,9 @@ ApGrid.prototype.setUnLockColumns = function () {
         }
     }
 }
+ApGrid.prototype.getTotalCount = function () {
+    return this.getStore().getCount();
+}
 ApGrid.prototype.getEmptyRecord = function () {
     var data = []
     for (var i = 0; i < this.columnsMap.length; i++) {
@@ -712,11 +737,21 @@ ApGrid.prototype.getEmptyRecord = function () {
     });
     return newRecord;
 }
+ApGrid.prototype.getSelectedRecords = function () {
+    var checkedRecords = this.getSelection();
+    checkedRecords.sort(function (a, b) {
+        return a.internalId < b.internalId ? -1 : a.internalId > b.internalId ? 1 : 0;
+    });
+    return checkedRecords;
+}
+ApGrid.prototype.getRowIndex = function (record) {
+    return this.getStore().indexOf(record);
+}
 ApGrid.prototype.addRow = function () {
     this.getStore().add(this.getEmptyRecord());
 }
 ApGrid.prototype.getRow = function (rowIndex) {
-    return this.store.getAt(rowIndex);
+    return this.getStore().getAt(rowIndex);
 }
 ApGrid.prototype.setRow = function (rowIndex, paramId, value) {
     this.getRow(rowIndex).set(paramId, value)
@@ -736,6 +771,10 @@ ApGrid.prototype.eUpdate = function (record, rowIndex, paramId) { };
 ApGrid.prototype.eCellClick = function (store, rowIndex, paramId, record) { };
 ApGrid.prototype.eButtonAddClick = function () {
 
+}
+ApGrid.prototype.setFocus = function (rowIndex) {
+    this.getSelectionModel().select(rowIndex)
+    this.getView().focusRow(rowIndex)
 }
 ApGrid.prototype.eButtonDeleteClick = function () {
 
