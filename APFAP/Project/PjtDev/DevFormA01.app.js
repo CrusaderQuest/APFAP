@@ -34,8 +34,8 @@ function catMsgShow() {
                     for (var j = 0; j < dTableArray.data.items[i].data.data.length; j++) {
                         //dTable에서 삭제,deleteArray 추가.
                         if (dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM == currentCat) {
+                            dDevDeleteArray.data.items[i].data.add({ D_DEV_NO: dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO });
                             dTableArray.data.items[i].data.removeAt(j);
-                            dDevDeleteArray.add({ D_DEV_NO: dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO });
                         }
                     }
 
@@ -43,7 +43,7 @@ function catMsgShow() {
                 for (var i = 0; i < comboStoreCategory.data.length; i++) {
                     if (comboStoreCategory.data.items[i].data.SHOWVALUE == currentCat) {
                         comboStoreCategory.removeAt(i);
-                        selComboStoreCategory.removeAt(i - 1);
+                        cmb_catView.bindStore(comboStoreCategory);
                     }
                 }
                 currentCat = '전체';
@@ -57,10 +57,10 @@ function catMsgShow() {
 }
 //DB 통신
 function dbLoad() {
-    var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
-    var ds = DBconnect.runProcedure(pr);
+    var pr1 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    var ds1 = DBconnect.runProcedure(pr1);
     for (var i = 0; i < 4; i++) {
-        dTableArray.add(ds[i]);
+        dTableArray.add(ds1[i]);
         dDevDeleteArray.add(Ext.create('Ext.data.ArrayStore', {
             model: 'devDelete_Array'
         }));
@@ -70,6 +70,7 @@ function dbLoad() {
     }
 }
 function dbSave() {
+    dTableAdd();
     for (var i = 0; i < 4; i++) {
         var errTuple;
         if (errTuple = isErrInTuple(i)) {
@@ -89,14 +90,18 @@ function dbUserLoad() {
     comboStoreUser = ds[0];
 }
 function dbCategoryLoad() {
-    var pr = DBParams.create('sp_DevFormA01', 'GET_DEV_CATEGORY');
-    var ds = DBconnect.runProcedure(pr);
-    comboStoreCategory = ds[0];
+    var pr1 = DBParams.create('sp_DevFormA01', 'GET_DEV_CATEGORY');
+    var ds1 = DBconnect.runProcedure(pr1);
+    comboStoreCategory = ds1[0];
     cmb_catView.bindStore(comboStoreCategory);
-    cmb_catView.setValue('전체');
-    pr = DBParams.create('sp_DevFormA01', 'GET_SEL_CATEGORY');
-    ds = DBconnect.runProcedure(pr);
-    selComboStoreCategory = ds[0];
+    var pr2 = DBParams.create('sp_DevFormA01', 'GET_SEL_CATEGORY');
+    var ds2 = DBconnect.runProcedure(pr2);
+    selComboStoreCategory = ds2[0];
+}
+function getEmptyTable() {
+    var pr2 = DBParams.create('sp_DevFormA01', 'GET_EMPTY_TABLE');
+    var ds2 = DBconnect.runProcedure(pr2);
+    filterStore = ds2[0];
 }
 //DB 통신 private
 function isErrInTuple(i) {
@@ -147,7 +152,6 @@ function dbInsertUpdate() {
                 pr.addParam('END_DT', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.END_DT));
 
             var ds = DBconnect.runProcedure(pr);
-            var a;
         }
     }
 }
@@ -157,26 +161,25 @@ function dbDelete() {
         for (var j = 0; j < dDevDeleteArray.data.items[i].data.data.length; j++) {
             //각 탭 delete list 튜블 수 loop
             var pr = DBParams.create('sp_DevFormA01', 'DELETE_TABLE');
-            pr.addParam('D_DEV_NO', dDevDeleteArray.data.items[i].data.data.items[j].data);
+            pr.addParam('D_DEV_NO', dDevDeleteArray.data.items[i].data.data.items[j].data.D_DEV_NO);
             var ds = DBconnect.runProcedure(pr);
         }
     }
 }
 function categoryInsertUpdate() {
-    for (var i = 0; i < selComboStoreCategory.data.length; i++) {
+    for (var i = 0; i < comboStoreCategory.data.length; i++) {
         //각 탭 튜블 수 loop
         var pr;
-        if (selComboStoreCategory.data.items[i].data.CATEGORY_NO == 0) {//insert
+        if (comboStoreCategory.data.items[i].data.HIDEVALUE == 0) {//insert
             pr = DBParams.create('sp_DevFormA01', 'INSERT_CATEGORY');
         } else {//update
             pr = DBParams.create('sp_DevFormA01', 'UPDATE_CATEGORY');
-            pr.addParam('CATEGORY_NO', selComboStoreCategory.data.items[i].data.HIDEDATA);
+            pr.addParam('CATEGORY_NO', comboStoreCategory.data.items[i].data.HIDEVALUE);
         }
         //pr.addParam('CATEGORY_NO', convertCATEGORY_NO(dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM));
-        pr.addParam('CATEGORY_NM', selComboStoreCategory.data.items[i].data.SHOWDATA);
+        pr.addParam('CATEGORY_NM', comboStoreCategory.data.items[i].data.SHOWVALUE);
 
         var ds = DBconnect.runProcedure(pr);
-        var a;
     }
 }
 function categoryDelete() {
@@ -221,17 +224,27 @@ function selBtnColor(i) {
         btn_etc.setStyle('background-color', '#00ffff');
     }
 }
+//filterStore 변경.
+function setFilterStore() {
+    filterStore.clearData();
+    for (var i = 0; i < dTableArray.data.items[currentBtn].data.data.length; i++) {
+        if (dTableArray.data.items[currentBtn].data.data.items[i].data.CATEGORY_NM == currentCat) {
+            filterStore.add(dTableArray.data.items[currentBtn].data.data.items[i].data);
+        }
+    }
+    grd.reconfigure(filterStore);
+}
 //3개 버튼 (카테고리)
 btn_catInsert.eClick = function () {
     //같은 이름이 있는지
     for (var i = 0; i < comboStoreCategory.data.length; i++) {
-        if (comboStoreCategory.data.items[i].data.SHOWVALUE == txt_catInsert.getValue())
+        if (comboStoreCategory.data.items[i].data.SHOWVALUE == txt_catInsert.getValue()) 
             return;
     }
     //null이 아니면 추가
-    if (txt_catInsert.getValue() != null) {
+    if (txt_catInsert.getValue() != '') {
         var input = txt_catInsert.getValue();
-        comboStoreCategory.add({ SHOWVALUE: input });
+        comboStoreCategory.add({ HIDEVALUE: 0, SHOWVALUE: input });
         cmb_catView.bindStore(comboStoreCategory);
         txt_catInsert.setValue(null);
 
@@ -242,17 +255,15 @@ btn_catInsert.eClick = function () {
         }
     }
 }
-function setFilterStore() {
-    filterStore.clearData();
-    for (var i = 0; i < dTableArray.data.items[currentBtn].data.data.length; i++) {
-        if (dTableArray.data.items[currentBtn].data.data.items[i].data.CATEGORY_NM == currentCat) {
-            filterStore.add(dTableArray.data.items[currentBtn].data.data.items[i].data);
-        }
-    }
-    grd.reconfigure(filterStore);
-}
 btn_catSearch.eClick = function () {
-    setFilterStore();
+    if (currentCat != '전체') {
+        setFilterStore();
+        grd.setLockColumns('CATEGORY_NM');
+    }
+    else {
+        grd.reconfigure(dTableArray.data.items[currentBtn].data);
+        grd.setUnLockColumns('CATEGORY_NM');
+    }
 }
 btn_catDelete.eClick = function () {
     if (currentCat == '전체')
@@ -261,57 +272,70 @@ btn_catDelete.eClick = function () {
         catMsgShow();
 }
 
+//탭 변경시 메인 store add
+function dTableAdd() {
+    for (var i = 0; i < filterStore.data.length; i++) {
+        if (filterStore.data.items[i].data.D_DEV_NO < 0) {
+            filterStore.data.items[i].data.D_DEV_NO = 0;
+            dTableArray.data.items[currentBtn].data.add(filterStore.data.items[i].data);
+        }
+    }
+    filterStore.clearData();
+}
 //4개 탭
 btn_server.eClick = function () {
     //이제 탭에서 cmb값을 조건으로 reconfigure 해야함.
     if (currentBtn != 0) {
+        dTableAdd();
+        initBtnColor(currentBtn);
+        currentBtn = 0;
+        selBtnColor(currentBtn);
         if (currentCat == '전체') {
             grd.reconfigure(dTableArray.data.items[0].data);
         } else {
             setFilterStore();
         }
-        initBtnColor(currentBtn);
-        currentBtn = 0;
-        selBtnColor(currentBtn);
     }
 }
 btn_db.eClick = function () {
     if (currentBtn != 1) {
+        dTableAdd();
+        initBtnColor(currentBtn);
+        currentBtn = 1;
+        selBtnColor(currentBtn);
         if (currentCat == '전체') {
             grd.reconfigure(dTableArray.data.items[1].data);
         } else {
             setFilterStore();
         }
-        initBtnColor(currentBtn);
-        currentBtn = 1;
-        selBtnColor(currentBtn);
     }
 }
 btn_ui.eClick = function () {
     if (currentBtn != 2) {
+        dTableAdd();
+        initBtnColor(currentBtn);
+        currentBtn = 2;
+        selBtnColor(currentBtn);
         if (currentCat == '전체') {
             grd.reconfigure(dTableArray.data.items[2].data);
         } else {
             setFilterStore();
         }
-        initBtnColor(currentBtn);
-        currentBtn = 2;
-        selBtnColor(currentBtn);
     }
 }
 btn_etc.eClick = function () {
     if (currentBtn != 3) {
+        dTableAdd();
+        initBtnColor(currentBtn);
+        currentBtn = 3;
+        selBtnColor(currentBtn);
         if (currentCat == '전체') {
             grd.reconfigure(dTableArray.data.items[3].data);
         } else {
             setFilterStore();
         }
-        initBtnColor(currentBtn);
-        currentBtn = 3;
-        selBtnColor(currentBtn);
     }
 }
-
 //3개 버튼 (그리드)
 btn_save.eClick = function () {
     if (saveBtnState == 0) {
@@ -326,14 +350,20 @@ btn_save.eClick = function () {
         if (dbSave()) {
             //다시 로드. deletelist 초기화
             dDevDeleteArray.clearData();
+            categoryDeleteArray.clearData();
             dTableArray.clearData();
+            filterStore.clearData();
+            comboStoreCategory.clearData();
+            selComboStoreCategory.clearData();
             dbLoad();
             dbCategoryLoad();
+            grd.columnsMap[0].getEditor().bindStore(selComboStoreCategory);
             grd.reconfigure(dTableArray.data.items[0].data);
             initBtnColor(currentBtn);
             currentBtn = 0;
             selBtnColor(currentBtn);
-            currentCat = '전체';
+            cmb_catView.setSelection(comboStoreCategory.data.items[0]);
+            cmb_catView.eChange(cmb_catView);
         }
     }
 }
@@ -342,14 +372,16 @@ btn_insert.eClick = function () {
     //이제 insert,delete에 filterSotre에 되어도 dTable 에도 되어야함.
     if (currentCat != '전체') {
         filterStore.add({
-            CATEGORY_NM: currentCat, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
+            D_DEV_NO: filterStoreCnt, CATEGORY_NM: currentCat, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
+            DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
+        });
+        filterStoreCnt = filterStoreCnt - 1;
+    } else {
+        dTableArray.data.items[currentBtn].data.add({
+            CATEGORY_NM: null, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
             DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
         });
     }
-    dTableArray.data.items[currentBtn].data.add({
-        CATEGORY_NM: null, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
-        DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
-    });
 }
 btn_delete.eClick = function () {
     //deletelist추가
@@ -362,6 +394,7 @@ btn_delete.eClick = function () {
     }
     dTableArray.data.items[currentBtn].data.remove(grd.getSelection());
 }
+//콤보박스 변경 이벤트.
 cmb_catView.eChange = function (record) {
     currentCat = record.selection.data.SHOWVALUE;
 }

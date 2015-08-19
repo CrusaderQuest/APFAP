@@ -7,7 +7,8 @@
 //-------------------폼 전역변수 시작---------------
 var currentBtn = 0;
 var saveBtnState = 0;
-var currentCat = '전체';
+var currentCat;
+var filterStoreCnt = -1;
 var comboStoreUser;
 var comboStoreCategory;
 var selComboStoreCategory;
@@ -131,6 +132,7 @@ ApEvent.onlaod = function () {
     pnl_tab.full(tab);
 
     dbLoad();
+    getEmptyTable();
     dbUserLoad();
     dbCategoryLoad();
     grd.addColumn('combo', '카테고리', ['CATEGORY_NM',selComboStoreCategory], 150);
@@ -144,5 +146,8 @@ ApEvent.onlaod = function () {
     grd.reconfigure(dTableArray.data.items[0].data);
     selBtnColor(0);
 
+    cmb_catView.setEditable(false);
+    cmb_catView.setSelection(comboStoreCategory.data.items[0]);
+    cmb_catView.eChange(cmb_catView);
     pnl_content.setDisabled(true);
 }
