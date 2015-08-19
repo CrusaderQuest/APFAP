@@ -15,6 +15,14 @@
 
 //**일반함수영역
 //-------------------컴포넌트 시작--------------------
+var pnl_main = ApPanel.create();
+var tbl_main = ApTable.create(1);
+tbl_main.addCls('tableStyle_main');
+tbl_main.updateLayout();
+tbl_main.setTarget();
+
+var btn_SAVE = ApButton.create('변경상태 저장');
+btn_SAVE.setWidth(120);
 var tbl_H = ApTable.create(1);
 tbl_H.setTarget();
 tbl_H.setStyleSearch()
@@ -27,14 +35,20 @@ tbl_H.cellShare(4);
 var pnl_H = ApPanel.create();
 var pnl_D = ApPanel.create();
 
-var grd_H = ApGrid.create(false, true);
+var grd_H = ApGrid.create(true, true);
+grd_H.addColumn('hide', '', 'NOTICE_KEY');
 grd_H.addColumn('text', '분류', 'NOTICE_TYPE', 150);
-grd_H.addColumn('combo', '등록자', 'NOTICE_USER', 100);
+
+var pr = DBParams.create('sp_ComFormC01', 'SEARCH_USER');
+var ds = DBconnect.runProcedure(pr);
+grd_H.addColumn('combo', '등록자', ['NOTICE_USER', ds[0]], 100);
 
 ApEvent.onlaod = function () {
-    viewPanel.divideV(tbl_H, pnl_H, tbl_H);
+    viewPanel.divideV(tbl_main, pnl_main, tbl_main);
+    tbl_main.setHeight(34);
+    pnl_main.divideV(tbl_H, pnl_H, tbl_H);
     tbl_H.setHeight(30);
     pnl_H.divideH(grd_H, pnl_D, grd_H);
     grd_H.setWidth(300);
-
+    SYS_INIT();
 }
