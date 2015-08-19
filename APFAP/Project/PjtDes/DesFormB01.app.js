@@ -30,3 +30,17 @@ btn_delete.eClick = function () {
     gridData.remove(grd_Detail.getSelection());
     gridData_second.remove(grd_Detail.getSelection());
 }
+
+function getTable() {
+    var prm = DBParams.create('sp_DesFormB01', 'GET_TABLE_NM');
+    var tblnm = DBconnect.runProcedure(prm);
+    tblnm_save = tblnm[0];
+    //var pn = DBParams.create('sp_DesFormB01', 'GET_TABLE_FOR_TREE');
+    //var dtree = DBconnect.runProcedure(pn);
+    //tree_save = dtree[0];
+    grd.reconfigure(tblnm_save);
+    var prm2 = DBParams.create('sp_DesFormB01', 'GET_DEFAULT_COLUMN');
+    var column_detail = DBconnect.runProcedure(prm2);
+    tbldetail_save = column_detail[0];
+    grd_Detail.reconfigure(tbldetail_save);
+}
