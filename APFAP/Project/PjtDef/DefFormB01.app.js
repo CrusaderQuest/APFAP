@@ -16,16 +16,15 @@ function GRD_LOAD() {
     length = gridData.data.length;
 }
 set_txt = function (bool) {
-    btn_add.setDisabled(bool);
-    btn_del.setDisabled(bool);
     grd_a.setDisabled(bool);
     btn_save.setVisible(!bool);
     btn_change.setVisible(bool);
 }
-btn_add.eClick = function (){
+grd_a.eButtonAddClick = function () {
     gridData.add({ FUNC_IMP: '선택', CATEGORY: '기타', FUNC_NM: '', SUMMARY: '', BLANK: '' }); 
 }
-btn_del.eClick = function () {
+
+grd_a.eButtonDeleteClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
         Ext.Msg.alert("경고 창", "체크 해주세요.");
     } else {
