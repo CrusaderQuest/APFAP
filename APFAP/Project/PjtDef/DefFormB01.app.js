@@ -4,8 +4,6 @@
 /// <reference path="DefFormB01.view.js" />
 
 //View 단 정의 영역 시작
-var i = 0;
-var length = 0;
 function GRD_LOAD() {
     //데이터생성
     var pr = DBParams.create('sp_DefFormB01', 'GET_TABLE');
@@ -13,7 +11,6 @@ function GRD_LOAD() {
     var ds = DBconnect.runProcedure(pr);
     gridData = ds[0];
     grd_a.reconfigure(gridData);
-    length = gridData.data.length;
 }
 set_txt = function (bool) {
     grd_a.setDisabled(bool);
