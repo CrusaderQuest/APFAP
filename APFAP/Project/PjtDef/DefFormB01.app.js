@@ -16,16 +16,15 @@ function GRD_LOAD() {
     length = gridData.data.length;
 }
 set_txt = function (bool) {
-    btn_add.setDisabled(bool);
-    btn_del.setDisabled(bool);
     grd_a.setDisabled(bool);
     btn_save.setVisible(!bool);
     btn_change.setVisible(bool);
 }
-btn_add.eClick = function (){
-    gridData.add({ UP_KEY: 'aa'+i++ ,FUNC_IMP: '선택', CATEGORY: '기타', FUNC_NM: '', SUMMARY: '', BLANK: '' }); 
+grd_a.eButtonAddClick = function () {
+    gridData.add({ FUNC_IMP: '선택', CATEGORY: '기타', FUNC_NM: '', SUMMARY: '', BLANK: '' }); 
 }
-btn_del.eClick = function () {
+
+grd_a.eButtonDeleteClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
         Ext.Msg.alert("경고 창", "체크 해주세요.");
     } else {
@@ -41,61 +40,34 @@ btn_change.eClick = function () {
     set_txt(false);
 }
 btn_save.eClick = function () {
-    if (deleteArray != null) {
-        deleteDB();
-        var deletedLength = length - deleteArray.length;
-        if (deletedLength == gridData.data.length) {
-            updateDB(deletedLength);
-        } else {
-            updateDB(deletedLength);
-            insertDB(deletedLength, length);
+    for (var i = 0; i < gridData.data.length; i++) {
+        //튜블 수 loop
+        var pr;
+        if (gridData.data.items[i].data.UP_KEY == 0) {//insert
+            pr = DBParams.create('sp_DefFormB01', 'INSERT_TABLE');
+        } else {//update
+            pr = DBParams.create('sp_DefFormB01', 'UPDATE_TABLE');
+            pr.addParam('UP_KEY', gridData.data.items[i].data.UP_KEY);
         }
+        pr.addParam('FUNC_IMP', gridData.data.items[i].data.FUNC_IMP);
+        pr.addParam('CATEGORY', gridData.data.items[i].data.CATEGORY);
+        pr.addParam('FUNC_NM', gridData.data.items[i].data.FUNC_NM);
+        pr.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
+        pr.addParam('BLANK', gridData.data.items[i].data.BLANK);
+
+        var ds = DBconnect.runProcedure(pr);
     }
-    else {
-        if (gridData.data.length == length) {
-            updateDB(length);
-        } else {
-            updateDB(length);
-            insertDB(length, gridData.data.length);
-        }
-    }
+    deleteDB();
     //
     set_txt(true);
-    grd_a.reconfigure(gridData);
-    //grd_a.selModel.select(null);
+    GRD_LOAD();
 }
-//---------------------------------------------------------------
-updateDB = function (index) {
-    var prUp = DBParams.create('sp_DefFormB01', 'UPDATE_TABLE');
-    for (var i = 0; i < index; i++) {
-        prUp.addParam('UP_KEY', gridData.data.items[i].data.UP_KEY);
-        prUp.addParam('FUNC_IMP', gridData.data.items[i].data.FUNC_IMP);
-        prUp.addParam('CATEGORY', gridData.data.items[i].data.CATEGORY);
-        prUp.addParam('FUNC_NM', gridData.data.items[i].data.FUNC_NM);
-        prUp.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
-        prUp.addParam('BLANK', gridData.data.items[i].data.BLANK);
-    }
-    
-    var dsUp = DBconnect.runProcedure(prUp);
-}
-insertDB = function (sindex,eindex) {
-    var prIn = DBParams.create('sp_DefFormB01', 'INSERT_TABLE')
-    for (var i = sindex; i < eindex; i++) {
-        prIn.addParam('FUNC_IMP', gridData.data.items[i].data.FUNC_IMP);
-        prIn.addParam('CATEGORY', gridData.data.items[i].data.CATEGORY);
-        prIn.addParam('FUNC_NM', gridData.data.items[i].data.FUNC_NM);
-        prIn.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
-        prIn.addParam('BLANK', gridData.data.items[i].data.BLANK);
-    }
-    var dsIn = DBconnect.runProcedure(prIn);
-}
-
 function deleteDB() {
     var pr = DBParams.create('sp_DefFormB01', 'DELETE_TABLE');
     for (var i = 0; i < deleteArray.length; i++) {
         //각 탭 delete list 튜블 수 loop
         pr.addParam('UP_KEY', deleteArray.pop());
+        var ds = DBconnect.runProcedure(pr);
     }
-    var ds = DBconnect.runProcedure(pr);
 }
 
