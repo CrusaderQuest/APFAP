@@ -77,17 +77,17 @@ var gridData_second = Ext.create('Ext.data.ArrayStore', {
 });
 var tbl_grd = ApTable.create(1);
 tbl_grd.setTarget();
-var txt_test = ApText.create('');
-var grd_Detail = ApGrid.create();
-grd_Detail.addColumn('text', 'column Name', 'COLUMN_NM', 100);
-grd_Detail.addColumn('text', 'data Type', 'DATA_TYPE', 100);
-grd_Detail.addColumn('check', 'primary Key', 'PRIMARY_CHECK', 100);
-grd_Detail.addColumn('check', 'null check', 'NULL_CHECK ', 100);
+var grd_Detail = ApGrid.create('gus', true);
+grd_Detail.addColumn('text', 'column Name', 'COLUMN_NM', 200);
+grd_Detail.addColumn('text', 'data Type', 'DATA_TYPE', 200);
+grd_Detail.addColumn('check', 'primary Key', 'PRIMARY_CHECK', 200);
+grd_Detail.addColumn('check', 'null check', 'NULL_CHECK ', 200);
 
 grd_Detail.reconfigure(gridData);
 
 tbl_grd.add(grd_Detail);
 pnl_DBdetail_up.full(tbl_grd);
+tbl_grd.setWidth('fit');
 /////////////////////////////////////////////////////
 
 Ext.define('tableExample', {
@@ -138,8 +138,10 @@ ApEvent.onlaod = function () {
     tab.addTab('enroll').divideH(pnl_DBname, pnl_DBdetail);
     tab.addTab('search');
     pnl_DBdetail_OUT.divideV(pnl_DBdetail_up, pnl_DBdetail_down, pnl_DBdetail_up);
-    pnl_DBdetail_up.setHeight(280);
-    pnl_DBdetail.divideV(pnl_DBdetail_OUT, grd_Example);
+    pnl_DBdetail_up.setHeight(380);
+    pnl_DBdetail_up.setWidth('fit');
+    pnl_DBdetail.divideV(pnl_DBdetail_OUT, grd_Example, pnl_DBdetail_OUT);
+    pnl_DBdetail_OUT.setHeight(400);
     //viewPanel.divideH(pnl_DBname, pnl_DBdetail);
     pnl_DBname.full(grd);
     pnl_DBname.setWidth(250);
