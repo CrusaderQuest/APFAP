@@ -9,6 +9,7 @@
 //상위 카테고리 추가하고 조회하는 것 추가.
 
 //window
+/*
 function msgShow(i, j) {
     Ext.Msg.show({
         message: (i + 1) + '번째 탭' + (j + 1) + '번째 튜플 오류',
@@ -84,6 +85,9 @@ function dbSave() {
     dbInsertUpdate();
     dbDelete();
     categoryDelete();
+    comboStoreCategory.clearData();
+    selComboStoreCategory.clearData();
+    dbCategoryLoad();
     return 1;
 }
 function dbUserLoad() {
@@ -100,29 +104,23 @@ function dbCategoryLoad() {
     var ds2 = DBconnect.runProcedure(pr2);
     selComboStoreCategory = ds2[0];
 }
-function getEmptyTable() {
-    var pr2 = DBParams.create('sp_DevFormA01', 'GET_EMPTY_TABLE');
-    var ds2 = DBconnect.runProcedure(pr2);
-    filterStore = ds2[0];
-    filterStore.clearData();
-}
 //DB 통신 private
 function isErrInTuple(i) {
     //튜플들이 정상인지. return ( 에러x: 0 에러o: 튜플번호.)
     for (var j = 0; j < dTableArray.data.items[i].data.data.length; j++) {
-        if (dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM == null)
+        if (dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM == '')
             return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.D_DEV_NM == null)
+        if (dTableArray.data.items[i].data.data.items[j].data.D_DEV_NM == '')
             return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.START_DT == null)
+        if (dTableArray.data.items[i].data.data.items[j].data.START_DT == '')
             return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.DEV_VALUE == null)
+        if (dTableArray.data.items[i].data.data.items[j].data.DEV_VALUE == '')
             return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.TEST_VALUE == null)
+        if (dTableArray.data.items[i].data.data.items[j].data.TEST_VALUE == '')
             return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.DEADLINE == null)
+        if (dTableArray.data.items[i].data.data.items[j].data.DEADLINE == '')
             return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.USER_NM == null)
+        if (dTableArray.data.items[i].data.data.items[j].data.USER_NM == '')
             return j;
     }
     return false;
@@ -205,28 +203,7 @@ function convertCATEGORY_NO(input) {
             return selComboStoreCategory.data.items[i].data.HIDEDATA;
     }
 }
-function initBtnColor(i) {
-    if (i == 0) {
-        btn_server.setStyle('background-color', '#0000ff');
-    } else if (i == 1) {
-        btn_db.setStyle('background-color', '#0000ff');
-    } else if (i == 2) {
-        btn_ui.setStyle('background-color', '#0000ff');
-    } else {
-        btn_etc.setStyle('background-color', '#0000ff');
-    }
-}
-function selBtnColor(i) {
-    if (i == 0) {
-        btn_server.setStyle('background-color', '#00ffff');
-    } else if (i == 1) {
-        btn_db.setStyle('background-color', '#00ffff');
-    } else if (i == 2) {
-        btn_ui.setStyle('background-color', '#00ffff');
-    } else {
-        btn_etc.setStyle('background-color', '#00ffff');
-    }
-}
+
 //filterStore 변경.
 function setFilterStore() {
     filterStore.clearData();
@@ -350,22 +327,39 @@ grd.eButtonAddClick = function () {
             D_DEV_NO: filterStoreCnt, CATEGORY_NM: currentCat, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
             DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
         });
-        filterStoreCnt = filterStoreCnt - 1;
+        
     } else {
         dTableArray.data.items[currentBtn].data.add({
-            CATEGORY_NM: null, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
+            D_DEV_NO: filterStoreCnt, CATEGORY_NM: null, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
             DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
         });
+        
     }
+    filterStoreCnt = filterStoreCnt - 1;
 }
 grd.eButtonDeleteClick = function () {
     //deletelist추가
     for (var i = 0; i < grd.getSelection().length; i++) {
         var tempNo = grd.getSelection()[i].data.D_DEV_NO;
-        dDevDeleteArray.data.items[currentBtn].data.add(tempNo);
+        dDevDeleteArray.data.items[currentBtn].data.add({ D_DEV_NO: tempNo });
     }
     if (currentCat != '전체') {
+
+        
+
+        var tempCnt = grd.getSelection().length;
+        for (var i = 0; i < tempCnt; i++) {
+            for (var j = 0; j < 4; j++) {
+                for (var k = 0; k < dTableArray.data.items[j].data.data.length; k++) {
+                    if (dTableArray.data.items[j].data.data.items[k].data.D_DEV_NO == grd.getSelection()[i].data.D_DEV_NO) {
+                        dTableArray.data.items[j].data.removeAt(k);
+                        k = k - 1;
+                    }
+                }
+            }
+        }
         filterStore.remove(grd.getSelection());
+
     }
     dTableArray.data.items[currentBtn].data.remove(grd.getSelection());
 }
@@ -389,6 +383,7 @@ btn_save.eClick = function () {
             dbLoad();
             
             grd.columnsMap[0].getEditor().bindStore(selComboStoreCategory);
+            grd.setUnLockColumns('CATEGORY_NM');
             grd.reconfigure(dTableArray.data.items[0].data);
             initBtnColor(currentBtn);
             currentBtn = 0;
@@ -402,13 +397,10 @@ btn_save.eClick = function () {
 cmb_catView.eChange = function (record) {
     currentCat = record.selection.data.SHOWVALUE;
 }
-/*
 grd.eSelectionChange = function (record, rowIndex, paramId) {
     console.log(paramId, record.data, rowIndex);
     text_cc.setValue(record.data.USERID);
 }
-*/
-/*
 grd.eUpdate = function (record, rowIndex, paramId) {
     if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
         var t1Date = record.get(paramId);
@@ -417,3 +409,139 @@ grd.eUpdate = function (record, rowIndex, paramId) {
     }
 }
 */
+
+//최상단 공통 컴포넌트
+btn_save.eClick = function () {
+
+}
+//DB 통신
+function getTable() {
+    var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr.addParam('H_DEV_NO', currentBtn - 1);
+    var ds = DBconnect.runProcedure(pr);
+    grdStore = ds[0];
+}
+function getEmptyTable() {
+    var pr = DBParams.create('sp_DevFormA01', 'GET_EMPTY_TABLE');
+    var ds = DBconnect.runProcedure(pr);
+    filterStore = ds[0];
+}
+function dbUserLoad() {
+    var pr = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
+    var ds = DBconnect.runProcedure(pr);
+    comboStoreUser = ds[0];
+}
+//그리드 버튼 이벤트
+grd.eButtonAddClick = function () {
+
+}
+grd.eButtonDeleteClick = function () {
+
+}
+//그래프
+function calGraph() {
+
+}
+//5개 탭 버튼 클릭 이벤트
+btn_main.eClick = function () {
+    if (currentBtn != 0) {
+        //넘어오기 전 작업
+
+
+        initBtnColor(currentBtn);
+        //넘어 온 후 작업
+        currentBtn = 0;
+
+        
+        selBtnColor(currentBtn);
+        pnl_tabView.full(pnl_mainTabView);
+    }
+}
+btn_server.eClick = function () {
+    if (currentBtn != 1) {
+        //넘어오기 전 작업
+
+
+        initBtnColor(currentBtn);
+        //넘어 온 후 작업
+        currentBtn = 1;
+
+        getTable();
+        grd.reconfigure(grdStore);
+        selBtnColor(currentBtn);
+        pnl_tabView.full(pnl_subTabView);
+    }
+}
+btn_db.eClick = function () {
+    if (currentBtn != 2) {
+        //넘어오기 전 작업
+
+
+        initBtnColor(currentBtn);
+        //넘어 온 후 작업
+        currentBtn = 2;
+
+        getTable();
+        grd.reconfigure(grdStore);
+        selBtnColor(currentBtn);
+        pnl_tabView.full(pnl_subTabView);
+    }
+}
+btn_ui.eClick = function () {
+    if (currentBtn != 3) {
+        //넘어오기 전 작업
+
+
+        initBtnColor(currentBtn);
+        //넘어 온 후 작업
+        currentBtn = 3;
+
+        getTable();
+        grd.reconfigure(grdStore);
+        selBtnColor(currentBtn);
+        pnl_tabView.full(pnl_subTabView);
+    }
+}
+btn_etc.eClick = function () {
+    if (currentBtn != 4) {
+        //넘어오기 전 작업
+
+
+        initBtnColor(currentBtn);
+        //넘어 온 후 작업
+        currentBtn = 4;
+
+        getTable();
+        grd.reconfigure(grdStore);
+        selBtnColor(currentBtn);
+        pnl_tabView.full(pnl_subTabView);
+    }
+}
+
+//util function
+function initBtnColor(i) {
+    if (i == 0) {
+        btn_main.setStyle('background-color', '#0000ff');
+    } else if (i == 1) {
+        btn_server.setStyle('background-color', '#0000ff');
+    } else if (i == 2) {
+        btn_db.setStyle('background-color', '#0000ff');
+    } else if (i == 3) {
+        btn_ui.setStyle('background-color', '#0000ff');
+    } else {
+        btn_etc.setStyle('background-color', '#0000ff');
+    }
+}
+function selBtnColor(i) {
+    if (i == 0) {
+        btn_main.setStyle('background-color', '#00ffff');
+    } else if (i == 1) {
+        btn_server.setStyle('background-color', '#00ffff');
+    } else if (i == 2) {
+        btn_db.setStyle('background-color', '#00ffff');
+    } else if (i == 3) {
+        btn_ui.setStyle('background-color', '#00ffff');
+    } else {
+        btn_etc.setStyle('background-color', '#00ffff');
+    }
+}

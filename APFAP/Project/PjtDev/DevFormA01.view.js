@@ -6,44 +6,12 @@
 //View 단 정의 영역 시작
 //-------------------폼 전역변수 시작---------------
 var currentBtn = 0;
-var saveBtnState = 0;
-var currentCat;
-var filterStoreCnt = -1;
+var isUpdated = 0;
+//var currentCat;
 var comboStoreUser;
-var comboStoreCategory;
-var selComboStoreCategory;
+var grdStore;
 var filterStore;
-Ext.define('D_Data', {
-    extend: 'Ext.data.Model',
-    fields: [
-        { name: 'D_DEV_NO', type: 'int' },
-        { name: 'CATEGORY_NM' },
-        { name: 'D_DEV_NM' },
-        { name: 'START_DT', type: 'date', dateFormat: 'Y-m-d' },
-        { name: 'DEV_VALUE' },
-        { name: 'TEST_VALUE' },
-        { name: 'DEADLINE', type: 'date', dateFormat: 'Y-m-d' },
-        { name: 'USER_NM' },
-        { name: 'END_DT', type: 'date', dateFormat: 'Y-m-d' }
-    ]
-});
-var dTableArray = Ext.create('Ext.data.ArrayStore', {
-    fields: [D_Data]
-});
-Ext.define('devDelete_Array', {
-    extend: 'Ext.data.Model',
-    fields: [{ name: 'D_DEV_NO', type: 'int' }]
-});
-var dDevDeleteArray = Ext.create('Ext.data.ArrayStore', {
-    fields: [devDelete_Array]
-});
-Ext.define('catDelete_Array', {
-    extend: 'Ext.data.Model',
-    fields: [{ name: 'CATEGORY_NO', type: 'int' }]
-});
-var categoryDeleteArray = Ext.create('Ext.data.ArrayStore', {
-    model: 'catDelete_Array'
-});
+
 var comboStoreValue = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEDATA', 'SHOWDATA'],
     data: [
@@ -51,40 +19,41 @@ var comboStoreValue = Ext.create('Ext.data.ArrayStore', {
         ['false', 'F']
     ]
 });
+
 var grd = ApGrid.create(true,true);
 
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
-var pnl_top = ApPanel.create();
-var pnl_content = ApPanel.create();
+var pnl_top = ApPanel.create();         //저장, 타이틀, 설명, 완성도그래프, 상태 콤보박스. (공통 영역)
+var pnl_content = ApPanel.create();     //(컨텐츠 개별 영역)
 
 var tbl_top = ApTable.create(3);
 tbl_top.setTarget();
 
+var btn_save = ApButton.create("저장");
 var pnl_title = ApLabel.create("개발 진척도");
 var pnl_summary = ApLabel.create("개발 진행 상황에 대한 내역을 관리할 수 있습니다.");
-var btn_save = ApButton.create("수정");
+//그래프
+//상태 콤보박스.
+var pnl_tab = ApPanel.create();         //탭 패널.
+var pnl_tabView = ApPanel.create();     //각 탭의 컨텐츠.
 
-var pnl_graphCategory = ApPanel.create("그래프,카테고리 패널");
-var pnl_gridTab = ApPanel.create("탭(버튼),그리드 패널");
+//메인 탭의 컴포넌트
+var pnl_mainTabView = ApLabel.create("메인 뷰");
+//그래프 전체, 담당자, 각 탭 (각 컴포넌트 main 붙여서 명명.)
 
-var pnl_graph = ApPanel.create("그래프 패널");
-var pnl_category = ApPanel.create("카테고리 패널");
-//in category panel
-var tbl_category = ApTable.create(5);
-tbl_category.setTarget();
-var txt_catInsert = ApText.create();
-var btn_catInsert = ApButton.create("추가");
-var cmb_catView = ApCombo.create();
-var btn_catSearch = ApButton.create("조회");
-var btn_catDelete = ApButton.create("삭제");
+var pnl_subTabView = ApPanel.create();  //메인 외 각 탭의 뷰.
 
-var pnl_tabBtn = ApPanel.create("탭버튼");
-var pnl_grd = ApPanel.create("그리드");
+var pnl_hGraphGrd = ApPanel.create();   //그래프,그리드 영역 분리.
 
-var tab = ApTable.create(4);
+var pnl_tabGraph = ApPanel.create();    //각 탭의 그래프.
+var pnl_tabSearch = ApPanel.create();   //각 탭의 조회조건 패널.
+var pnl_tabGrd = ApPanel.create();      //각 탭의 그리드.
+
+var tab = ApTable.create(5);
 tab.setTarget();
+var btn_main = ApButton.create("메인");
 var btn_server = ApButton.create("서버");
 var btn_db = ApButton.create("DB");
 var btn_ui = ApButton.create("UI");
@@ -92,34 +61,38 @@ var btn_etc = ApButton.create("기타");
 //-------------------컴포넌트 끝---------------------
 
 ApEvent.onlaod = function () {
+    //공통 영역
     viewPanel.divideV(pnl_top, pnl_content);
     pnl_top.setHeight(50);
 
+    btn_save.setWidth(120);
     pnl_title.setWidth(400);
     pnl_top.full(tbl_top);
 
-    pnl_content.divideV(pnl_graphCategory, pnl_gridTab);
-    pnl_graphCategory.setHeight(300);
+    pnl_content.divideV(pnl_tab, pnl_tabView);
+    pnl_tab.setHeight(50);
+    pnl_tab.full(tab);
 
-    pnl_graphCategory.divideV(pnl_graph, pnl_category);
-    pnl_graph.setHeight(200);
-    pnl_category.full(tbl_category);
+    //메인 뷰
+    pnl_tabView.full(pnl_mainTabView);
 
-    pnl_gridTab.divideV(pnl_tabBtn, pnl_grd);
-    pnl_tabBtn.setHeight(80);
+    //서브 뷰
+    pnl_subTabView.divideV(pnl_tabGraph, pnl_hGraphGrd);
+    pnl_tabGraph.setHeight(100);
 
-    btn_save.setWidth(100);
-    for (var i = 0; i < 4; i++) {
+    pnl_hGraphGrd.divideV(pnl_tabSearch, pnl_tabGrd);
+    pnl_tabSearch.setHeight(200);
+
+    //초기 설정
+    for (var i = 0; i < 5; i++) {
         initBtnColor(i);
     }
-    pnl_tabBtn.full(tab);
-    pnl_grd.full(grd);
+    selBtnColor(0);
 
-    dbLoad();
+    //dbLoad();
+    //dbUserLoad();
     getEmptyTable();
-    dbUserLoad();
-    dbCategoryLoad();
-    grd.addColumn('combo', '카테고리', ['CATEGORY_NM',selComboStoreCategory], 150);
+
     grd.addColumn('text', '개발 단위', 'D_DEV_NM', 200);
     grd.addColumn('date', '시작 날짜', 'START_DT', 120);
     grd.addColumn('combo', '개발 상태', ['DEV_VALUE', comboStoreValue], 120);
@@ -127,11 +100,5 @@ ApEvent.onlaod = function () {
     grd.addColumn('date', '데드라인', 'DEADLINE', 120);
     grd.addColumn('combo', '담당자', ['USER_NM', comboStoreUser], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
-    grd.reconfigure(dTableArray.data.items[0].data);
-    selBtnColor(0);
 
-    cmb_catView.setEditable(false);
-    cmb_catView.setSelection(comboStoreCategory.data.items[0]);
-    cmb_catView.eChange(cmb_catView);
-    pnl_content.setDisabled(true);
 }
