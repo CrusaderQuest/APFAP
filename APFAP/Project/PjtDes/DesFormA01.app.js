@@ -5,10 +5,10 @@
 
 //App 단 정의 영역 시작
 
-btn_insert.eClick = function () {
-    Ext.Msg.alert("창 이름", "경고 내용");
-}
+//btn_insert.eClick = function () {
+//    Ext.Msg.alert("창 이름", "경고 내용");
+//}
 
-btn_delete.eClick = function () {
-    Ext.Msg.alert("창 이름", "경고 내용");
-}
+//btn_delete.eClick = function () {
+//    Ext.Msg.alert("창 이름", "경고 내용");
+//}

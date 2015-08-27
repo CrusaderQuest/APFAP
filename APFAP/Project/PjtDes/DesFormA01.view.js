@@ -4,7 +4,7 @@
 //
 
 //View 단 정의 영역 시작
-var pnl_proNM = ApPanel.create('Project Name');
+var pnl_proNM = ApPanel.create('Project Name',true);
 Ext.define('systemArchi', {
     extend: 'Ext.data.Model',
     fields: [
@@ -14,12 +14,12 @@ Ext.define('systemArchi', {
     ]
 });
 
-var gridData = Ext.create('Ext.data.ArrayStore', {
-    model: 'systemArchi',
-    data: [
-        ['2015-07-29', false, '이건 업로드가 안된거여']
-    ]
-});
+//var gridData = Ext.create('Ext.data.ArrayStore', {
+//    model: 'systemArchi',
+//    data: [
+//        ['2015-07-29', false, '이건 업로드가 안된거여']
+//    ]
+//});
 
 var grd = ApGrid.create();
 
@@ -27,7 +27,7 @@ grd.addColumn('date', '날짜', 'DATE', 200);
 grd.addColumn('check', '업로드 여부', 'CHECK', 200);
 grd.addColumn('text', 'Summary', 'SUMMARY', 910);
 
-grd.reconfigure(gridData);
+//grd.reconfigure(gridData);
 var pnl_in_pnl =ApPanel.create('button 들어갈 table panel')
 var tbl_button = ApTable.create(2);
 tbl_button.setTarget();
