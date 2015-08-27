@@ -29,14 +29,10 @@ var deleteArray = [];
 //btn
 var tbl_btn = ApTable.create();
 tbl_btn.setTarget();
-var btn_del = ApButton.create("그리드 삭제");
-btn_del.setMargin(20);
-var btn_add = ApButton.create("그리드 추가");
-tbl_btn.setHeight(100);
 var btn_change = ApButton.create("수정");
 var btn_save = ApButton.create("저장");
 //grid add column
-var grd_a = ApGrid.create(true);
+var grd_a = ApGrid.create(true,true);
 grd_a.addColumn('combo', '기능 중요도', ['FUNC_IMP',comboStore], 80);
 grd_a.addColumn('combo', '카테고리', ['CATEGORY', comboStore2], 100);
 grd_a.addColumn('text', '기능 명', 'FUNC_NM', 300);
@@ -45,8 +41,6 @@ grd_a.addColumn('text', '비고', 'BLANK', 300);
 
 ApEvent.onlaod = function () {
 
-    btn_add.setDisabled(true);
-    btn_del.setDisabled(true);
     grd_a.setDisabled(true);
 
     btn_save.setVisible(false);
