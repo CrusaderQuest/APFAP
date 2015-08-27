@@ -17,11 +17,11 @@ set_txt = function (bool) {
     btn_save.setVisible(!bool);
     btn_change.setVisible(bool);
 }
-grd_a.eButtonAddClick = function () {
-    gridData.add({ FUNC_IMP: '선택', CATEGORY: '기타', FUNC_NM: '', SUMMARY: '', BLANK: '' }); 
+btn_add.eClick = function () {
+    gridData.add({ FUNC_IMP: '선택', CATEGORY: '기타',}); 
 }
 
-grd_a.eButtonDeleteClick = function () {
+btn_del.eClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
         Ext.Msg.alert("경고 창", "체크 해주세요.");
     } else {
@@ -68,3 +68,10 @@ function deleteDB() {
     }
 }
 
+grd_a.eSelectionChange = function (record, rowIndex, paramId) {
+    console.log(paramId, record.data, rowIndex);
+
+    txt_nm.setValue(gridData.data.items[rowIndex].data.FUNC_NM);
+    txta_summary.setValue(gridData.data.items[rowIndex].data.FUNC_NM);
+    txta_summary.setValue(gridData.data.items[rowIndex].data.FUNC_NM);
+}
