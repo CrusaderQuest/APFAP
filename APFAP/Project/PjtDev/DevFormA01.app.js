@@ -6,6 +6,8 @@
 //App 단 정의 영역 시작
 
 //그리드 T/F 체크박스로 구현.
+//탭 옮기면 조회조건 초기화.
+//저장하면 조회조건은 그대로고 저장하고 조회조건으로 다시 조회해서 reconfigure
 
 /*
 //filterStore 변경.
@@ -28,7 +30,7 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
     text_cc.setValue(record.data.USERID);
 }
 */
-
+//pr.addParam('START_DT', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.START_DT));
 //-----------------최상단 공통 컴포넌트-----------------
 btn_save.eClick = function () {
     dbSave();
@@ -76,24 +78,24 @@ function dbSave() {
             pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
             pr.addParam('H_DEV_NO', currentBtn - 1);
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
-            pr.addParam('START_DT', selectedRecords[i].get('START_DT'));
+            pr.addParam('START_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('START_DT')));
             pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
             pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
-            pr.addParam('DEADLINE', selectedRecords[i].get('DEADLINE'));
+            pr.addParam('DEADLINE', ApFn.toDbTyoe('date',selectedRecords[i].get('DEADLINE')));
             pr.addParam('USER_KEY', convertUSER_KEY(selectedRecords[i].get('USER_NM')));
-            pr.addParam('END_DT', selectedRecords[i].get('END_DT'));
+            pr.addParam('END_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('END_DT')));
 
             ds = DBconnect.runProcedure(pr);
         } else {
             pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
             pr.addParam('D_DEV_NO', selectedRecords[i].get('D_DEV_NO'));
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
-            pr.addParam('START_DT', selectedRecords[i].get('START_DT'));
+            pr.addParam('START_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('START_DT')));
             pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
             pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
-            pr.addParam('DEADLINE', selectedRecords[i].get('DEADLINE'));
+            pr.addParam('DEADLINE', ApFn.toDbTyoe('date',selectedRecords[i].get('DEADLINE')));
             pr.addParam('USER_KEY', convertUSER_KEY(selectedRecords[i].get('USER_NM')));
-            pr.addParam('END_DT', selectedRecords[i].get('END_DT'));
+            pr.addParam('END_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('END_DT')));
 
             ds = DBconnect.runProcedure(pr);
         }
@@ -114,7 +116,7 @@ function dbSave() {
 }
 //------------------------조회 조건----------------------------
 btn_search.eClick = function () {
-    //if(dt_sStartDate.)
+    
 }
 //----------------------그리드 버튼 이벤트----------------------
 //추가
