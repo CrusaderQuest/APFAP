@@ -7,11 +7,69 @@
 btn_SAVE.eClick = function(){
     ASYNC_DB_H();
 }
+
+//App 단 정의 영역 시작
+grd_H.eButtonAddClick = function () {
+    grd_H.addRow();
+    grd_H.getRow(grd_H.getTotalCount() - 1).set('NOTICE_USER', 'JuneJobs');
+    grd_H.setFocus(grd_H.getTotalCount() - 1);
+}
+
+grd_H.eButtonDeleteClick = function () {
+    //체크된 레코드 가져오기
+    var selectedRecords = grd_H.getSelectedRecords();
+    var index = grd_H.getRowIndex(grd_H.getSelectedRecords()[0]);
+    grd_H.deleteRow(selectedRecords);
+    grd_H.setFocus(index - 1);
+}
+
+grd_H.eSelectionChange = function(record, rowIndex, paramId){
+    console.log(record);
+    console.log(rowIndex);
+    console.log(paramId);
+    //디테일테이블의 분류란에 데이터 바인드
+    txt_NOTICE_TYPE_HH.setValue(record.data.NOTICE_TYPE);
+    //디테일조회
+    SEARCH_D();
+}
+
+grd_D.eSelectionChange = function (record, rowIndex, paramId) {
+  
+    //디테일테이블 값 데이터 바인드
+    txt_NOTICE_TITLE_HH.setValue(record.data.NOTICE_TITLE);
+    txa_NOTICE_CONTENT_HH.setValue(record.data.NOTICE_CONTENT);
+    dt_NOTICE_S_DT_HH.setValue(record.data.NOTICE_S_DT);
+    dt_NOTICE_E_DT_HH.setValue(record.data.NOTiCE_E_DT);
+    cbo_NOTICE_USER_HH.setValue(record.data.NOTICE_USER);
+    //디테일조회
+    //SEARCH_D();
+}
+btn_ADDNOICE_HH.eClick = function () {
+    txt_NOTICE_TITLE_HH.setValue('');
+    txa_NOTICE_CONTENT_HH.setValue('');
+    dt_NOTICE_S_DT_HH.setToday();
+    dt_NOTICE_E_DT_HH.setToday();
+    cbo_NOTICE_USER_HH.setIndex(0);
+}
 //헤더그리드 조회
 function SEARCH_H() {
     var pr = DBParams.create('sp_ComFormC01', 'SEARCH_H');
     var ds = DBconnect.runProcedure(pr);
     grd_H.reconfig(ds[0]);
+    if (grd_H.getTotalCount() > 0) {
+        grd_H.setFocus(0);
+    }
+}
+
+//디테일그리드 조회
+function SEARCH_D() {
+    var pr = DBParams.create('sp_ComFormC01', 'SEARCH_D');
+    pr.addParam('NOTICE_H_KEY', grd_H.getSelectedRecords()[0].data.NOTICE_H_KEY);
+    var ds = DBconnect.runProcedure(pr);
+    grd_D.reconfig(ds[0]);
+    if (grd_D.getTotalCount() > 0) {
+        grd_D.setFocus(0);
+    }
 }
 
 //초기값 바인드
@@ -69,15 +127,4 @@ function ASYNC_DB_H() {
         }
     }
     SEARCH_H();
-}
-
-//App 단 정의 영역 시작
-grd_H.eButtonAddClick = function () {
-    grd_H.addRow();
-    grd_H.getRow(grd_H.getTotalCount() - 1).set('NOTICE_USER', 'JuneJobs');
-}
-grd_H.eButtonDeleteClick = function () {
-    //체크된 레코드 가져오기
-    var selectedRecords = grd_H.getSelectedRecords();
-    grd_H.deleteRow(selectedRecords);
 }
