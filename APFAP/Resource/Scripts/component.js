@@ -11,8 +11,9 @@ var _tempTableTarget = '';
     타겟을 지정하는 
 */
 _setTarget = function (component) {
+    component.setMargin('0 0 0 5');
     _tempTableTarget.add(Ext.create('Ext.container.Container', {
-        margin: '2 0 0 2',
+        margin: '2 0 2 2',
         layout: {
             type: 'column'
         },
@@ -691,8 +692,8 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 //renderer: Ext.util.Format.usMoney,
                 editor: {
                     xtype: 'combobox',
-                    displayField: 'SHOWDATA',
-                    valueField: 'SHOWDATA',
+                    displayField: 'SHOWVALUE',
+                    valueField: 'HIDEVALUE',
                     store: paramId[1],
                 }
             });
@@ -702,7 +703,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 width: 0,
-                dataIndex: paramId[0]
+                dataIndex: paramId
             });
             columnType.isVisible(false);
             break;
@@ -786,8 +787,9 @@ ApGrid.prototype.eButtonAddClick = function () {
 
 }
 ApGrid.prototype.setFocus = function (rowIndex) {
-    this.getSelectionModel().select(rowIndex)
-    this.getView().focusRow(rowIndex)
+    this.getSelectionModel().select(rowIndex);
+    this.getView().focusRow(rowIndex);
+    this.eSelectionChange(this.getSelection()[0], rowIndex, this.columnsMap[1].dataIndex);
 }
 ApGrid.prototype.eButtonDeleteClick = function () {
 
@@ -801,7 +803,7 @@ var ApGrid = {
         var toolbar = [];
         if (type == undefined || false) {
             toolbar = [];
-        } else if(type){
+        } else if (type == true) {
             toolbar = [{
                 xtype: 'toolbar',
                 items: [{
@@ -813,6 +815,21 @@ var ApGrid = {
                         _ApGrid.eButtonAddClick();
                     }
                 }, {
+                    //iconCls: 'icon-delete',
+                    text: '삭제',
+                    //disabled: true,
+                    itemId: 'delete',
+                    scope: this,
+                    handler: function (event, toolEl, panel) {
+                        _ApGrid.eButtonDeleteClick();
+                        // show help here
+                    }
+                }]
+            }]
+        } else if(type == 'D'){
+            toolbar = [{
+                xtype: 'toolbar',
+                items: [{
                     //iconCls: 'icon-delete',
                     text: '삭제',
                     //disabled: true,
@@ -975,6 +992,9 @@ Ext.define('ApDate', {
     extend: 'Ext.form.field.Date',
     ComponentType: 'date'
 });
+ApDate.prototype.setToday = function () {
+    this.setValue(Ext.Date.dateFormat(new Date(), 'Y-m-d'));
+};
 ApDate.prototype.eChange = function (Value) { };
 ApDate.prototype.eKeyDown = function (e) { };
 var ApDate = {
@@ -990,10 +1010,10 @@ var ApDate = {
         _ApDate.on('afterrender', function (me, eOpts) {
             _ApDate.on('change', function (me, newValue, oldValue, eOpts) {
                 _animationTarget = this;
-                _CmDate.eChange(newValue);
+                _ApDate.eChange(newValue);
             });
             _ApDate.getEl().on('keydown', function (e, t, eOpts) {
-                _CmDate.eKeyDown(e);
+                _ApDate.eKeyDown(e);
             });
         });
         _setTarget(_ApDate);
@@ -1019,6 +1039,20 @@ ApCombo.prototype.addItem = function (showValue, hideValue) {
         data: this.items
     });
     this.bindStore(makeStore);
+}
+ApCombo.prototype.setIndex = function (index) {
+    var value = this.getStore().data.items[index].data.SHOWVALUE;
+    this.superclass.setValue.call(this, value);
+}
+ApCombo.prototype.setValue = function (value) {
+    this.superclass.setValue.call(this, value);
+};
+ApCombo.prototype.getValue = function () {
+    try {
+       return this.getSelection().data.HIDEVALUE;
+    } catch (e) {
+
+    }
 }
 ApCombo.prototype.eFocus = function () {
 };
