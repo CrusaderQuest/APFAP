@@ -9,12 +9,21 @@ var currentBtn = 0;
 var isUpdated = 0;
 //var currentCat;
 var comboStoreUser;
+var comboSearchUser;
 var grdStore;
 var filterStore;
 
 var comboStoreValue = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEDATA', 'SHOWDATA'],
     data: [
+        ['true', 'T'],
+        ['false', 'F']
+    ]
+});
+var comboSearchValue = Ext.create('Ext.data.ArrayStore', {
+    fields: ['HIDEVALUE', 'SHOWVALUE'],
+    data: [
+        ['all', '전체'],
         ['true', 'T'],
         ['false', 'F']
     ]
@@ -30,7 +39,6 @@ var pnl_content = ApPanel.create();     //(컨텐츠 개별 영역)
 
 var tbl_top = ApTable.create(3);
 tbl_top.setTarget();
-
 var btn_save = ApButton.create("저장");
 var pnl_title = ApLabel.create("개발 진척도");
 var pnl_summary = ApLabel.create("개발 진행 상황에 대한 내역을 관리할 수 있습니다.");
@@ -45,10 +53,34 @@ var pnl_mainTabView = ApLabel.create("메인 뷰");
 
 var pnl_subTabView = ApPanel.create();  //메인 외 각 탭의 뷰.
 
-var pnl_hGraphGrd = ApPanel.create();   //그래프,그리드 영역 분리.
+var pnl_graphGrd = ApPanel.create();    //그래프와 그리드 영역 분리.
 
 var pnl_tabGraph = ApPanel.create();    //각 탭의 그래프.
 var pnl_tabSearch = ApPanel.create();   //각 탭의 조회조건 패널.
+
+var tbl_tabSearch1 = ApTable.create(7);
+tbl_tabSearch1.setTarget();
+tbl_tabSearch1.setStyleSearch();
+var dt_sStartDate = ApDate.create('시작일자');
+var lbl_a = ApLabel.create('~');
+var dt_eStartDate = ApDate.create('');
+var lbl_b = ApLabel.create('개발상태');
+var cmb_devState = ApCombo.create();
+var lbl_c = ApLabel.create('테스트상태');
+var cmb_testState = ApCombo.create();
+var tbl_tabSearch2 = ApTable.create(9);
+tbl_tabSearch2.setTarget();
+tbl_tabSearch2.setStyleSearch();
+var dt_sDeadLine = ApDate.create('데드라인');
+var lbl_d = ApLabel.create('~');
+var dt_eDeadLine = ApDate.create('');
+var dt_sEndDate = ApDate.create('완료일자');
+var lbl_e = ApLabel.create('~');
+var dt_eEndDate = ApDate.create('');
+var lbl_f = ApLabel.create('담당자');
+var cmb_user = ApCombo.create();
+var btn_search = ApButton.create('조회');
+
 var pnl_tabGrd = ApPanel.create();      //각 탭의 그리드.
 
 var tab = ApTable.create(5);
@@ -70,18 +102,18 @@ ApEvent.onlaod = function () {
     pnl_top.full(tbl_top);
 
     pnl_content.divideV(pnl_tab, pnl_tabView);
-    pnl_tab.setHeight(50);
+    pnl_tab.setHeight(30);
     pnl_tab.full(tab);
 
     //메인 뷰
     pnl_tabView.full(pnl_mainTabView);
 
     //서브 뷰
-    pnl_subTabView.divideV(pnl_tabGraph, pnl_hGraphGrd);
+    pnl_subTabView.divideV(pnl_tabGraph, pnl_graphGrd);
     pnl_tabGraph.setHeight(100);
-
-    pnl_hGraphGrd.divideV(pnl_tabSearch, pnl_tabGrd);
-    pnl_tabSearch.setHeight(200);
+    pnl_graphGrd.divideV(pnl_tabSearch, pnl_tabGrd);
+    pnl_tabSearch.setHeight(60);
+    pnl_tabSearch.divideV(tbl_tabSearch1, tbl_tabSearch2);
 
     //초기 설정
     for (var i = 0; i < 5; i++) {
@@ -90,7 +122,7 @@ ApEvent.onlaod = function () {
     selBtnColor(0);
 
     //dbLoad();
-    //dbUserLoad();
+    dbUserLoad();
     getEmptyTable();
 
     grd.addColumn('text', '개발 단위', 'D_DEV_NM', 200);
@@ -101,4 +133,18 @@ ApEvent.onlaod = function () {
     grd.addColumn('combo', '담당자', ['USER_NM', comboStoreUser], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 
+    pnl_tabGrd.full(grd);
+
+    dt_eStartDate.setWidth(100);
+    dt_eDeadLine.setWidth(100);
+    dt_eEndDate.setWidth(100);
+    lbl_b.setWidth(83);
+    lbl_c.setWidth(72);
+    cmb_devState.setWidth(70);
+    cmb_testState.setWidth(70);
+    lbl_f.setWidth(80);
+    cmb_user.setWidth(100);
+    cmb_devState.setStore(comboSearchValue);
+    cmb_testState.setStore(comboSearchValue);
+    cmb_user.setStore(comboSearchUser);
 }

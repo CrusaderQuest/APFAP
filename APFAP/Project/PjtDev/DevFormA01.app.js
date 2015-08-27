@@ -410,42 +410,55 @@ grd.eUpdate = function (record, rowIndex, paramId) {
 }
 */
 
-//최상단 공통 컴포넌트
+//-----------------최상단 공통 컴포넌트-----------------
 btn_save.eClick = function () {
 
 }
-//DB 통신
+//-----------------------DB 통신-----------------------
+//해당 탭의 테이블을 가져옴.
 function getTable() {
     var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
     pr.addParam('H_DEV_NO', currentBtn - 1);
     var ds = DBconnect.runProcedure(pr);
     grdStore = ds[0];
 }
+//빈 테이블을 가져옴.
 function getEmptyTable() {
     var pr = DBParams.create('sp_DevFormA01', 'GET_EMPTY_TABLE');
     var ds = DBconnect.runProcedure(pr);
     filterStore = ds[0];
 }
+//프로젝트와 연결된 유저 가져옴.
 function dbUserLoad() {
-    var pr = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
-    var ds = DBconnect.runProcedure(pr);
-    comboStoreUser = ds[0];
+    var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
+    var ds1 = DBconnect.runProcedure(pr1);
+    comboStoreUser = ds1[0];
+
+    var pr2 = DBParams.create('sp_DevFormA01', 'GET_USER_SEARCH');
+    var ds2 = DBconnect.runProcedure(pr2);
+    comboSearchUser = ds2[0];
 }
-//그리드 버튼 이벤트
+//------------------------조회 조건----------------------------
+btn_search.eClick = function () {
+    //if(dt_sStartDate.)
+}
+//----------------------그리드 버튼 이벤트----------------------
+//추가
 grd.eButtonAddClick = function () {
-
+    grd.addRow();
 }
+//삭제
 grd.eButtonDeleteClick = function () {
-
+    var selectedRecords = grd_H.getSelectedRecords();
+    grd.deleteRow(selectedRecords);
 }
-//그래프
+//--------------------------그래프-----------------------------
 function calGraph() {
 
 }
-//5개 탭 버튼 클릭 이벤트
+//------------------5개 탭 버튼 클릭 이벤트---------------------
 btn_main.eClick = function () {
     if (currentBtn != 0) {
-        //넘어오기 전 작업
 
 
         initBtnColor(currentBtn);
@@ -454,13 +467,14 @@ btn_main.eClick = function () {
 
         
         selBtnColor(currentBtn);
+        pnl_mainTabView.setHidden(false);
+        pnl_subTabView.setHidden(true);
         pnl_tabView.full(pnl_mainTabView);
     }
 }
 btn_server.eClick = function () {
     if (currentBtn != 1) {
         //넘어오기 전 작업
-
 
         initBtnColor(currentBtn);
         //넘어 온 후 작업
@@ -469,13 +483,14 @@ btn_server.eClick = function () {
         getTable();
         grd.reconfigure(grdStore);
         selBtnColor(currentBtn);
+        pnl_mainTabView.setHidden(true);
+        pnl_subTabView.setHidden(false);
         pnl_tabView.full(pnl_subTabView);
     }
 }
 btn_db.eClick = function () {
     if (currentBtn != 2) {
         //넘어오기 전 작업
-
 
         initBtnColor(currentBtn);
         //넘어 온 후 작업
@@ -484,13 +499,14 @@ btn_db.eClick = function () {
         getTable();
         grd.reconfigure(grdStore);
         selBtnColor(currentBtn);
+        pnl_mainTabView.setHidden(true);
+        pnl_subTabView.setHidden(false);
         pnl_tabView.full(pnl_subTabView);
     }
 }
 btn_ui.eClick = function () {
     if (currentBtn != 3) {
         //넘어오기 전 작업
-
 
         initBtnColor(currentBtn);
         //넘어 온 후 작업
@@ -499,13 +515,14 @@ btn_ui.eClick = function () {
         getTable();
         grd.reconfigure(grdStore);
         selBtnColor(currentBtn);
+        pnl_mainTabView.setHidden(true);
+        pnl_subTabView.setHidden(false);
         pnl_tabView.full(pnl_subTabView);
     }
 }
 btn_etc.eClick = function () {
     if (currentBtn != 4) {
         //넘어오기 전 작업
-
 
         initBtnColor(currentBtn);
         //넘어 온 후 작업
@@ -514,11 +531,13 @@ btn_etc.eClick = function () {
         getTable();
         grd.reconfigure(grdStore);
         selBtnColor(currentBtn);
+        pnl_mainTabView.setHidden(true);
+        pnl_subTabView.setHidden(false);
         pnl_tabView.full(pnl_subTabView);
     }
 }
 
-//util function
+//-------------------------util function------------------------
 function initBtnColor(i) {
     if (i == 0) {
         btn_main.setStyle('background-color', '#0000ff');
