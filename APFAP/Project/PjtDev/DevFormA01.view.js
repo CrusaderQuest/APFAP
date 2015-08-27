@@ -5,16 +5,16 @@
 
 //View 단 정의 영역 시작
 //-------------------폼 전역변수 시작---------------
-var currentBtn = 0;
-var isUpdated = 0;
-//var currentCat;
-var comboStoreUser;
-var comboSearchUser;
-var grdStore;
-var filterStore;
+var currentBtn = 0;     //현재 탭
+var isUpdated = 0;      //업데이트 되었는지
+var isSearched = 0;     //조회 되었는지
+var comboStoreUser;     //그리드용 User 콤보박스
+var comboSearchUser;    //조회용 User 콤보박스
+var grdStore;           //그리드 스토어
+var filterStore;        //필터 그리드 스토어
 
 var comboStoreValue = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA'],
+    fields: ['HIDEVALUE', 'SHOWVALUE'],
     data: [
         ['true', 'T'],
         ['false', 'F']
@@ -51,7 +51,8 @@ var pnl_tabView = ApPanel.create();     //각 탭의 컨텐츠.
 var pnl_mainTabView = ApLabel.create("메인 뷰");
 //그래프 전체, 담당자, 각 탭 (각 컴포넌트 main 붙여서 명명.)
 
-var pnl_subTabView = ApPanel.create();  //메인 외 각 탭의 뷰.
+//서브 탭의 컴포넌트
+var pnl_subTabView = ApPanel.create();
 
 var pnl_graphGrd = ApPanel.create();    //그래프와 그리드 영역 분리.
 
@@ -61,24 +62,16 @@ var pnl_tabSearch = ApPanel.create();   //각 탭의 조회조건 패널.
 var tbl_tabSearch1 = ApTable.create(7);
 tbl_tabSearch1.setTarget();
 tbl_tabSearch1.setStyleSearch();
-var dt_sStartDate = ApDate.create('시작일자');
-var lbl_a = ApLabel.create('~');
-var dt_eStartDate = ApDate.create('');
-var lbl_b = ApLabel.create('개발상태');
-var cmb_devState = ApCombo.create();
-var lbl_c = ApLabel.create('테스트상태');
-var cmb_testState = ApCombo.create();
+var dt_sStartDate = ApDate.create('시작일자');  var lbl_a = ApLabel.create('~');        var dt_eStartDate = ApDate.create('');
+var lbl_b = ApLabel.create('개발상태');         var cmb_devState = ApCombo.create();
+var lbl_c = ApLabel.create('테스트상태');       var cmb_testState = ApCombo.create();
+
 var tbl_tabSearch2 = ApTable.create(9);
 tbl_tabSearch2.setTarget();
 tbl_tabSearch2.setStyleSearch();
-var dt_sDeadLine = ApDate.create('데드라인');
-var lbl_d = ApLabel.create('~');
-var dt_eDeadLine = ApDate.create('');
-var dt_sEndDate = ApDate.create('완료일자');
-var lbl_e = ApLabel.create('~');
-var dt_eEndDate = ApDate.create('');
-var lbl_f = ApLabel.create('담당자');
-var cmb_user = ApCombo.create();
+var dt_sDeadLine = ApDate.create('데드라인');   var lbl_d = ApLabel.create('~');        var dt_eDeadLine = ApDate.create('');
+var dt_sEndDate = ApDate.create('완료일자');    var lbl_e = ApLabel.create('~');        var dt_eEndDate = ApDate.create('');
+var lbl_f = ApLabel.create('담당자');           var cmb_user = ApCombo.create();
 var btn_search = ApButton.create('조회');
 
 var pnl_tabGrd = ApPanel.create();      //각 탭의 그리드.
