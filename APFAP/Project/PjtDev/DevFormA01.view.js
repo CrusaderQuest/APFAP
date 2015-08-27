@@ -33,6 +33,71 @@ var grd = ApGrid.create(true,true);
 
 //-------------------폼 전역변수 끝-----------------
 
+//----------------------그래프-----------------------
+var store = Ext.create('Ext.data.JsonStore', {
+    fields: ['name', 'data1'],
+    data: [
+    { 'name': 'metric one', 'data1': 25 },
+    { 'name': 'metric two', 'data1': 14 }
+    ]
+});
+
+var myChart = Ext.create('Ext.chart.Chart', {
+    width: 300,
+    height: 300,
+    store: store,
+    padding: '10 0 0 0',
+    style: 'background: #fff',
+    animate: true,
+    shadow: false,
+    insetPadding: 40,
+
+    //legend: true,
+    axes: [
+        {
+            type: 'Numeric',
+            position: 'bottom',
+            fields: 'data1',
+            title: 'Sample Values',
+            minimum: 0,
+            grid: true,
+            minimum: 0,
+            maximum: 50
+        },
+        {
+            type: 'Category',
+            position: 'left',
+            fields: 'name',
+            title: 'Sample Metrics',
+            grid:true
+        }
+    ],
+    series: [{
+        type: 'bar',
+        axis: 'bottom',
+        xField: 'name',
+        yField: 'data1',
+        style: {
+            //width: '30',
+            opacity: 0.80
+        },
+        highlight: {
+            fill: '#000',
+            'stroke-width': 2,
+            stroke: '#fff'
+        },
+        tips: {
+            trackMouse: true,
+            style: 'background: #FFF',
+            height: 20,
+            renderer: function (storeItem, item) {
+                this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1'));
+            }
+        }
+    }]
+});
+//---------------------그래프 끝---------------------
+
 //-------------------컴포넌트 시작--------------------
 var pnl_top = ApPanel.create();         //저장, 타이틀, 설명, 완성도그래프, 상태 콤보박스. (공통 영역)
 var pnl_content = ApPanel.create();     //(컨텐츠 개별 영역)
@@ -48,7 +113,7 @@ var pnl_tab = ApPanel.create();         //탭 패널.
 var pnl_tabView = ApPanel.create();     //각 탭의 컨텐츠.
 
 //메인 탭의 컴포넌트
-var pnl_mainTabView = ApLabel.create("메인 뷰");
+var pnl_mainTabView = ApPanel.create("메인 뷰");
 //그래프 전체, 담당자, 각 탭 (각 컴포넌트 main 붙여서 명명.)
 
 //서브 탭의 컴포넌트
@@ -100,6 +165,7 @@ ApEvent.onlaod = function () {
 
     //메인 뷰
     pnl_tabView.full(pnl_mainTabView);
+    pnl_mainTabView.full(myChart);
 
     //서브 뷰
     pnl_subTabView.divideV(pnl_tabGraph, pnl_graphGrd);
