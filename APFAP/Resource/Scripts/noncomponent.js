@@ -104,6 +104,9 @@ var DBconnect = {
                         })
                     } else {
                         var fieldArr = [];
+                        fieldArr.push({
+                            'name': 'AP_STATE', 'type': 'bool'
+                        });
                         for (var i = 0; i < Object.keys(json).length ; i++) {
                             var name = Object.keys(json)[i];
                             var type = typeof (json[Object.keys(json)[i]]);
