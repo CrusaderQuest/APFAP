@@ -30,10 +30,14 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
     text_cc.setValue(record.data.USERID);
 }
 */
-//pr.addParam('START_DT', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.START_DT));
 //-----------------최상단 공통 컴포넌트-----------------
 btn_save.eClick = function () {
     dbSave();
+    if (isSearched) {
+        //filterStore
+    } else {
+
+    }
 }
 //-----------------------DB 통신-----------------------
 //해당 탭의 테이블을 가져옴.
@@ -113,10 +117,70 @@ function dbSave() {
 
     //저장되었습니다.
     isUpdated = 0;
+
+    //if(isSearched)
 }
 //------------------------조회 조건----------------------------
+function dbSearch() {
+    //현재 탭의 스토어 가져옴
+    for (var i = 0; i < grdStore.data.length; i++) {
+        filterStore.add(grdStore.getAt(i));
+    }
+
+    for (var i = 0; i < filterStore.data.length; i++) {
+        // 조회 조건을 충족하지 못하는 레코드 제거
+        if (dt_sStartDate.getValue() != undefined && dt_sStartDate.getValue() != ''
+            && dt_eStartDate.getValue() != undefined && dt_eStartDate.getValue() != '') {
+            if (dt_sStartDate.getValue() > filterStore.getAt(i).data.START_DT || dt_eStartDate.getValue() < filterStore.getAt(i).data.START_DT) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (dt_sDeadLine.getValue() != undefined && dt_sDeadLine.getValue() != ''
+            && dt_eDeadLine.getValue() != undefined && dt_eDeadLine.getValue() != '') {
+            if (dt_sDeadLine.getValue() > filterStore.getAt(i).data.DEADLINE || dt_eDeadLine.getValue() < filterStore.getAt(i).data.DEADLINE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (dt_sEndDate.getValue() != undefined && dt_sEndDate.getValue() != ''
+            && dt_eEndDate.getValue() != undefined && dt_eEndDate.getValue() != '') {
+            if (dt_sEndDate.getValue() > filterStore.getAt(i).data.END_DT || dt_eEndDate.getValue() < filterStore.getAt(i).data.END_DT) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_devState.getValue() != '전체' && cmb_devState.getValue() != undefined && cmb_devState.getValue() != '') {
+            if (cmb_devState.getValue() != filterStore.getAt(i).data.DEV_STATE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_testState.getValue() != '전체' && cmb_testState.getValue() != undefined && cmb_testState.getValue() != '') {
+            if (cmb_testState.getValue() != filterStore.getAt(i).data.TEST_STATE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_user.getValue() != '전체' && cmb_user.getValue() != undefined && cmb_user.getValue() != '') {
+            if (cmb_user.getValue() != filterStore.getAt(i).data.USER_NM) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+
+    }
+    grd.reconfigure(filterStore);
+    isSearched = 1;
+}
 btn_search.eClick = function () {
-    
+    dbSearch();
 }
 //----------------------그리드 버튼 이벤트----------------------
 //추가
@@ -135,11 +199,25 @@ grd.eButtonDeleteClick = function () {
     isUpdated = 1;
 }
 //--------------------------그래프-----------------------------
+//탭 그래프
 function calGraph() {
-
+    var per = 0;
+    for (var i = 0; i < grdStore.data.length; i++) {
+        if (grdStore.data.items[i].data.DEV_VALUE == false)
+            per += 0;
+        else if (grdStore.data.items[i].data.TEST_VALUE == false)
+            per += (0.5 / grdStore.data.length);
+        else if (grdStore.data.items[i].data.TEST_VALUE == true)
+            per += (1 / grdStore.data.length);
+    }
+    per = per * 100;
+    per = Ext.Number.toFixed(per, 2);
+    tabChartStore.data.items[0].data.data = per;
+    tabChart.redraw();
 }
 //------------------5개 탭 버튼 클릭 이벤트---------------------
 btn_main.eClick = function () {
+    isSearched = 0;
     var selBtn = 0;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -149,6 +227,7 @@ btn_main.eClick = function () {
         msgSaveWarning(selBtn);
 }
 btn_server.eClick = function () {
+    isSearched = 0;
     var selBtn = 1;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -158,6 +237,7 @@ btn_server.eClick = function () {
         msgSaveWarning(selBtn);
 }
 btn_db.eClick = function () {
+    isSearched = 0;
     var selBtn = 2;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -167,6 +247,7 @@ btn_db.eClick = function () {
         msgSaveWarning(selBtn);
 }
 btn_ui.eClick = function () {
+    isSearched = 0;
     var selBtn = 3;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -176,6 +257,7 @@ btn_ui.eClick = function () {
         msgSaveWarning(selBtn);
 }
 btn_etc.eClick = function () {
+    isSearched = 0;
     var selBtn = 4;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -224,6 +306,7 @@ function viewSelTab(selBtn) {
         pnl_subTabView.setHidden(true);
         pnl_tabView.full(pnl_mainTabView);
     }
+    calGraph();
     selBtnColor(currentBtn);
 }
 function initBtnColor(i) {

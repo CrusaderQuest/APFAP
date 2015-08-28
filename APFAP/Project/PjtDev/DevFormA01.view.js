@@ -28,6 +28,12 @@ var comboSearchValue = Ext.create('Ext.data.ArrayStore', {
         ['false', 'F']
     ]
 });
+var tabChartStore = Ext.create('Ext.data.JsonStore', {
+    fields: ['name', 'data'],
+    data: [
+    { 'name': '진척률', 'data': 0 }
+    ]
+});
 
 var grd = ApGrid.create(true,true);
 
@@ -69,7 +75,7 @@ var myChart = Ext.create('Ext.chart.Chart', {
             position: 'left',
             fields: 'name',
             title: 'Sample Metrics',
-            grid:true
+            grid: true
         }
     ],
     series: [{
@@ -92,6 +98,58 @@ var myChart = Ext.create('Ext.chart.Chart', {
             height: 20,
             renderer: function (storeItem, item) {
                 this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1'));
+            }
+        }
+    }]
+});
+
+var tabChart = Ext.create('Ext.chart.Chart', {
+    width: 300,
+    height: 100,
+    store: tabChartStore,
+    padding: '10 0 0 0',
+    style: 'background: #fff',
+    animate: true,
+    shadow: false,
+    insetPadding: 40,
+
+    //legend: true,
+    axes: [
+        {
+            type: 'Numeric',
+            position: 'bottom',
+            fields: 'data',
+            grid: true,
+            minimum: 0,
+            maximum: 100
+        },
+        {
+            type: 'Category',
+            position: 'left',
+            fields: 'name',
+            grid: true
+        }
+    ],
+    series: [{
+        type: 'bar',
+        axis: 'bottom',
+        xField: 'name',
+        yField: 'data',
+        style: {
+            //width: '30',
+            opacity: 0.80
+        },
+        highlight: {
+            fill: '#000',
+            'stroke-width': 2,
+            stroke: '#fff'
+        },
+        tips: {
+            trackMouse: true,
+            style: 'background: #FFF',
+            height: 20,
+            renderer: function (storeItem, item) {
+                this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data'));
             }
         }
     }]
@@ -169,10 +227,12 @@ ApEvent.onlaod = function () {
 
     //서브 뷰
     pnl_subTabView.divideV(pnl_tabGraph, pnl_graphGrd);
-    pnl_tabGraph.setHeight(100);
+    pnl_tabGraph.setHeight(150);
     pnl_graphGrd.divideV(pnl_tabSearch, pnl_tabGrd);
     pnl_tabSearch.setHeight(60);
     pnl_tabSearch.divideV(tbl_tabSearch1, tbl_tabSearch2);
+
+    pnl_tabGraph.full(tabChart);
 
     //초기 설정
     for (var i = 0; i < 5; i++) {
@@ -197,8 +257,8 @@ ApEvent.onlaod = function () {
     dt_eStartDate.setWidth(100);
     dt_eDeadLine.setWidth(100);
     dt_eEndDate.setWidth(100);
-    lbl_b.setWidth(83);
-    lbl_c.setWidth(72);
+    lbl_b.setWidth(78);
+    lbl_c.setWidth(73);
     cmb_devState.setWidth(70);
     cmb_testState.setWidth(70);
     lbl_f.setWidth(80);
