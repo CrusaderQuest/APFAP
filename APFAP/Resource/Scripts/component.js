@@ -672,12 +672,12 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 width: width,
                 dataIndex: paramId,
                 align: 'center',
-                trueText: 'true',
-                falseText: 'false',
+                //trueText: 'true',
+                //falseText: 'false',
                 align: 'center',
                 editor: {
                     xtype: 'checkfield',
-                    selectOnFocus: true,
+                    //selectOnFocus: true,
                 }
             };
             break;
@@ -739,11 +739,22 @@ ApGrid.prototype.getEmptyRecord = function () {
     return newRecord;
 }
 ApGrid.prototype.getSelectedRecords = function () {
-    var checkedRecords = this.getSelection();
-    checkedRecords.sort(function (a, b) {
-        return a.internalId < b.internalId ? -1 : a.internalId > b.internalId ? 1 : 0;
-    });
-    return checkedRecords;
+    //var checkedRecords = this.getSelection();
+    //checkedRecords.sort(function (a, b) {
+    //    return a.internalId < b.internalId ? -1 : a.internalId > b.internalId ? 1 : 0;
+    //});
+    var returnRecords = [];
+    if (this.checkedGrid) {
+        for (var i = 0; i < this.store.getCount() ; i++) {
+            if (this.getRow(i).data.AP_STATE) {
+                returnRecords.push(this.getRow(i));
+            }
+        }
+    } else {
+        returnRecords.push(grd_H.selection);
+    }
+   
+    return returnRecords;
 }
 ApGrid.prototype.getRowIndex = function (record) {
     return this.getStore().indexOf(record);
@@ -762,6 +773,7 @@ ApGrid.prototype.getDeletedRecords = function () {
 }
 ApGrid.prototype.reconfig = function (store) {
     this.reconfigure(store);
+    //체크컬럼 있는지 알아내기
     this.deleted = [];
 }
 ApGrid.prototype.getRow = function (rowIndex) {
@@ -796,10 +808,7 @@ ApGrid.prototype.eButtonDeleteClick = function () {
 }
 var ApGrid = {
     create: function (check, type) {
-        var selModel = '';
-        if (check) {
-            selModel = Ext.create('Ext.selection.CheckboxModel');
-        }
+        //var selModel = '';
         var toolbar = [];
         if (type == undefined || false) {
             toolbar = [];
@@ -846,12 +855,13 @@ var ApGrid = {
             //store: store,
             width: 'fit',
             title: '',
+            checkedGrid : check,
             //header: true,
             lockColumns: [],
             deleted:[],
             dockedItems: toolbar,
             border: 1,
-            selModel: selModel,
+            //selModel: selModel,
             columns: [Ext.create('Ext.grid.RowNumberer')],
             plugins: [Ext.create('Ext.grid.plugin.CellEditing', {
                 clicksToEdit: 2
@@ -904,12 +914,23 @@ var ApGrid = {
                             record.set(editor.context.column.dataIndex, Ext.Date.dateFormat(editor.context.value, 'Y-m-d'));
                         }
                         _ApGrid.eUpdate(record, e.rowIdx, dataIndex);
+                        if (record.dirty) {
+                            //레코드가 더러울때
+                            record.set('AP_STATE', true);
+                        } else {
+                            record.set('AP_STATE', false);
+                        }
+                        delete record.modified['AP_STATE'];
+                        _ApGrid.view.refresh();
                     } catch (e) {
 
                     }
                 }
             }
         })
+        if (check) {
+            _ApGrid.addColumn('check', '선택', 'AP_STATE', 50);
+        }
         return _ApGrid;
     }
 }
@@ -995,6 +1016,11 @@ Ext.define('ApDate', {
 ApDate.prototype.setToday = function () {
     this.setValue(Ext.Date.dateFormat(new Date(), 'Y-m-d'));
 };
+ApDate.prototype.getYMD = function () {
+    return Ext.Date.dateFormat(this.getValue(), 'Ymd');
+    //var value = this.superclass.getValue.call(this);
+    //return Ext.Date.dateFormat(value, 'Ymd');
+}
 ApDate.prototype.eChange = function (Value) { };
 ApDate.prototype.eKeyDown = function (e) { };
 var ApDate = {
