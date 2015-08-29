@@ -4,6 +4,7 @@
 /// <reference path="DefFormB01.view.js" />
 
 //View 단 정의 영역 시작
+var index;
 function GRD_LOAD() {
     //데이터생성
     var pr = DBParams.create('sp_DefFormB01', 'GET_TABLE');
@@ -11,19 +12,15 @@ function GRD_LOAD() {
     var ds = DBconnect.runProcedure(pr);
     gridData = ds[0];
     grd_a.reconfigure(gridData);
-}
-set_txt = function (bool) {
-    grd_a.setDisabled(bool);
-    btn_save.setVisible(!bool);
-    btn_change.setVisible(bool);
+
 }
 grd_a.eButtonAddClick = function () {
-    gridData.add({ FUNC_IMP: '선택', CATEGORY: '기타', FUNC_NM: '', SUMMARY: '', BLANK: '' }); 
+    gridData.add({ FUNC_IMP: '선택', CATEGORY: '기타', FUNC_NM: '', SUMMARY: '', S_DT: '', E_USER: '' });
 }
 
 grd_a.eButtonDeleteClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
-        Ext.Msg.alert("경고 창", "체크 해주세요.");
+        //Ext.Msg.alert("경고 창", "클릭 해주세요.");
     } else {
         for (var i = 0; i < grd_a.getSelection().length; i++) {
             var tempNo = grd_a.getSelection()[i].data.UP_KEY;
@@ -32,16 +29,14 @@ grd_a.eButtonDeleteClick = function () {
         gridData.remove(grd_a.selModel.getSelection());
     }
 }
-
-btn_change.eClick = function () {
-    set_txt(false);
-}
 btn_save.eClick = function () {
     for (var i = 0; i < gridData.data.length; i++) {
         //튜블 수 loop
         var pr;
         if (gridData.data.items[i].data.UP_KEY == 0) {//insert
             pr = DBParams.create('sp_DefFormB01', 'INSERT_TABLE');
+            pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
+            //pr.addParam('S_DT', gridData.data.items[i].data.S_DT);
         } else {//update
             pr = DBParams.create('sp_DefFormB01', 'UPDATE_TABLE');
             pr.addParam('UP_KEY', gridData.data.items[i].data.UP_KEY);
@@ -50,13 +45,11 @@ btn_save.eClick = function () {
         pr.addParam('CATEGORY', gridData.data.items[i].data.CATEGORY);
         pr.addParam('FUNC_NM', gridData.data.items[i].data.FUNC_NM);
         pr.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
-        pr.addParam('BLANK', gridData.data.items[i].data.BLANK);
-
+        pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
         var ds = DBconnect.runProcedure(pr);
     }
     deleteDB();
     //
-    set_txt(true);
     GRD_LOAD();
 }
 function deleteDB() {
@@ -67,4 +60,27 @@ function deleteDB() {
         var ds = DBconnect.runProcedure(pr);
     }
 }
+//grid 변환
+grd_a.eSelectionChange = function (record, rowIndex, paramId) {
+    console.log(paramId, record.data, rowIndex);
+    index = rowIndex;
+    cbo_imp.setValue(record.data.FUNC_IMP);
+    cbo_category.setValue(record.data.CATEGORY);
+    txt_nm.setValue(record.data.FUNC_NM);
+    txta_summary.setValue(record.data.SUMMARY);
+    cbo_NOTICE_USER_HH.setValue(record.data.E_USER);
+ 
+}
 
+//grid update
+btn_update.eClick = function () {
+    gridData.data.items[index].data.FUNC_IMP = cbo_imp.getValue();
+    gridData.data.items[index].data.CATEGORY = cbo_category.getValue();
+    gridData.data.items[index].data.FUNC_NM = txt_nm.getValue();
+    gridData.data.items[index].data.SUMMARY = txta_summary.getValue();
+    gridData.data.items[index].data.E_USER = cbo_NOTICE_USER_HH.getValue();
+    if (gridData.data.items[index].data.S_DT == ''){
+        gridData.data.items[index].data.S_DT = new Date('08/30/2015');
+    }
+    grd_a.reconfigure(gridData);
+}
