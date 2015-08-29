@@ -13,6 +13,11 @@ var comboSearchUser;    //조회용 User 콤보박스
 var grdStore;           //그리드 스토어
 var filterStore;        //필터 그리드 스토어
 
+var tabChart;
+var mainTabChart;
+var mainUserChart;
+
+
 var comboStoreValue = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEVALUE', 'SHOWVALUE'],
     data: [
@@ -34,127 +39,22 @@ var tabChartStore = Ext.create('Ext.data.JsonStore', {
     { 'name': '진척률', 'data': 0 }
     ]
 });
-
+var mainTabChartStore = Ext.create('Ext.data.JsonStore', {
+    fields: ['name', 'data'],
+    data: [
+    { 'name': '기타', 'data': 0 },
+    { 'name': 'UI', 'data': 0 },
+    { 'name': 'DB', 'data': 0 },
+    { 'name': '서버', 'data': 0 },
+    { 'name': '전체', 'data': 0 }
+    ]
+});
+var mainUserChartStore = Ext.create('Ext.data.JsonStore', {
+    fields: ['name', 'data']
+});
 var grd = ApGrid.create(true,true);
 
 //-------------------폼 전역변수 끝-----------------
-
-//----------------------그래프-----------------------
-var store = Ext.create('Ext.data.JsonStore', {
-    fields: ['name', 'data1'],
-    data: [
-    { 'name': 'metric one', 'data1': 25 },
-    { 'name': 'metric two', 'data1': 14 }
-    ]
-});
-
-var myChart = Ext.create('Ext.chart.Chart', {
-    width: 300,
-    height: 300,
-    store: store,
-    padding: '10 0 0 0',
-    style: 'background: #fff',
-    animate: true,
-    shadow: false,
-    insetPadding: 40,
-
-    //legend: true,
-    axes: [
-        {
-            type: 'Numeric',
-            position: 'bottom',
-            fields: 'data1',
-            title: 'Sample Values',
-            minimum: 0,
-            grid: true,
-            minimum: 0,
-            maximum: 50
-        },
-        {
-            type: 'Category',
-            position: 'left',
-            fields: 'name',
-            title: 'Sample Metrics',
-            grid: true
-        }
-    ],
-    series: [{
-        type: 'bar',
-        axis: 'bottom',
-        xField: 'name',
-        yField: 'data1',
-        style: {
-            //width: '30',
-            opacity: 0.80
-        },
-        highlight: {
-            fill: '#000',
-            'stroke-width': 2,
-            stroke: '#fff'
-        },
-        tips: {
-            trackMouse: true,
-            style: 'background: #FFF',
-            height: 20,
-            renderer: function (storeItem, item) {
-                this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data1'));
-            }
-        }
-    }]
-});
-
-var tabChart = Ext.create('Ext.chart.Chart', {
-    width: 300,
-    height: 100,
-    store: tabChartStore,
-    padding: '10 0 0 0',
-    style: 'background: #fff',
-    animate: true,
-    shadow: false,
-    insetPadding: 40,
-
-    //legend: true,
-    axes: [
-        {
-            type: 'Numeric',
-            position: 'bottom',
-            fields: 'data',
-            grid: true,
-            minimum: 0,
-            maximum: 100
-        },
-        {
-            type: 'Category',
-            position: 'left',
-            fields: 'name',
-            grid: true
-        }
-    ],
-    series: [{
-        type: 'bar',
-        axis: 'bottom',
-        xField: 'name',
-        yField: 'data',
-        style: {
-            //width: '30',
-            opacity: 0.80
-        },
-        highlight: {
-            fill: '#000',
-            'stroke-width': 2,
-            stroke: '#fff'
-        },
-        tips: {
-            trackMouse: true,
-            style: 'background: #FFF',
-            height: 20,
-            renderer: function (storeItem, item) {
-                this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data'));
-            }
-        }
-    }]
-});
-//---------------------그래프 끝---------------------
 
 //-------------------컴포넌트 시작--------------------
 var pnl_top = ApPanel.create();         //저장, 타이틀, 설명, 완성도그래프, 상태 콤보박스. (공통 영역)
@@ -171,7 +71,9 @@ var pnl_tab = ApPanel.create();         //탭 패널.
 var pnl_tabView = ApPanel.create();     //각 탭의 컨텐츠.
 
 //메인 탭의 컴포넌트
-var pnl_mainTabView = ApPanel.create("메인 뷰");
+var pnl_mainTabView = ApPanel.create(); //메인 뷰
+var pnl_mainTabChart = ApPanel.create();
+var pnl_mainUserChart = ApPanel.create();
 //그래프 전체, 담당자, 각 탭 (각 컴포넌트 main 붙여서 명명.)
 
 //서브 탭의 컴포넌트
@@ -222,8 +124,8 @@ ApEvent.onlaod = function () {
     pnl_tab.full(tab);
 
     //메인 뷰
+    pnl_mainTabView.divideV(pnl_mainTabChart, pnl_mainUserChart);
     pnl_tabView.full(pnl_mainTabView);
-    pnl_mainTabView.full(myChart);
 
     //서브 뷰
     pnl_subTabView.divideV(pnl_tabGraph, pnl_graphGrd);
@@ -231,8 +133,6 @@ ApEvent.onlaod = function () {
     pnl_graphGrd.divideV(pnl_tabSearch, pnl_tabGrd);
     pnl_tabSearch.setHeight(60);
     pnl_tabSearch.divideV(tbl_tabSearch1, tbl_tabSearch2);
-
-    pnl_tabGraph.full(tabChart);
 
     //초기 설정
     for (var i = 0; i < 5; i++) {
@@ -243,6 +143,20 @@ ApEvent.onlaod = function () {
     //dbLoad();
     dbUserLoad();
     getEmptyTable();
+
+    //----------------------그래프-----------------------
+
+    tabChart = initChart(tabChartStore);
+    mainTabChart = initChart(mainTabChartStore);
+    mainUserChart = initChart(mainUserChartStore);
+
+    pnl_mainTabChart.full(mainTabChart);
+    pnl_mainUserChart.full(mainUserChart);
+    pnl_tabGraph.full(tabChart);
+
+    drawMainChart();
+
+    //---------------------그래프 끝---------------------
 
     grd.addColumn('text', '개발 단위', 'D_DEV_NM', 200);
     grd.addColumn('date', '시작 날짜', 'START_DT', 120);

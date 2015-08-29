@@ -35,6 +35,7 @@ btn_save.eClick = function () {
     dbSave();
     if (isSearched) {
         //filterStore
+        //dbSearch();
     } else {
 
     }
@@ -55,10 +56,16 @@ function getEmptyTable() {
 }
 //프로젝트와 연결된 유저 가져옴.
 function dbUserLoad() {
+    //그리드의 콤보박스
     var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
     var ds1 = DBconnect.runProcedure(pr1);
     comboStoreUser = ds1[0];
+    //메인의 유저 차트
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        mainUserChartStore.add({ name:comboStoreUser.data.items[i].data.SHOWVALUE, data:0 });
+    }
 
+    //조회조건의 콤보박스
     var pr2 = DBParams.create('sp_DevFormA01', 'GET_USER_SEARCH');
     var ds2 = DBconnect.runProcedure(pr2);
     comboSearchUser = ds2[0];
@@ -117,8 +124,6 @@ function dbSave() {
 
     //저장되었습니다.
     isUpdated = 0;
-
-    //if(isSearched)
 }
 //------------------------조회 조건----------------------------
 function dbSearch() {
@@ -200,7 +205,7 @@ grd.eButtonDeleteClick = function () {
 }
 //--------------------------그래프-----------------------------
 //탭 그래프
-function calGraph() {
+function drawTabChart() {
     var per = 0;
     for (var i = 0; i < grdStore.data.length; i++) {
         if (grdStore.data.items[i].data.DEV_VALUE == false)
@@ -214,6 +219,163 @@ function calGraph() {
     per = Ext.Number.toFixed(per, 2);
     tabChartStore.data.items[0].data.data = per;
     tabChart.redraw();
+}
+function drawMainChart() {
+    //mainTabChartStore 채우기
+    var totalPer = 0;
+    
+    for (var i = 0; i < 4; i++) {
+        var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+        pr.addParam('H_DEV_NO', i);
+        var ds = DBconnect.runProcedure(pr);
+        var tempStore = ds[0];
+
+        var tabPer = 0;
+
+        for (var j = 0; j < tempStore.data.length; j++) {
+            if (tempStore.data.items[j].data.DEV_VALUE == false)
+                tabPer += 0;
+            else if (tempStore.data.items[j].data.TEST_VALUE == false)
+                tabPer += (0.5 / tempStore.data.length);
+            else if (tempStore.data.items[j].data.TEST_VALUE == true)
+                tabPer += (1 / tempStore.data.length);
+        }
+        tabPer = tabPer * 100;
+        totalPer += (tabPer / 4);
+        tabPer = Ext.Number.toFixed(tabPer, 2);
+        mainTabChartStore.data.items[3-i].data.data = tabPer;
+    }
+    totalPer = Ext.Number.toFixed(totalPer, 2);
+    mainTabChartStore.data.items[4].data.data = totalPer;
+
+    //mainUserChartStore 채우기
+    var pr1 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr1.addParam('H_DEV_NO', 0);
+    var ds1 = DBconnect.runProcedure(pr1);
+    var tempStore1 = ds1[0];
+    var pr2 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr2.addParam('H_DEV_NO', 1);
+    var ds2 = DBconnect.runProcedure(pr2);
+    var tempStore2 = ds2[0];
+    var pr3 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr3.addParam('H_DEV_NO', 2);
+    var ds3 = DBconnect.runProcedure(pr3);
+    var tempStore3 = ds3[0];
+    var pr4 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr4.addParam('H_DEV_NO', 3);
+    var ds4 = DBconnect.runProcedure(pr4);
+    var tempStore4 = ds4[0];
+
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        var cnt = 0;
+        var userPer = 0;
+        for (var j = 0; j < tempStore1.data.length; j++) {
+            if (tempStore1.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore1.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore1.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore1.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore2.data.length; j++) {
+            if (tempStore2.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore2.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore2.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore2.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore3.data.length; j++) {
+            if (tempStore3.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore3.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore3.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore3.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore4.data.length; j++) {
+            if (tempStore4.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore4.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore4.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore4.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+
+        userPer = userPer / cnt;
+        userPer = userPer * 100;
+        userPer = Ext.Number.toFixed(userPer, 2);
+        mainUserChartStore.data.items[i].data.data = userPer;
+    }
+mainTabChart.redraw();
+mainUserChart.redraw();
+}
+function initChart(storeTemp) {
+    var chart = Ext.create('Ext.chart.Chart', {
+        width: 300,
+        height: 100,
+        store: storeTemp,
+        padding: '10 0 0 0',
+        style: 'background: #fff',
+        animate: true,
+        shadow: false,
+        insetPadding: 40,
+
+        //legend: true,
+        axes: [
+            {
+                type: 'Numeric',
+                position: 'bottom',
+                fields: 'data',
+                grid: true,
+                minimum: 0,
+                maximum: 100
+            },
+            {
+                type: 'Category',
+                position: 'left',
+                fields: 'name',
+                grid: true
+            }
+        ],
+        series: [{
+            type: 'bar',
+            axis: 'bottom',
+            xField: 'name',
+            yField: 'data',
+            style: {
+                //width: '30',
+                opacity: 0.80
+            },
+            highlight: {
+                fill: '#000',
+                'stroke-width': 2,
+                stroke: '#fff'
+            },
+            tips: {
+                trackMouse: true,
+                style: 'background: #FFF',
+                height: 20,
+                width: 100,
+                renderer: function (storeItem, item) {
+                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data'));
+                }
+            }
+        }]
+    });
+    return chart;
 }
 //------------------5개 탭 버튼 클릭 이벤트---------------------
 btn_main.eClick = function () {
@@ -300,13 +462,14 @@ function viewSelTab(selBtn) {
         pnl_mainTabView.setHidden(true);
         pnl_subTabView.setHidden(false);
         pnl_tabView.full(pnl_subTabView);
+        drawTabChart();
     }
     else {
         pnl_mainTabView.setHidden(false);
         pnl_subTabView.setHidden(true);
         pnl_tabView.full(pnl_mainTabView);
+        drawMainChart();
     }
-    calGraph();
     selBtnColor(currentBtn);
 }
 function initBtnColor(i) {
