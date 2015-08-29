@@ -29,14 +29,14 @@ grd.addColumn('text', 'table Name', 'TABLE_NM', 195);
 
 
 ///////////////////////////////////////////////////////////
-//var pnl_DBdetail_down = ApPanel.create('Down');
-//var tbl_button = ApTable.create(3);
-//tbl_button.setTarget();
-//var btn_insert = ApButton.create('insert');
-//var btn_delete = ApButton.create('delete');
-//var btn_save = ApButton.create('save');
-//tbl_button.setPosition(540, 0, null);
-//pnl_DBdetail_down.full(tbl_button);
+var pnl_DBdetail_down = ApPanel.create('Down');
+var tbl_button = ApTable.create(3);
+tbl_button.setTarget();
+var btn_insert = ApButton.create('insert');
+var btn_delete = ApButton.create('delete');
+var btn_save = ApButton.create('save');
+tbl_button.setPosition(540, 0, null);
+pnl_DBdetail_down.full(tbl_button);
 
 
 var pnl_DBdetail_up = ApPanel.create('Up of up on grid');
@@ -137,7 +137,7 @@ var pnl_search = ApPanel.create('search');
 ApEvent.onlaod = function () {
     tab.addTab('enroll').divideH(pnl_DBname, pnl_DBdetail);
     tab.addTab('search');
-    pnl_DBdetail_OUT.full(pnl_DBdetail_up);
+    pnl_DBdetail_OUT.divideV(pnl_DBdetail_up, pnl_DBdetail_down, pnl_DBdetail_up);
     pnl_DBdetail_up.setHeight(380);
     pnl_DBdetail_up.setWidth('fit');
     pnl_DBdetail.divideV(pnl_DBdetail_OUT, grd_Example, pnl_DBdetail_OUT);
