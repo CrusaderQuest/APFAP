@@ -10,30 +10,37 @@ var pnl_contents = ApPanel.create("UI_ANLYSIS");
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWDATA', 'HIDEDATA'],
     data: [
-        ['H', 'HIGH'],
-        ['M', 'MIDDLE'],
-        ['L', 'LOW']
+        ['소프트웨어', 'SOFTWARE'],
+        ['하드웨어', 'HARDWARE'],
+        ['인력', 'HUMAN'],
+        ['기타', 'ETC']
     ]
 });
 var gridData;
-
+var deleteArray = [];
 //pnl_grid
+var tbl_btn = ApTable.create();
+tbl_btn.setTarget();
+var btn_change = ApButton.create("수정");
+var btn_save = ApButton.create("저장");
 
-var tbl_grid = ApTable.create();
-tbl_grid.setTarget();
-var btn_add = ApButton.create("그리드 추가");
-var btn_del = ApButton.create("그리드 삭제");
-var btn_save = ApButton.create("데이터베이스에 저장");
-var grd_a = ApGrid.create(true);
-grd_a.addColumn('text', '분류', 'CATEGORY', 200);
+var grd_a = ApGrid.create(true,true);
+grd_a.addColumn('combo', '분류', ['CATEGORY', comboStore], 200);
 grd_a.addColumn('text', '명칭', 'DEV_NM', 300);
 grd_a.addColumn('text', '용도', 'DEV_USE', 400);
 grd_a.addColumn('text', '비고', 'BLANK', 300);
 
 //grd_a.reconfigure(gridData);
 ApEvent.onlaod = function () {
-    pnl_contents.divideV(grd_a, tbl_grid);
-    viewPanel.full(pnl_contents);
 
+    grd_a.setDisabled(true);
+
+    btn_save.setVisible(false);
+    btn_change.setWidth(70);
+    btn_save.setWidth(70);
+
+    pnl_contents.divideV(tbl_btn, grd_a);
+    tbl_btn.setHeight(50);
+    viewPanel.full(pnl_contents);
     GRD_LOAD();
 }

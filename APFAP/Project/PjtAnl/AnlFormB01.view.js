@@ -54,6 +54,7 @@ var cbo_imp = ApCombo.create("중요도");
 var cbo_lev = ApCombo.create("난이도");
 var txt_blank = ApText.create("비고 ");
 
+//cbo data setup
 cbo_lev.addItem('★', 1);
 cbo_lev.addItem('★★', 2);
 cbo_lev.addItem('★★★', 3);
@@ -79,16 +80,14 @@ grd_a.addColumn('text', '난이도', 'LEV', 100);
 grd_a.addColumn('text', '비고', 'BLANK', 300);
 
 
-viewPanel.full(pnl_contents);
-//grd_a.reconfigure(gridData);
-
 ApEvent.onlaod = function () {
 
     pnl_contents.divideV(pnl_input, pnl_grid);
     pnl_input.divideV(tbl_input, tbl_input2);
     tbl_input.bodyStyle = 'padding: 10px 10px';
     tbl_input2.bodyStyle = 'padding: 10px 10px';
+    pnl_input.setHeight(200);
     pnl_grid.divideV(grd_a, tbl_grid);
-
+    viewPanel.full(pnl_contents);
     GRD_LOAD();
 }
