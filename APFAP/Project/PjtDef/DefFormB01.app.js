@@ -4,8 +4,6 @@
 /// <reference path="DefFormB01.view.js" />
 
 //View 단 정의 영역 시작
-var i = 0;
-var length = 0;
 function GRD_LOAD() {
     //데이터생성
     var pr = DBParams.create('sp_DefFormB01', 'GET_TABLE');
@@ -13,18 +11,17 @@ function GRD_LOAD() {
     var ds = DBconnect.runProcedure(pr);
     gridData = ds[0];
     grd_a.reconfigure(gridData);
-    length = gridData.data.length;
 }
 set_txt = function (bool) {
     grd_a.setDisabled(bool);
     btn_save.setVisible(!bool);
     btn_change.setVisible(bool);
 }
-grd_a.eButtonAddClick = function () {
-    gridData.add({ FUNC_IMP: '선택', CATEGORY: '기타', FUNC_NM: '', SUMMARY: '', BLANK: '' }); 
+btn_add.eClick = function () {
+    gridData.add({ FUNC_IMP: '선택', CATEGORY: '기타',}); 
 }
 
-grd_a.eButtonDeleteClick = function () {
+btn_del.eClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
         Ext.Msg.alert("경고 창", "체크 해주세요.");
     } else {
@@ -71,3 +68,10 @@ function deleteDB() {
     }
 }
 
+grd_a.eSelectionChange = function (record, rowIndex, paramId) {
+    console.log(paramId, record.data, rowIndex);
+
+    txt_nm.setValue(gridData.data.items[rowIndex].data.FUNC_NM);
+    txta_summary.setValue(gridData.data.items[rowIndex].data.FUNC_NM);
+    txta_summary.setValue(gridData.data.items[rowIndex].data.FUNC_NM);
+}
