@@ -50,6 +50,47 @@ btn_ADDNOICE_HH.eClick = function () {
     dt_NOTICE_S_DT_HH.setToday();
     dt_NOTICE_E_DT_HH.setToday();
     cbo_NOTICE_USER_HH.setIndex(0);
+    grd_D.setFocusOut();
+    txt_NOTICE_TITLE_HH.focus();
+}
+//등록버튼 클릭
+btn_SAVENOICE_HH.eClick = function () {
+    //빈값 체크
+    if (txt_NOTICE_TITLE_HH.getValue() == '') {
+        ApMsg.warning('공지사항을 입력하세요.', function () {
+            //메세지의 확인버튼을 누를경우 포커스 이동
+            txt_NOTICE_TITLE_HH.focus();
+        })
+        return;
+    }
+    if (txa_NOTICE_CONTENT_HH.getValue() == '') {
+        ApMsg.warning('공지의 세부사항을 입력하세요.', function () {
+            //메세지의 확인버튼을 누를경우 포커스 이동
+            txa_NOTICE_CONTENT_HH.focus();
+        })
+        return;
+    }
+    if (grd_D.selection == null) {
+        //추가
+        grd_D.addRow();
+        grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTICE_TITLE', txt_NOTICE_TITLE_HH.getValue());
+        grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTICE_CONTENT', txa_NOTICE_CONTENT_HH.getValue());
+        grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTICE_S_DT', dt_NOTICE_S_DT_HH.getYMD());
+        grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTiCE_E_DT', dt_NOTICE_S_DT_HH.getYMD());
+        grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTICE_USER', cbo_NOTICE_USER_HH.getValue());
+        grd_D.setFocus(grd_D.getTotalCount() - 1);
+        grd_D.selection.set('AP_STATE', true);
+    } else {
+        //저장
+        grd_D.selection.set('NOTICE_TITLE', txt_NOTICE_TITLE_HH.getValue());
+        grd_D.selection.set('NOTICE_CONTENT', txa_NOTICE_CONTENT_HH.getValue());
+        grd_D.selection.set('NOTICE_S_DT', dt_NOTICE_S_DT_HH.getYMD());
+        grd_D.selection.set('NOTiCE_E_DT', dt_NOTICE_E_DT_HH.getYMD());
+        grd_D.selection.set('NOTICE_USER', cbo_NOTICE_USER_HH.getValue());
+        grd_D.selection.set('AP_STATE', true);
+        grd_D.setFocus(grd_D.getRowIndex(grd_D.selection));
+    }
+
 }
 //헤더그리드 조회
 function SEARCH_H() {

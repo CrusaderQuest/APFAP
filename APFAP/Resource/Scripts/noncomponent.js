@@ -15,6 +15,15 @@ var ApFn = {
     setImportColor: function (text) {
         var tag = "<font color='red'>" + text + '</font>';
         return tag
+    },
+    getUser: function () {
+        return 'U0000001';
+    },
+    getProjectKey: function () {
+        return 'P0000000001';
+    },
+    isMaster: function () {
+        return true;
     }
 }
 
@@ -63,7 +72,7 @@ var DBconnect = {
     runProcedure: function (dbParams) {
         var procedureName = dbParams.procedureName;
         var procedureSection = dbParams.procedureSection;
-        dbParams.addParam('PROJECT_KEY', 'P0000000001');
+        dbParams.addParam('PROJECT_KEY', ApFn.getProjectKey());
         var params = dbParams.params;
         var storeSet = [];
         Ext.Ajax.request({
@@ -104,6 +113,9 @@ var DBconnect = {
                         })
                     } else {
                         var fieldArr = [];
+                        fieldArr.push({
+                            'name': 'AP_STATE', 'type': 'bool'
+                        });
                         for (var i = 0; i < Object.keys(json).length ; i++) {
                             var name = Object.keys(json)[i];
                             var type = typeof (json[Object.keys(json)[i]]);

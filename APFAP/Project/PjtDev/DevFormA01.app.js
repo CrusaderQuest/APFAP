@@ -6,204 +6,10 @@
 //App 단 정의 영역 시작
 
 //그리드 T/F 체크박스로 구현.
-//상위 카테고리 추가하고 조회하는 것 추가.
+//탭 옮기면 조회조건 초기화.
+//저장하면 조회조건은 그대로고 저장하고 조회조건으로 다시 조회해서 reconfigure
 
-//window
 /*
-function msgShow(i, j) {
-    Ext.Msg.show({
-        message: (i + 1) + '번째 탭' + (j + 1) + '번째 튜플 오류',
-        icon: Ext.Msg.WARNING,
-    });
-}
-function totalMsgShow() {
-    Ext.Msg.show({
-        message: '전체 카테고리는 지울 수 없습니다.',
-        icon: Ext.Msg.WARNING,
-    });
-}
-function catMsgShow() {
-    Ext.Msg.show({
-        message: '해당 카테고리에 해당하는 튜플이 전부 삭제됩니다. 수행하시겠습니까?',
-        buttons: Ext.Msg.YESNO,
-        icon: Ext.Msg.WARNING,
-        fn: function (btn) {
-            if (btn === 'yes') {
-                categoryDeleteArray.add({ CATEGORY_NO: convertCATEGORY_NO(currentCat) });
-                for (var i = 0; i < 4; i++) {
-                    
-                    for (var j = 0; j < dTableArray.data.items[i].data.data.length; j++) {
-                        //dTable에서 삭제,deleteArray 추가.
-                        if (dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM == currentCat) {
-                            dDevDeleteArray.data.items[i].data.add({ D_DEV_NO: dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO });
-                            dTableArray.data.items[i].data.removeAt(j);
-                            j = j - 1;
-                        }
-                    }
-
-                }
-                for (var i = 0; i < comboStoreCategory.data.length; i++) {
-                    if (comboStoreCategory.data.items[i].data.SHOWVALUE == currentCat) {
-                        comboStoreCategory.removeAt(i);
-                        cmb_catView.bindStore(comboStoreCategory);
-                    }
-                }
-                currentCat = '전체';
-                initBtnColor(currentBtn);
-                currentBtn = 0;
-                selBtnColor(currentBtn);
-                grd.reconfigure(dTableArray.data.items[currentBtn].data);
-            }
-        }
-    });
-}
-//DB 통신
-function dbLoad() {
-    var pr1 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
-    var ds1 = DBconnect.runProcedure(pr1);
-    for (var i = 0; i < 4; i++) {
-        dTableArray.add(ds1[i]);
-        dDevDeleteArray.add(Ext.create('Ext.data.ArrayStore', {
-            model: 'devDelete_Array'
-        }));
-    }
-}
-function dbSave() {
-    dTableAdd();
-    for (var i = 0; i < 4; i++) {
-        var errTuple;
-        if (errTuple = isErrInTuple(i)) {
-            msgShow(i, errTuple);
-            return 0;
-        }
-    }
-    categoryInsertUpdate();
-    comboStoreCategory.clearData();
-    selComboStoreCategory.clearData();
-    dbCategoryLoad();
-
-    dbInsertUpdate();
-    dbDelete();
-    categoryDelete();
-    comboStoreCategory.clearData();
-    selComboStoreCategory.clearData();
-    dbCategoryLoad();
-    return 1;
-}
-function dbUserLoad() {
-    var pr = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
-    var ds = DBconnect.runProcedure(pr);
-    comboStoreUser = ds[0];
-}
-function dbCategoryLoad() {
-    var pr1 = DBParams.create('sp_DevFormA01', 'GET_DEV_CATEGORY');
-    var ds1 = DBconnect.runProcedure(pr1);
-    comboStoreCategory = ds1[0];
-    cmb_catView.bindStore(comboStoreCategory);
-    var pr2 = DBParams.create('sp_DevFormA01', 'GET_SEL_CATEGORY');
-    var ds2 = DBconnect.runProcedure(pr2);
-    selComboStoreCategory = ds2[0];
-}
-//DB 통신 private
-function isErrInTuple(i) {
-    //튜플들이 정상인지. return ( 에러x: 0 에러o: 튜플번호.)
-    for (var j = 0; j < dTableArray.data.items[i].data.data.length; j++) {
-        if (dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM == '')
-            return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.D_DEV_NM == '')
-            return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.START_DT == '')
-            return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.DEV_VALUE == '')
-            return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.TEST_VALUE == '')
-            return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.DEADLINE == '')
-            return j;
-        if (dTableArray.data.items[i].data.data.items[j].data.USER_NM == '')
-            return j;
-    }
-    return false;
-}
-function dbInsertUpdate() {
-    for (var i = 0; i < 4; i++) {
-        //서버,DB,UI,기타 loop
-        for (var j = 0; j < dTableArray.data.items[i].data.data.length; j++) {
-            //각 탭 튜블 수 loop
-            var pr;
-            if (dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO == 0) {//insert
-                pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
-                pr.addParam('H_DEV_NO', i);
-
-            } else {//update
-                pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
-                pr.addParam('D_DEV_NO', dTableArray.data.items[i].data.data.items[j].data.D_DEV_NO);
-
-            }
-            pr.addParam('CATEGORY_NO', convertCATEGORY_NO(dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM));
-            pr.addParam('D_DEV_NM', dTableArray.data.items[i].data.data.items[j].data.D_DEV_NM);
-            pr.addParam('START_DT', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.START_DT));
-            pr.addParam('DEV_VALUE', dTableArray.data.items[i].data.data.items[j].data.DEV_VALUE);
-            pr.addParam('TEST_VALUE', dTableArray.data.items[i].data.data.items[j].data.TEST_VALUE);
-            pr.addParam('DEADLINE', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.DEADLINE));
-            pr.addParam('USER_KEY', convertUSER_KEY(dTableArray.data.items[i].data.data.items[j].data.USER_NM));
-            //pr.addParam('USER_KEY', 
-            //              getUserNm(dTableArray.data.items[i].data.data.items[j].data.USER_KEY));
-            if (dTableArray.data.items[i].data.data.items[j].data.END_DT != null)
-                pr.addParam('END_DT', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.END_DT));
-
-            var ds = DBconnect.runProcedure(pr);
-        }
-    }
-}
-function dbDelete() {
-    for (var i = 0; i < 4; i++) {
-        //서버,DB,UI,기타 loop
-        for (var j = 0; j < dDevDeleteArray.data.items[i].data.data.length; j++) {
-            //각 탭 delete list 튜블 수 loop
-            var pr = DBParams.create('sp_DevFormA01', 'DELETE_TABLE');
-            pr.addParam('D_DEV_NO', dDevDeleteArray.data.items[i].data.data.items[j].data.D_DEV_NO);
-            var ds = DBconnect.runProcedure(pr);
-        }
-    }
-}
-function categoryInsertUpdate() {
-    for (var i = 0; i < comboStoreCategory.data.length; i++) {
-        //각 탭 튜블 수 loop
-        var pr;
-        if (comboStoreCategory.data.items[i].data.HIDEVALUE == 0) {//insert
-            pr = DBParams.create('sp_DevFormA01', 'INSERT_CATEGORY');
-        } else {//update
-            pr = DBParams.create('sp_DevFormA01', 'UPDATE_CATEGORY');
-            pr.addParam('CATEGORY_NO', comboStoreCategory.data.items[i].data.HIDEVALUE);
-        }
-        //pr.addParam('CATEGORY_NO', convertCATEGORY_NO(dTableArray.data.items[i].data.data.items[j].data.CATEGORY_NM));
-        pr.addParam('CATEGORY_NM', comboStoreCategory.data.items[i].data.SHOWVALUE);
-
-        var ds = DBconnect.runProcedure(pr);
-    }
-}
-function categoryDelete() {
-    for (var i = 0; i < categoryDeleteArray.data.length; i++) {
-        //각 탭 delete list 튜블 수 loop
-        var pr = DBParams.create('sp_DevFormA01', 'DELETE_CATEGORY');
-        pr.addParam('CATEGORY_NO', categoryDeleteArray.data.items[i].data.CATEGORY_NO);
-        var ds = DBconnect.runProcedure(pr);
-    }
-}
-function convertUSER_KEY(input) {
-    for (var i = 0; i < comboStoreUser.data.length; i++) {
-        if (comboStoreUser.data.items[i].data.SHOWDATA == input)
-            return comboStoreUser.data.items[i].data.HIDEDATA;
-    }
-}
-function convertCATEGORY_NO(input) {
-    for (var i = 0; i < selComboStoreCategory.data.length; i++) {
-        if (selComboStoreCategory.data.items[i].data.SHOWDATA == input)
-            return selComboStoreCategory.data.items[i].data.HIDEDATA;
-    }
-}
-
 //filterStore 변경.
 function setFilterStore() {
     filterStore.clearData();
@@ -214,185 +20,7 @@ function setFilterStore() {
     }
     grd.reconfigure(filterStore);
 }
-//3개 버튼 (카테고리)
-btn_catInsert.eClick = function () {
-    //같은 이름이 있는지
-    for (var i = 0; i < comboStoreCategory.data.length; i++) {
-        if (comboStoreCategory.data.items[i].data.SHOWVALUE == txt_catInsert.getValue()) 
-            return;
-    }
-    //null이 아니면 추가
-    if (txt_catInsert.getValue() != '') {
-        var input = txt_catInsert.getValue();
-        comboStoreCategory.add({ HIDEVALUE: 0, SHOWVALUE: input });
-        cmb_catView.bindStore(comboStoreCategory);
-        txt_catInsert.setValue(null);
 
-        if (currentCat == '전체') {
-            grd.reconfigure(dTableArray.data.items[currentBtn].data);
-        } else {
-            grd.reconfigure(filterStore);
-        }
-    }
-}
-btn_catSearch.eClick = function () {
-    dTableAdd();
-    if (currentCat != '전체') {
-        setFilterStore();
-        grd.setLockColumns('CATEGORY_NM');
-    }
-    else {
-        grd.reconfigure(dTableArray.data.items[currentBtn].data);
-        grd.setUnLockColumns('CATEGORY_NM');
-    }
-}
-btn_catDelete.eClick = function () {
-    dTableAdd();
-    if (currentCat == '전체')
-        totalMsgShow();
-    else
-        catMsgShow();
-}
-
-//탭 변경시 메인 store add
-function dTableAdd() {
-    for (var i = 0; i < filterStore.data.length; i++) {
-        if (filterStore.data.items[i].data.D_DEV_NO < 0) {
-            filterStore.data.items[i].data.D_DEV_NO = 0;
-            dTableArray.data.items[currentBtn].data.add(filterStore.data.items[i].data);
-        }
-    }
-    filterStore.clearData();
-}
-//4개 탭
-btn_server.eClick = function () {
-    //이제 탭에서 cmb값을 조건으로 reconfigure 해야함.
-    if (currentBtn != 0) {
-        dTableAdd();
-        initBtnColor(currentBtn);
-        currentBtn = 0;
-        selBtnColor(currentBtn);
-        if (currentCat == '전체') {
-            grd.reconfigure(dTableArray.data.items[0].data);
-        } else {
-            setFilterStore();
-        }
-    }
-}
-btn_db.eClick = function () {
-    if (currentBtn != 1) {
-        dTableAdd();
-        initBtnColor(currentBtn);
-        currentBtn = 1;
-        selBtnColor(currentBtn);
-        if (currentCat == '전체') {
-            grd.reconfigure(dTableArray.data.items[1].data);
-        } else {
-            setFilterStore();
-        }
-    }
-}
-btn_ui.eClick = function () {
-    if (currentBtn != 2) {
-        dTableAdd();
-        initBtnColor(currentBtn);
-        currentBtn = 2;
-        selBtnColor(currentBtn);
-        if (currentCat == '전체') {
-            grd.reconfigure(dTableArray.data.items[2].data);
-        } else {
-            setFilterStore();
-        }
-    }
-}
-btn_etc.eClick = function () {
-    if (currentBtn != 3) {
-        dTableAdd();
-        initBtnColor(currentBtn);
-        currentBtn = 3;
-        selBtnColor(currentBtn);
-        if (currentCat == '전체') {
-            grd.reconfigure(dTableArray.data.items[3].data);
-        } else {
-            setFilterStore();
-        }
-    }
-}
-//3개 버튼 (그리드)
-grd.eButtonAddClick = function () {
-    //새 튜플 추가.
-    //이제 insert,delete에 filterSotre에 되어도 dTable 에도 되어야함.
-    if (currentCat != '전체') {
-        filterStore.add({
-            D_DEV_NO: filterStoreCnt, CATEGORY_NM: currentCat, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
-            DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
-        });
-        
-    } else {
-        dTableArray.data.items[currentBtn].data.add({
-            D_DEV_NO: filterStoreCnt, CATEGORY_NM: null, D_DEV_NM: null, START_DT: null, DEV_VALUE: null, TEST_VALUE: null,
-            DEADLINE: null, USER_KEY: null, USER_NM: null, END_DT: null
-        });
-        
-    }
-    filterStoreCnt = filterStoreCnt - 1;
-}
-grd.eButtonDeleteClick = function () {
-    //deletelist추가
-    for (var i = 0; i < grd.getSelection().length; i++) {
-        var tempNo = grd.getSelection()[i].data.D_DEV_NO;
-        dDevDeleteArray.data.items[currentBtn].data.add({ D_DEV_NO: tempNo });
-    }
-    if (currentCat != '전체') {
-
-        
-
-        var tempCnt = grd.getSelection().length;
-        for (var i = 0; i < tempCnt; i++) {
-            for (var j = 0; j < 4; j++) {
-                for (var k = 0; k < dTableArray.data.items[j].data.data.length; k++) {
-                    if (dTableArray.data.items[j].data.data.items[k].data.D_DEV_NO == grd.getSelection()[i].data.D_DEV_NO) {
-                        dTableArray.data.items[j].data.removeAt(k);
-                        k = k - 1;
-                    }
-                }
-            }
-        }
-        filterStore.remove(grd.getSelection());
-
-    }
-    dTableArray.data.items[currentBtn].data.remove(grd.getSelection());
-}
-btn_save.eClick = function () {
-    if (saveBtnState == 0) {
-        pnl_content.setDisabled(false);
-        btn_save.setText("저장");
-        saveBtnState = 1;
-    } else {
-        pnl_content.setDisabled(true);
-        btn_save.setText("수정");
-        saveBtnState = 0;
-        //DB 통신 insert, update, delete.
-        if (dbSave()) {
-            //다시 로드. deletelist 초기화
-            dDevDeleteArray.clearData();
-            categoryDeleteArray.clearData();
-            dTableArray.clearData();
-            filterStore.clearData();
-            
-            dbLoad();
-            
-            grd.columnsMap[0].getEditor().bindStore(selComboStoreCategory);
-            grd.setUnLockColumns('CATEGORY_NM');
-            grd.reconfigure(dTableArray.data.items[0].data);
-            initBtnColor(currentBtn);
-            currentBtn = 0;
-            selBtnColor(currentBtn);
-            cmb_catView.setSelection(comboStoreCategory.data.items[0]);
-            cmb_catView.eChange(cmb_catView);
-        }
-    }
-}
 //콤보박스 변경 이벤트.
 cmb_catView.eChange = function (record) {
     currentCat = record.selection.data.SHOWVALUE;
@@ -401,18 +29,16 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
     console.log(paramId, record.data, rowIndex);
     text_cc.setValue(record.data.USERID);
 }
-grd.eUpdate = function (record, rowIndex, paramId) {
-    if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
-        var t1Date = record.get(paramId);
-        var t2Date = Ext.Date.dateFormat(t1Date, 'Y-m-d');
-        record.set(paramId, t2Date);
-    }
-}
 */
-
 //-----------------최상단 공통 컴포넌트-----------------
 btn_save.eClick = function () {
+    dbSave();
+    if (isSearched) {
+        //filterStore
+        //dbSearch();
+    } else {
 
+    }
 }
 //-----------------------DB 통신-----------------------
 //해당 탭의 테이블을 가져옴.
@@ -430,114 +56,422 @@ function getEmptyTable() {
 }
 //프로젝트와 연결된 유저 가져옴.
 function dbUserLoad() {
+    //그리드의 콤보박스
     var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
     var ds1 = DBconnect.runProcedure(pr1);
     comboStoreUser = ds1[0];
+    //메인의 유저 차트
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        mainUserChartStore.add({ name:comboStoreUser.data.items[i].data.SHOWVALUE, data:0 });
+    }
 
+    //조회조건의 콤보박스
     var pr2 = DBParams.create('sp_DevFormA01', 'GET_USER_SEARCH');
     var ds2 = DBconnect.runProcedure(pr2);
     comboSearchUser = ds2[0];
 }
+//저장.
+function dbSave() {
+    //업데이트 되었는지
+    if (!isUpdated) return;
+
+    //체크된 레코드
+    var selectedRecords = grd.getSelectedRecords();
+
+    //체크된 레코드에 에러값이 있는지
+    if (isErrTuple(selectedRecords)) return;
+
+    //추가된행과 업데이트된 행 분기하여 디비에 저장
+    var pr = '';
+    var ds = '';
+    for (var i = 0; i < selectedRecords.length; i++) {
+        if (selectedRecords[i].get('D_DEV_NO') == undefined || selectedRecords[i].get('D_DEV_NO') == 0) {
+            pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
+            pr.addParam('H_DEV_NO', currentBtn - 1);
+            pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
+            pr.addParam('START_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('START_DT')));
+            pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
+            pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
+            pr.addParam('DEADLINE', ApFn.toDbTyoe('date',selectedRecords[i].get('DEADLINE')));
+            pr.addParam('USER_KEY', convertUSER_KEY(selectedRecords[i].get('USER_NM')));
+            pr.addParam('END_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('END_DT')));
+
+            ds = DBconnect.runProcedure(pr);
+        } else {
+            pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
+            pr.addParam('D_DEV_NO', selectedRecords[i].get('D_DEV_NO'));
+            pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
+            pr.addParam('START_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('START_DT')));
+            pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
+            pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
+            pr.addParam('DEADLINE', ApFn.toDbTyoe('date',selectedRecords[i].get('DEADLINE')));
+            pr.addParam('USER_KEY', convertUSER_KEY(selectedRecords[i].get('USER_NM')));
+            pr.addParam('END_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('END_DT')));
+
+            ds = DBconnect.runProcedure(pr);
+        }
+    }
+
+    //삭제된 행
+    var deletedRecords = grd.getDeletedRecords();
+    for (var i = 0; i < deletedRecords.length; i++) {
+        if (deletedRecords[i].get('D_DEV_NO') != undefined || deletedRecords[i].get('D_DEV_NO') != 0) {
+            pr = DBParams.create('sp_DevFormA01', 'DELETE_TABLE');
+            pr.addParam('D_DEV_NO', deletedRecords[i].get('D_DEV_NO'));
+            ds = DBconnect.runProcedure(pr);
+        }
+    }
+
+    //저장되었습니다.
+    isUpdated = 0;
+}
 //------------------------조회 조건----------------------------
+function dbSearch() {
+    //현재 탭의 스토어 가져옴
+    for (var i = 0; i < grdStore.data.length; i++) {
+        filterStore.add(grdStore.getAt(i));
+    }
+
+    for (var i = 0; i < filterStore.data.length; i++) {
+        // 조회 조건을 충족하지 못하는 레코드 제거
+        if (dt_sStartDate.getValue() != undefined && dt_sStartDate.getValue() != ''
+            && dt_eStartDate.getValue() != undefined && dt_eStartDate.getValue() != '') {
+            if (dt_sStartDate.getValue() > filterStore.getAt(i).data.START_DT || dt_eStartDate.getValue() < filterStore.getAt(i).data.START_DT) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (dt_sDeadLine.getValue() != undefined && dt_sDeadLine.getValue() != ''
+            && dt_eDeadLine.getValue() != undefined && dt_eDeadLine.getValue() != '') {
+            if (dt_sDeadLine.getValue() > filterStore.getAt(i).data.DEADLINE || dt_eDeadLine.getValue() < filterStore.getAt(i).data.DEADLINE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (dt_sEndDate.getValue() != undefined && dt_sEndDate.getValue() != ''
+            && dt_eEndDate.getValue() != undefined && dt_eEndDate.getValue() != '') {
+            if (dt_sEndDate.getValue() > filterStore.getAt(i).data.END_DT || dt_eEndDate.getValue() < filterStore.getAt(i).data.END_DT) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_devState.getValue() != '전체' && cmb_devState.getValue() != undefined && cmb_devState.getValue() != '') {
+            if (cmb_devState.getValue() != filterStore.getAt(i).data.DEV_STATE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_testState.getValue() != '전체' && cmb_testState.getValue() != undefined && cmb_testState.getValue() != '') {
+            if (cmb_testState.getValue() != filterStore.getAt(i).data.TEST_STATE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_user.getValue() != '전체' && cmb_user.getValue() != undefined && cmb_user.getValue() != '') {
+            if (cmb_user.getValue() != filterStore.getAt(i).data.USER_NM) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+
+    }
+    grd.reconfigure(filterStore);
+    isSearched = 1;
+}
 btn_search.eClick = function () {
-    //if(dt_sStartDate.)
+    dbSearch();
 }
 //----------------------그리드 버튼 이벤트----------------------
 //추가
 grd.eButtonAddClick = function () {
     grd.addRow();
+    //grd_H.getRow(grd_H.getTotalCount() - 1).set('NOTICE_USER', 'JuneJobs');
+    //grd_H.setFocus(grd_H.getTotalCount() - 1);
+    isUpdated = 1;
 }
 //삭제
 grd.eButtonDeleteClick = function () {
-    var selectedRecords = grd_H.getSelectedRecords();
+    var selectedRecords = grd.getSelectedRecords();
+    var index = grd.getRowIndex(grd.getSelectedRecords()[0]);
     grd.deleteRow(selectedRecords);
+    grd.setFocus(index - 1);
+    isUpdated = 1;
 }
 //--------------------------그래프-----------------------------
-function calGraph() {
+//탭 그래프
+function drawTabChart() {
+    var per = 0;
+    for (var i = 0; i < grdStore.data.length; i++) {
+        if (grdStore.data.items[i].data.DEV_VALUE == false)
+            per += 0;
+        else if (grdStore.data.items[i].data.TEST_VALUE == false)
+            per += (0.5 / grdStore.data.length);
+        else if (grdStore.data.items[i].data.TEST_VALUE == true)
+            per += (1 / grdStore.data.length);
+    }
+    per = per * 100;
+    per = Ext.Number.toFixed(per, 2);
+    tabChartStore.data.items[0].data.data = per;
+    tabChart.redraw();
+}
+function drawMainChart() {
+    //mainTabChartStore 채우기
+    var totalPer = 0;
+    
+    for (var i = 0; i < 4; i++) {
+        var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+        pr.addParam('H_DEV_NO', i);
+        var ds = DBconnect.runProcedure(pr);
+        var tempStore = ds[0];
 
+        var tabPer = 0;
+
+        for (var j = 0; j < tempStore.data.length; j++) {
+            if (tempStore.data.items[j].data.DEV_VALUE == false)
+                tabPer += 0;
+            else if (tempStore.data.items[j].data.TEST_VALUE == false)
+                tabPer += (0.5 / tempStore.data.length);
+            else if (tempStore.data.items[j].data.TEST_VALUE == true)
+                tabPer += (1 / tempStore.data.length);
+        }
+        tabPer = tabPer * 100;
+        totalPer += (tabPer / 4);
+        tabPer = Ext.Number.toFixed(tabPer, 2);
+        mainTabChartStore.data.items[3-i].data.data = tabPer;
+    }
+    totalPer = Ext.Number.toFixed(totalPer, 2);
+    mainTabChartStore.data.items[4].data.data = totalPer;
+
+    //mainUserChartStore 채우기
+    var pr1 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr1.addParam('H_DEV_NO', 0);
+    var ds1 = DBconnect.runProcedure(pr1);
+    var tempStore1 = ds1[0];
+    var pr2 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr2.addParam('H_DEV_NO', 1);
+    var ds2 = DBconnect.runProcedure(pr2);
+    var tempStore2 = ds2[0];
+    var pr3 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr3.addParam('H_DEV_NO', 2);
+    var ds3 = DBconnect.runProcedure(pr3);
+    var tempStore3 = ds3[0];
+    var pr4 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr4.addParam('H_DEV_NO', 3);
+    var ds4 = DBconnect.runProcedure(pr4);
+    var tempStore4 = ds4[0];
+
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        var cnt = 0;
+        var userPer = 0;
+        for (var j = 0; j < tempStore1.data.length; j++) {
+            if (tempStore1.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore1.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore1.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore1.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore2.data.length; j++) {
+            if (tempStore2.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore2.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore2.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore2.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore3.data.length; j++) {
+            if (tempStore3.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore3.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore3.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore3.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore4.data.length; j++) {
+            if (tempStore4.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore4.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore4.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore4.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+
+        userPer = userPer / cnt;
+        userPer = userPer * 100;
+        userPer = Ext.Number.toFixed(userPer, 2);
+        mainUserChartStore.data.items[i].data.data = userPer;
+    }
+mainTabChart.redraw();
+mainUserChart.redraw();
+}
+function initChart(storeTemp) {
+    var chart = Ext.create('Ext.chart.Chart', {
+        width: 300,
+        height: 100,
+        store: storeTemp,
+        padding: '10 0 0 0',
+        style: 'background: #fff',
+        animate: true,
+        shadow: false,
+        insetPadding: 40,
+
+        //legend: true,
+        axes: [
+            {
+                type: 'Numeric',
+                position: 'bottom',
+                fields: 'data',
+                grid: true,
+                minimum: 0,
+                maximum: 100
+            },
+            {
+                type: 'Category',
+                position: 'left',
+                fields: 'name',
+                grid: true
+            }
+        ],
+        series: [{
+            type: 'bar',
+            axis: 'bottom',
+            xField: 'name',
+            yField: 'data',
+            style: {
+                //width: '30',
+                opacity: 0.80
+            },
+            highlight: {
+                fill: '#000',
+                'stroke-width': 2,
+                stroke: '#fff'
+            },
+            tips: {
+                trackMouse: true,
+                style: 'background: #FFF',
+                height: 20,
+                width: 100,
+                renderer: function (storeItem, item) {
+                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data'));
+                }
+            }
+        }]
+    });
+    return chart;
 }
 //------------------5개 탭 버튼 클릭 이벤트---------------------
 btn_main.eClick = function () {
-    if (currentBtn != 0) {
-
-
-        initBtnColor(currentBtn);
-        //넘어 온 후 작업
-        currentBtn = 0;
-
-        
-        selBtnColor(currentBtn);
-        pnl_mainTabView.setHidden(false);
-        pnl_subTabView.setHidden(true);
-        pnl_tabView.full(pnl_mainTabView);
+    isSearched = 0;
+    var selBtn = 0;
+    if (!isUpdated) {
+        viewSelTab(selBtn);
+        return;
     }
+    if (isUpdated && currentBtn != selBtn)
+        msgSaveWarning(selBtn);
 }
 btn_server.eClick = function () {
-    if (currentBtn != 1) {
-        //넘어오기 전 작업
-
-        initBtnColor(currentBtn);
-        //넘어 온 후 작업
-        currentBtn = 1;
-
-        getTable();
-        grd.reconfigure(grdStore);
-        selBtnColor(currentBtn);
-        pnl_mainTabView.setHidden(true);
-        pnl_subTabView.setHidden(false);
-        pnl_tabView.full(pnl_subTabView);
+    isSearched = 0;
+    var selBtn = 1;
+    if (!isUpdated) {
+        viewSelTab(selBtn);
+        return;
     }
+    if (isUpdated && currentBtn != selBtn)
+        msgSaveWarning(selBtn);
 }
 btn_db.eClick = function () {
-    if (currentBtn != 2) {
-        //넘어오기 전 작업
-
-        initBtnColor(currentBtn);
-        //넘어 온 후 작업
-        currentBtn = 2;
-
-        getTable();
-        grd.reconfigure(grdStore);
-        selBtnColor(currentBtn);
-        pnl_mainTabView.setHidden(true);
-        pnl_subTabView.setHidden(false);
-        pnl_tabView.full(pnl_subTabView);
+    isSearched = 0;
+    var selBtn = 2;
+    if (!isUpdated) {
+        viewSelTab(selBtn);
+        return;
     }
+    if (isUpdated && currentBtn != selBtn)
+        msgSaveWarning(selBtn);
 }
 btn_ui.eClick = function () {
-    if (currentBtn != 3) {
-        //넘어오기 전 작업
-
-        initBtnColor(currentBtn);
-        //넘어 온 후 작업
-        currentBtn = 3;
-
-        getTable();
-        grd.reconfigure(grdStore);
-        selBtnColor(currentBtn);
-        pnl_mainTabView.setHidden(true);
-        pnl_subTabView.setHidden(false);
-        pnl_tabView.full(pnl_subTabView);
+    isSearched = 0;
+    var selBtn = 3;
+    if (!isUpdated) {
+        viewSelTab(selBtn);
+        return;
     }
+    if (isUpdated && currentBtn != selBtn)
+        msgSaveWarning(selBtn);
 }
 btn_etc.eClick = function () {
-    if (currentBtn != 4) {
-        //넘어오기 전 작업
-
-        initBtnColor(currentBtn);
-        //넘어 온 후 작업
-        currentBtn = 4;
-
-        getTable();
-        grd.reconfigure(grdStore);
-        selBtnColor(currentBtn);
-        pnl_mainTabView.setHidden(true);
-        pnl_subTabView.setHidden(false);
-        pnl_tabView.full(pnl_subTabView);
+    isSearched = 0;
+    var selBtn = 4;
+    if (!isUpdated) {
+        viewSelTab(selBtn);
+        return;
     }
+    if (isUpdated && currentBtn != selBtn)
+        msgSaveWarning(selBtn);
 }
 
 //-------------------------util function------------------------
+function msgSaveWarning(selBtn) {
+    var btnState;
+    Ext.Msg.show({
+        message: '저장되지 않은 데이터는 삭제될 수 있습니다.\n저장 하시겠습니까?',
+        buttons: Ext.Msg.YESNOCANCEL,
+        icon: Ext.Msg.WARNING,
+        fn: function (btn) {
+            if (btn === 'yes') {
+                dbSave();
+                isUpdated = 0;
+                btnState = 'yes';
+                viewSelTab(selBtn);
+            } else if(btn == 'no'){
+                isUpdated = 0;
+                btnState = 'no';
+                viewSelTab(selBtn);
+            } else {
+                btnState = 'cancel';
+            }
+        }
+    });
+}
+function viewSelTab(selBtn) {
+    initBtnColor(currentBtn);
+    currentBtn = selBtn;
+    if (selBtn != 0) {
+        getTable();
+        grd.reconfigure(grdStore);
+        
+        pnl_mainTabView.setHidden(true);
+        pnl_subTabView.setHidden(false);
+        pnl_tabView.full(pnl_subTabView);
+        drawTabChart();
+    }
+    else {
+        pnl_mainTabView.setHidden(false);
+        pnl_subTabView.setHidden(true);
+        pnl_tabView.full(pnl_mainTabView);
+        drawMainChart();
+    }
+    selBtnColor(currentBtn);
+}
 function initBtnColor(i) {
     if (i == 0) {
         btn_main.setStyle('background-color', '#0000ff');
@@ -562,5 +496,41 @@ function selBtnColor(i) {
         btn_ui.setStyle('background-color', '#00ffff');
     } else {
         btn_etc.setStyle('background-color', '#00ffff');
+    }
+}
+function isErrTuple(selectedRecords) {
+    for (var i = 0; i < selectedRecords.length; i++) {
+        //특정 셀의 값을 확인
+        if (selectedRecords[i].get('D_DEV_NM') == undefined || selectedRecords[i].get('D_DEV_NM') == ''
+            || selectedRecords[i].get('START_DT') == undefined || selectedRecords[i].get('START_DT') == ''
+            || selectedRecords[i].get('DEV_VALUE') == undefined || selectedRecords[i].get('DEV_VALUE') == ''
+            || selectedRecords[i].get('TEST_VALUE') == undefined || selectedRecords[i].get('TEST_VALUE') == ''
+            || selectedRecords[i].get('DEADLINE') == undefined || selectedRecords[i].get('DEADLINE') == ''
+            || selectedRecords[i].get('USER_NM') == undefined || selectedRecords[i].get('USER_NM') == '') {
+            var index = grd.getRowIndex(selectedRecords[i]);
+            //에러메세지 띄움
+            ApMsg.warning(index + 1 + '번째 행의 데이터를 넣어주세요.', function () {
+                //메세지의 확인버튼을 누를경우 그리드 포커스 이동
+                grd.setFocus(index);
+            })
+            return true;
+        }
+    }
+    return false;
+}
+grd.eUpdate = function (record, rowIndex, paramId) {
+    /*
+    if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
+        var t1Date = record.get(paramId);
+        var t2Date = Ext.Date.dateFormat(t1Date, 'Y-m-d');
+        record.set(paramId, t2Date);
+    }
+    */
+    isUpdated = 1;
+}
+function convertUSER_KEY(input) {
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        if (comboStoreUser.data.items[i].data.SHOWVALUE == input)
+            return comboStoreUser.data.items[i].data.HIDEVALUE;
     }
 }
