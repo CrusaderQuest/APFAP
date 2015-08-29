@@ -628,6 +628,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                     xtype: 'textfield',
                     align: 'left',
                 }
+
             });
             break;
         case 'num':
@@ -671,12 +672,12 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 width: width,
                 dataIndex: paramId,
                 align: 'center',
-                //trueText: 'true',
-                //falseText: 'false',
+                trueText: 'true',
+                falseText: 'false',
                 align: 'center',
                 editor: {
                     xtype: 'checkfield',
-                    //selectOnFocus: true,
+                    selectOnFocus: true,
                 }
             };
             break;
@@ -694,21 +695,6 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                     displayField: 'SHOWVALUE',
                     valueField: 'HIDEVALUE',
                     store: paramId[1],
-                    listeners: {
-                        itemupdate: function (editor, e, eOpts) {
-                            console.log('sdf');
-                        }
-                    }
-                    //renderer: function (value) {
-                    //    if (value != 0 && value != "") {
-                    //        if (paramId[1].findRecord("HIDEVALUE", value) != null)
-                    //            return paramId[1].findRecord("HIDEVALUE", value).get('name');
-                    //        else
-                    //            return value;
-                    //    }
-                    //    else
-                    //        return "";  // display nothing if value is empty
-                    //}
                 }
             });
             break;
@@ -753,22 +739,11 @@ ApGrid.prototype.getEmptyRecord = function () {
     return newRecord;
 }
 ApGrid.prototype.getSelectedRecords = function () {
-    //var checkedRecords = this.getSelection();
-    //checkedRecords.sort(function (a, b) {
-    //    return a.internalId < b.internalId ? -1 : a.internalId > b.internalId ? 1 : 0;
-    //});
-    var returnRecords = [];
-    if (this.checkedGrid) {
-        for (var i = 0; i < this.store.getCount() ; i++) {
-            if (this.getRow(i).data.AP_STATE) {
-                returnRecords.push(this.getRow(i));
-            }
-        }
-    } else {
-        returnRecords.push(grd_H.selection);
-    }
-   
-    return returnRecords;
+    var checkedRecords = this.getSelection();
+    checkedRecords.sort(function (a, b) {
+        return a.internalId < b.internalId ? -1 : a.internalId > b.internalId ? 1 : 0;
+    });
+    return checkedRecords;
 }
 ApGrid.prototype.getRowIndex = function (record) {
     return this.getStore().indexOf(record);
@@ -787,7 +762,6 @@ ApGrid.prototype.getDeletedRecords = function () {
 }
 ApGrid.prototype.reconfig = function (store) {
     this.reconfigure(store);
-    //체크컬럼 있는지 알아내기
     this.deleted = [];
 }
 ApGrid.prototype.getRow = function (rowIndex) {
@@ -817,15 +791,15 @@ ApGrid.prototype.setFocus = function (rowIndex) {
     this.getView().focusRow(rowIndex);
     this.eSelectionChange(this.getSelection()[0], rowIndex, this.columnsMap[1].dataIndex);
 }
-ApGrid.prototype.setFocusOut = function () {
-    this.selModel.deselectAll();
-}
 ApGrid.prototype.eButtonDeleteClick = function () {
 
 }
 var ApGrid = {
     create: function (check, type) {
-        //var selModel = '';
+        var selModel = '';
+        if (check) {
+            selModel = Ext.create('Ext.selection.CheckboxModel');
+        }
         var toolbar = [];
         if (type == undefined || false) {
             toolbar = [];
@@ -872,13 +846,12 @@ var ApGrid = {
             //store: store,
             width: 'fit',
             title: '',
-            checkedGrid : check,
             //header: true,
             lockColumns: [],
             deleted:[],
             dockedItems: toolbar,
             border: 1,
-            //selModel: selModel,
+            selModel: selModel,
             columns: [Ext.create('Ext.grid.RowNumberer')],
             plugins: [Ext.create('Ext.grid.plugin.CellEditing', {
                 clicksToEdit: 2
@@ -931,52 +904,12 @@ var ApGrid = {
                             record.set(editor.context.column.dataIndex, Ext.Date.dateFormat(editor.context.value, 'Y-m-d'));
                         }
                         _ApGrid.eUpdate(record, e.rowIdx, dataIndex);
-                        if (record.dirty) {
-                            //레코드가 더러울때
-                            record.set('AP_STATE', true);
-                        } else {
-                            record.set('AP_STATE', false);
-                        }
-                        delete record.modified['AP_STATE'];
-                        _ApGrid.view.refresh();
                     } catch (e) {
 
                     }
                 }
             }
         })
-        if (check) {
-            _ApGrid.addColumn('check', '선택', 'AP_STATE', 50);
-        }
-        _ApGrid.view.on('itemupdate', function (record, index, node, eOpts) {
-            //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
-            if (record.dirty) {
-                //레코드가 더러울때
-                record.set('AP_STATE', true);
-            } else {
-                record.set('AP_STATE', false);
-            }
-            delete record.modified['AP_STATE'];
-            _ApGrid.view.refresh();
-
-            //for (var key in record.modified) {
-            //    for (var i = 0; i < _ApGrid.columnsMap.length; i++) {
-            //        try {
-            //            if (_ApGrid.columnsMap[i].config.editor.xtype == 'combobox') {
-            //                if (_ApGrid.columnsMap[i].dataIndex == key) {
-            //                    for (var j = 0; j < _ApGrid.columnsMap[i].editor.store.data.items.length; j++) {
-            //                        if (_ApGrid.columnsMap[i].editor.store.data.items[j].data.HIDEVALUE == record.data[key]) {
-            //                            record.set(key, _ApGrid.columnsMap[i].editor.store.data.items[j].data.SHOWVALUE);
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //        } catch (e) {
-
-            //        }
-            //    }
-            //}
-        });
         return _ApGrid;
     }
 }
@@ -1062,11 +995,6 @@ Ext.define('ApDate', {
 ApDate.prototype.setToday = function () {
     this.setValue(Ext.Date.dateFormat(new Date(), 'Y-m-d'));
 };
-ApDate.prototype.getYMD = function () {
-    return Ext.Date.dateFormat(this.getValue(), 'Y-m-d');
-    //var value = this.superclass.getValue.call(this);
-    //return Ext.Date.dateFormat(value, 'Ymd');
-}
 ApDate.prototype.eChange = function (Value) { };
 ApDate.prototype.eKeyDown = function (e) { };
 var ApDate = {
