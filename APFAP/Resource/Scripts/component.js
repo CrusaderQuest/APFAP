@@ -684,9 +684,39 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 width: width,
+                //xtype: 'combocolumn',
                 dataIndex: paramId[0],
                 align: 'left',
                 style: 'text-align:center',
+                renderer: function (value) {
+                    //console.log(0);
+                    try {
+                        for (var i = 0; i < this.columnsMap.length; i++) {
+                            if (this.columnsMap[i].dataIndex == paramId[0]) {
+
+                                var combo = this.columnsMap[i].getEditor();
+                                if (value && combo && combo.store && combo.displayField) {
+                                    var index = combo.store.findExact(combo.valueField, value);
+                                    if (index >= 0) {
+                                        return combo.store.getAt(index).get(combo.displayField);
+                                    }
+                                }
+                                return value;
+                            }
+                        }
+                    } catch (e) {
+
+                    }
+                    //var combo = metaData.column.getEditor();
+                    //if (value && combo && combo.store && combo.displayField) {
+                    //    var index = combo.store.findExact(combo.valueField, value);
+                    //    if (index >= 0) {
+                    //        return combo.store.getAt(index).get(combo.displayField);
+                    //    }
+                    //}
+                    //return value;
+                   
+                },
                 //store: comboStore,
                 //renderer: Ext.util.Format.usMoney,
                 editor: {
@@ -695,10 +725,13 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                     valueField: 'HIDEVALUE',
                     store: paramId[1],
                     listeners: {
-                        itemupdate: function (editor, e, eOpts) {
-                            console.log('sdf');
-                        }
+                        select: 'onComboboxSelect'
                     }
+                    //listeners: {
+                    //    change: function (editor, e, eOpts) {
+                    //        console.log('sdf');
+                    //    }
+                    //}
                     //renderer: function (value) {
                     //    if (value != 0 && value != "") {
                     //        if (paramId[1].findRecord("HIDEVALUE", value) != null)

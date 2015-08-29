@@ -24,9 +24,6 @@ grd_H.eButtonDeleteClick = function () {
 }
 
 grd_H.eSelectionChange = function(record, rowIndex, paramId){
-    console.log(record);
-    console.log(rowIndex);
-    console.log(paramId);
     //디테일테이블의 분류란에 데이터 바인드
     txt_NOTICE_TYPE_HH.setValue(record.data.NOTICE_TYPE);
     //디테일조회
