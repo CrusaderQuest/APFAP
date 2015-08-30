@@ -4,8 +4,6 @@
 /// <reference path="AnlFormA01.view.js" />
 
 //App 단 정의 영역 시작
-var length = 0;
-
 function GRD_LOAD() {
     //데이터생성
     var pr = DBParams.create('sp_ANLFORMA01', 'GET_TABLE');
@@ -13,71 +11,62 @@ function GRD_LOAD() {
     var ds = DBconnect.runProcedure(pr);
     gridData = ds[0];
     grd_a.reconfigure(gridData);
-    length = gridData.data.length;
 }
-btn_add.eClick = function () {
-    gridData.add({ UI_NM: '', SUMMARY: '', REQ_SIMILARITY: '', BLANK: '' });
+set_txt = function (bool) {
+    grd_a.setDisabled(bool);
+    btn_save.setVisible(!bool);
+    btn_change.setVisible(bool);
 }
-btn_del.eClick = function () {
+
+grd_a.eButtonAddClick = function () {
+    gridData.add({UP_KEY:'UI_UP', UI_NM:'', SUMMARY: '', FUNC_NM: '', REQ_SIMILARITY:'M', BLANK: '' });
+}
+
+grd_a.eButtonDeleteClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
         Ext.Msg.alert("경고 창", "체크 해주세요.");
     } else {
         for (var i = 0; i < grd_a.getSelection().length; i++) {
             var tempNo = grd_a.getSelection()[i].data.UP_KEY;
-            deleteArray.push = tempNo;
+            deleteArray.push(tempNo);
         }
-        gridData.remove(grd_a.getSelection());
+        gridData.remove(grd_a.selModel.getSelection());
     }
-}
-updateDB = function(index){
-    //var prUp = DBParams.create('sp_ANLFORMA01', 'UPDATE_TABLE');
-    //for (var i = 0; i < index; i++) {
-    //    prUp.addParam('UI_NM', gridData.data.items[i].data.UI_NM);
-    //    prUp.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
-    //    prUp.addParam('REQ_SIMILARITY', gridData.data.items[i].data.REQ_SIMILARITY);
-    //    prUp.addParam('BLANK', gridData.data.items[i].data.BLANK);
-    //}
-    
-    //var dsUp = DBconnect.runProcedure(prUp);
-}
-insertDB = function (sindex,eindex) {
-    var prIn = DBParams.create('sp_ANLFORMA01', 'INSERT_TABLE')
-    for (var i = sindex; i < eindex; i++) {
-        prIn.addParam('UI_NM', gridData.data.items[i].data.UI_NM);
-        alert(gridData.data.items[i].data.UI_NM);
-        prIn.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
-        prIn.addParam('REQ_SIMILARITY', gridData.data.items[i].data.REQ_SIMILARITY);
-        prIn.addParam('BLANK', gridData.data.items[i].data.BLANK);
-    }
-    var dsIn = DBconnect.runProcedure(prIn);
 }
 
-btn_save.eClick = function () {
-    if (deleteArray != null) {
-        dbDelete();
-        var deletedLength = length - deleteArray.length;
-        if (deletedLength == gridData.data.length) {
-            updateDB(deletedLength);
-        } else {
-            updateDB(deletedLength);
-            insertDB(deletedLength, length);
-        }
-    }
-    else {
-        if (gridData.data.length == length) {
-            updateDB(length);
-        } else {
-            updateDB(length);
-            insertDB(length, gridData.data.length);
-        }
-    }
+btn_change.eClick = function () {
+    set_txt(false);
 }
-function dbDelete() {
+btn_save.eClick = function () {
+    for (var i = 0; i < gridData.data.length; i++) {
+        //튜블 수 loop
+        var pr;
+        if (gridData.data.items[i].data.UP_KEY == 'UI_UP') {//insert
+            pr = DBParams.create('sp_ANLFORMA01', 'INSERT_TABLE');
+//------------------------------------------up key 설정 되면 규칙 넣어서 고치기 index 같은거 처리할꺼--------------------------
+            gridData.data.items[i].data.UP_KEY += i;
+            pr.addParam('UP_KEY', gridData.data.items[i].data.UP_KEY);
+        } else {//update
+            pr = DBParams.create('sp_ANLFORMA01', 'UPDATE_TABLE');
+            pr.addParam('UP_KEY', gridData.data.items[i].data.UP_KEY);
+        }
+        pr.addParam('UI_NM', gridData.data.items[i].data.UI_NM);
+        pr.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
+        pr.addParam('REQ_SIMILARITY', gridData.data.items[i].data.REQ_SIMILARITY);
+        pr.addParam('BLANK', gridData.data.items[i].data.BLANK);
+
+        var ds = DBconnect.runProcedure(pr);
+    }
+    deleteDB();
+    //
+    set_txt(true);
+    GRD_LOAD();
+}
+function deleteDB() {
     var pr = DBParams.create('sp_ANLFORMA01', 'DELETE_TABLE');
     for (var i = 0; i < deleteArray.length; i++) {
         //각 탭 delete list 튜블 수 loop
-        pr.addParam('UP_KEY', deleteArray.pop);
+        pr.addParam('UP_KEY', deleteArray.pop());
+        var ds = DBconnect.runProcedure(pr);
     }
-    var ds = DBconnect.runProcedure(pr);
-    grd_a.reconfigure(gridData);
 }

@@ -30,10 +30,15 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
     text_cc.setValue(record.data.USERID);
 }
 */
-//pr.addParam('START_DT', ApFn.toDbTyoe('date', dTableArray.data.items[i].data.data.items[j].data.START_DT));
 //-----------------최상단 공통 컴포넌트-----------------
 btn_save.eClick = function () {
     dbSave();
+    if (isSearched) {
+        //filterStore
+        //dbSearch();
+    } else {
+
+    }
 }
 //-----------------------DB 통신-----------------------
 //해당 탭의 테이블을 가져옴.
@@ -51,10 +56,16 @@ function getEmptyTable() {
 }
 //프로젝트와 연결된 유저 가져옴.
 function dbUserLoad() {
+    //그리드의 콤보박스
     var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
     var ds1 = DBconnect.runProcedure(pr1);
     comboStoreUser = ds1[0];
+    //메인의 유저 차트
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        mainUserChartStore.add({ name:comboStoreUser.data.items[i].data.SHOWVALUE, data:0 });
+    }
 
+    //조회조건의 콤보박스
     var pr2 = DBParams.create('sp_DevFormA01', 'GET_USER_SEARCH');
     var ds2 = DBconnect.runProcedure(pr2);
     comboSearchUser = ds2[0];
@@ -115,8 +126,66 @@ function dbSave() {
     isUpdated = 0;
 }
 //------------------------조회 조건----------------------------
+function dbSearch() {
+    //현재 탭의 스토어 가져옴
+    for (var i = 0; i < grdStore.data.length; i++) {
+        filterStore.add(grdStore.getAt(i));
+    }
+
+    for (var i = 0; i < filterStore.data.length; i++) {
+        // 조회 조건을 충족하지 못하는 레코드 제거
+        if (dt_sStartDate.getValue() != undefined && dt_sStartDate.getValue() != ''
+            && dt_eStartDate.getValue() != undefined && dt_eStartDate.getValue() != '') {
+            if (dt_sStartDate.getValue() > filterStore.getAt(i).data.START_DT || dt_eStartDate.getValue() < filterStore.getAt(i).data.START_DT) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (dt_sDeadLine.getValue() != undefined && dt_sDeadLine.getValue() != ''
+            && dt_eDeadLine.getValue() != undefined && dt_eDeadLine.getValue() != '') {
+            if (dt_sDeadLine.getValue() > filterStore.getAt(i).data.DEADLINE || dt_eDeadLine.getValue() < filterStore.getAt(i).data.DEADLINE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (dt_sEndDate.getValue() != undefined && dt_sEndDate.getValue() != ''
+            && dt_eEndDate.getValue() != undefined && dt_eEndDate.getValue() != '') {
+            if (dt_sEndDate.getValue() > filterStore.getAt(i).data.END_DT || dt_eEndDate.getValue() < filterStore.getAt(i).data.END_DT) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_devState.getValue() != '전체' && cmb_devState.getValue() != undefined && cmb_devState.getValue() != '') {
+            if (cmb_devState.getValue() != filterStore.getAt(i).data.DEV_STATE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_testState.getValue() != '전체' && cmb_testState.getValue() != undefined && cmb_testState.getValue() != '') {
+            if (cmb_testState.getValue() != filterStore.getAt(i).data.TEST_STATE) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+        if (cmb_user.getValue() != '전체' && cmb_user.getValue() != undefined && cmb_user.getValue() != '') {
+            if (cmb_user.getValue() != filterStore.getAt(i).data.USER_NM) {
+                filterStore.removeAt(i);
+                i = i - 1;
+                continue;
+            }
+        }
+
+    }
+    grd.reconfigure(filterStore);
+    isSearched = 1;
+}
 btn_search.eClick = function () {
-    
+    dbSearch();
 }
 //----------------------그리드 버튼 이벤트----------------------
 //추가
@@ -135,11 +204,182 @@ grd.eButtonDeleteClick = function () {
     isUpdated = 1;
 }
 //--------------------------그래프-----------------------------
-function calGraph() {
+//탭 그래프
+function drawTabChart() {
+    var per = 0;
+    for (var i = 0; i < grdStore.data.length; i++) {
+        if (grdStore.data.items[i].data.DEV_VALUE == false)
+            per += 0;
+        else if (grdStore.data.items[i].data.TEST_VALUE == false)
+            per += (0.5 / grdStore.data.length);
+        else if (grdStore.data.items[i].data.TEST_VALUE == true)
+            per += (1 / grdStore.data.length);
+    }
+    per = per * 100;
+    per = Ext.Number.toFixed(per, 2);
+    tabChartStore.data.items[0].data.data = per;
+    tabChart.redraw();
+}
+function drawMainChart() {
+    //mainTabChartStore 채우기
+    var totalPer = 0;
+    
+    for (var i = 0; i < 4; i++) {
+        var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+        pr.addParam('H_DEV_NO', i);
+        var ds = DBconnect.runProcedure(pr);
+        var tempStore = ds[0];
 
+        var tabPer = 0;
+
+        for (var j = 0; j < tempStore.data.length; j++) {
+            if (tempStore.data.items[j].data.DEV_VALUE == false)
+                tabPer += 0;
+            else if (tempStore.data.items[j].data.TEST_VALUE == false)
+                tabPer += (0.5 / tempStore.data.length);
+            else if (tempStore.data.items[j].data.TEST_VALUE == true)
+                tabPer += (1 / tempStore.data.length);
+        }
+        tabPer = tabPer * 100;
+        totalPer += (tabPer / 4);
+        tabPer = Ext.Number.toFixed(tabPer, 2);
+        mainTabChartStore.data.items[3-i].data.data = tabPer;
+    }
+    totalPer = Ext.Number.toFixed(totalPer, 2);
+    mainTabChartStore.data.items[4].data.data = totalPer;
+
+    //mainUserChartStore 채우기
+    var pr1 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr1.addParam('H_DEV_NO', 0);
+    var ds1 = DBconnect.runProcedure(pr1);
+    var tempStore1 = ds1[0];
+    var pr2 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr2.addParam('H_DEV_NO', 1);
+    var ds2 = DBconnect.runProcedure(pr2);
+    var tempStore2 = ds2[0];
+    var pr3 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr3.addParam('H_DEV_NO', 2);
+    var ds3 = DBconnect.runProcedure(pr3);
+    var tempStore3 = ds3[0];
+    var pr4 = DBParams.create('sp_DevFormA01', 'GET_TABLE');
+    pr4.addParam('H_DEV_NO', 3);
+    var ds4 = DBconnect.runProcedure(pr4);
+    var tempStore4 = ds4[0];
+
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        var cnt = 0;
+        var userPer = 0;
+        for (var j = 0; j < tempStore1.data.length; j++) {
+            if (tempStore1.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore1.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore1.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore1.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore2.data.length; j++) {
+            if (tempStore2.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore2.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore2.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore2.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore3.data.length; j++) {
+            if (tempStore3.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore3.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore3.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore3.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+        for (var j = 0; j < tempStore4.data.length; j++) {
+            if (tempStore4.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+                cnt += 1;
+                if (tempStore4.data.items[j].data.DEV_VALUE == false)
+                    userPer += 0;
+                else if (tempStore4.data.items[j].data.TEST_VALUE == false)
+                    userPer += 0.5;
+                else if (tempStore4.data.items[j].data.TEST_VALUE == true)
+                    userPer += 1;
+            }
+        }
+
+        userPer = userPer / cnt;
+        userPer = userPer * 100;
+        userPer = Ext.Number.toFixed(userPer, 2);
+        mainUserChartStore.data.items[i].data.data = userPer;
+    }
+mainTabChart.redraw();
+mainUserChart.redraw();
+}
+function initChart(storeTemp) {
+    var chart = Ext.create('Ext.chart.Chart', {
+        width: 300,
+        height: 100,
+        store: storeTemp,
+        padding: '10 0 0 0',
+        style: 'background: #fff',
+        animate: true,
+        shadow: false,
+        insetPadding: 40,
+
+        //legend: true,
+        axes: [
+            {
+                type: 'Numeric',
+                position: 'bottom',
+                fields: 'data',
+                grid: true,
+                minimum: 0,
+                maximum: 100
+            },
+            {
+                type: 'Category',
+                position: 'left',
+                fields: 'name',
+                grid: true
+            }
+        ],
+        series: [{
+            type: 'bar',
+            axis: 'bottom',
+            xField: 'name',
+            yField: 'data',
+            style: {
+                //width: '30',
+                opacity: 0.80
+            },
+            highlight: {
+                fill: '#000',
+                'stroke-width': 2,
+                stroke: '#fff'
+            },
+            tips: {
+                trackMouse: true,
+                style: 'background: #FFF',
+                height: 20,
+                width: 100,
+                renderer: function (storeItem, item) {
+                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data'));
+                }
+            }
+        }]
+    });
+    return chart;
 }
 //------------------5개 탭 버튼 클릭 이벤트---------------------
 btn_main.eClick = function () {
+    isSearched = 0;
     var selBtn = 0;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -149,6 +389,7 @@ btn_main.eClick = function () {
         msgSaveWarning(selBtn);
 }
 btn_server.eClick = function () {
+    isSearched = 0;
     var selBtn = 1;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -158,6 +399,7 @@ btn_server.eClick = function () {
         msgSaveWarning(selBtn);
 }
 btn_db.eClick = function () {
+    isSearched = 0;
     var selBtn = 2;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -167,6 +409,7 @@ btn_db.eClick = function () {
         msgSaveWarning(selBtn);
 }
 btn_ui.eClick = function () {
+    isSearched = 0;
     var selBtn = 3;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -176,6 +419,7 @@ btn_ui.eClick = function () {
         msgSaveWarning(selBtn);
 }
 btn_etc.eClick = function () {
+    isSearched = 0;
     var selBtn = 4;
     if (!isUpdated) {
         viewSelTab(selBtn);
@@ -218,11 +462,13 @@ function viewSelTab(selBtn) {
         pnl_mainTabView.setHidden(true);
         pnl_subTabView.setHidden(false);
         pnl_tabView.full(pnl_subTabView);
+        drawTabChart();
     }
     else {
         pnl_mainTabView.setHidden(false);
         pnl_subTabView.setHidden(true);
         pnl_tabView.full(pnl_mainTabView);
+        drawMainChart();
     }
     selBtnColor(currentBtn);
 }
