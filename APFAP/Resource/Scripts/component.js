@@ -628,7 +628,6 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                     xtype: 'textfield',
                     align: 'left',
                 }
-
             });
             break;
         case 'num':
@@ -685,16 +684,61 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 width: width,
+                //xtype: 'combocolumn',
                 dataIndex: paramId[0],
                 align: 'left',
                 style: 'text-align:center',
+                renderer: function (value) {
+                    //console.log(0);
+                    try {
+                        for (var i = 0; i < this.columnsMap.length; i++) {
+                            if (this.columnsMap[i].dataIndex == paramId[0]) {
+
+                                var combo = this.columnsMap[i].getEditor();
+                                if (value && combo && combo.store && combo.displayField) {
+                                    var index = combo.store.findExact(combo.valueField, value);
+                                    if (index >= 0) {
+                                        return combo.store.getAt(index).get(combo.displayField);
+                                    }
+                                }
+                                return value;
+                            }
+                        }
+                    } catch (e) {
+
+                    }
+                    //var combo = metaData.column.getEditor();
+                    //if (value && combo && combo.store && combo.displayField) {
+                    //    var index = combo.store.findExact(combo.valueField, value);
+                    //    if (index >= 0) {
+                    //        return combo.store.getAt(index).get(combo.displayField);
+                    //    }
+                    //}
+                    //return value;
+                   
+                },
                 //store: comboStore,
                 //renderer: Ext.util.Format.usMoney,
                 editor: {
                     xtype: 'combobox',
                     displayField: 'SHOWVALUE',
                     valueField: 'HIDEVALUE',
-                    store: paramId[1],
+                    store: paramId[1]
+                    //listeners: {
+                    //    change: function (editor, e, eOpts) {
+                    //        console.log('sdf');
+                    //    }
+                    //}
+                    //renderer: function (value) {
+                    //    if (value != 0 && value != "") {
+                    //        if (paramId[1].findRecord("HIDEVALUE", value) != null)
+                    //            return paramId[1].findRecord("HIDEVALUE", value).get('name');
+                    //        else
+                    //            return value;
+                    //    }
+                    //    else
+                    //        return "";  // display nothing if value is empty
+                    //}
                 }
             });
             break;
@@ -802,6 +846,9 @@ ApGrid.prototype.setFocus = function (rowIndex) {
     this.getSelectionModel().select(rowIndex);
     this.getView().focusRow(rowIndex);
     this.eSelectionChange(this.getSelection()[0], rowIndex, this.columnsMap[1].dataIndex);
+}
+ApGrid.prototype.setFocusOut = function () {
+    this.selModel.deselectAll();
 }
 ApGrid.prototype.eButtonDeleteClick = function () {
 
@@ -931,6 +978,47 @@ var ApGrid = {
         if (check) {
             _ApGrid.addColumn('check', '선택', 'AP_STATE', 50);
         }
+        _ApGrid.view.on('itemupdate', function (record, index, node, eOpts) {
+            //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
+            delete record.modified['AP_STATE'];
+            if (record.dirty) {
+                //레코드가 더러울때
+                var i = 0;
+                for (var key in record.previousValues) {
+                    i ++;
+                }
+                if (i == 1) {
+                    if (record.previousValues.APSTATE) {
+                        record.set('AP_STATE', false);
+                    }
+                    record.commit();
+                } else {
+
+                    record.set('AP_STATE', true);
+                }
+            } else {
+                record.set('AP_STATE', false);
+            }
+            _ApGrid.view.refresh();
+
+            //for (var key in record.modified) {
+            //    for (var i = 0; i < _ApGrid.columnsMap.length; i++) {
+            //        try {
+            //            if (_ApGrid.columnsMap[i].config.editor.xtype == 'combobox') {
+            //                if (_ApGrid.columnsMap[i].dataIndex == key) {
+            //                    for (var j = 0; j < _ApGrid.columnsMap[i].editor.store.data.items.length; j++) {
+            //                        if (_ApGrid.columnsMap[i].editor.store.data.items[j].data.HIDEVALUE == record.data[key]) {
+            //                            record.set(key, _ApGrid.columnsMap[i].editor.store.data.items[j].data.SHOWVALUE);
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //        } catch (e) {
+
+            //        }
+            //    }
+            //}
+        });
         return _ApGrid;
     }
 }
@@ -1017,7 +1105,7 @@ ApDate.prototype.setToday = function () {
     this.setValue(Ext.Date.dateFormat(new Date(), 'Y-m-d'));
 };
 ApDate.prototype.getYMD = function () {
-    return Ext.Date.dateFormat(this.getValue(), 'Ymd');
+    return Ext.Date.dateFormat(this.getValue(), 'Y-m-d');
     //var value = this.superclass.getValue.call(this);
     //return Ext.Date.dateFormat(value, 'Ymd');
 }
