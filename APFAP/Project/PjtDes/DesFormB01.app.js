@@ -16,8 +16,7 @@ grd.eSelectionChange = function (record, rowindex, paramId) {
     grd_Detail.reconfigure(tbldetail_save);
     grd_Detail.eButtonAddClick = function () {
         var prm2 = DBParams.create('sp_DesFormB01','INSERT_')
-        grd.getSelection().data.TABLE_KEY
-        //selected.getSelection()
+        grd.getSelection().data.TABLE_KEY;
     }
     //if (rowindex == 2) {
     //    console.log('2번row index 클릭!');
@@ -40,24 +39,40 @@ grd.eSelectionChange = function (record, rowindex, paramId) {
     //}
 }
 
-btn_delete.eClick = function () {
-    gridData.remove(grd_Detail.getSelection());
-    gridData_second.remove(grd_Detail.getSelection());
-}
+//btn_delete.eClick = function () {
+//    gridData.remove(grd_Detail.getSelection());
+//    gridData_second.remove(grd_Detail.getSelection());
+//}
 
 function getTable() {
     var prm = DBParams.create('sp_DesFormB01', 'GET_TABLE_NM');
     var tblnm = DBconnect.runProcedure(prm);
     tblnm_save = tblnm[0];
-    //var pn = DBParams.create('sp_DesFormB01', 'GET_TABLE_FOR_TREE');
-    //var dtree = DBconnect.runProcedure(pn);
-    //tree_save = dtree[0];
     grd.reconfigure(tblnm_save);
-    var prm2 = DBParams.create('sp_DesFormB01', 'GET_DEFAULT_COLUMN');
+   
+  
+}
+function getColumn() {
+    var prm2 = DBParams.create('sp_DesFormB01', 'GET_COLUMN');
+    prm2.addParam('TABLE_KEY', tblnm_save.data.items[0].data.TABLE_KEY);
     var column_detail = DBconnect.runProcedure(prm2);
     tbldetail_save = column_detail[0];
     grd_Detail.reconfigure(tbldetail_save);
+
+    for (var i = 0; i < tbldetail_save.data.length; i++) {
+        grd_Example.addColumn('text', tbldetail_save.data.items[i].data.COLUMN_NM, tbldetail_save.data.items[i].data.COLUMN_NM, 100);
+        var TEMP = tbldetail_save.data.items[i].data.COLUMN_NM;
+    }
+
 }
-function get_Selected_Table() {
-    
+function getExample() {
+    var prm3 = DBParams.create('sp_DesFormB01', 'GET_EXAMPLE');
+    prm3.addParam('TABLE_KEY', tblnm_save.data.items[0].data.TABLE_KEY);
+    prm3.addParam('COLUMN_NO', tbldetail_save.data.items[0].data.COLUMN_NO);
+ 
+   
+    var column_ex = DBconnect.runProcedure(prm3);
+    example_save = column_ex[0];
+ 
+    grd_Example.reconfigure(example_save);
 }
