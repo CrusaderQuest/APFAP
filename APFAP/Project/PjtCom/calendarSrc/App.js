@@ -1,4 +1,8 @@
+/// <reference path="../../../Resource/Scripts/noncomponent.js" />
+/// <reference path="../../../Resource/Scripts/component.js" />
 //start util.date
+
+
 Ext.define('Ext.calendar.util.Date', {
 
     singleton: true,
@@ -5804,67 +5808,46 @@ Ext.define('Ext.calendar.App', {
         });
 
         //---------------------------------------------------------------------------------------
-        var sDB = "201507200000";
-        var eDB = "201507300130";
-        var sDBForm;
-        var eDBForm;
-        var sDBTime;
-        var eDBTime;
 
-        //-------------------------
-   //     var pr = DBParams.create('sp_ComFormB01', 'GET_DEV_STATE');
-   //     var ds = DBconnect.runProcedure(pr);
-        //this.calendarStore = ds[0];
-        //-------------------------
+        //수정
+        //-----------------정의부분--------
+        getDevState = function (store) {
+            var pr = DBParams.create('sp_ComFormB01', 'GET_DEV_STATE');
+            var ds = DBconnect.runProcedure(pr);
+            var tempStore = ds[0];
 
-        splitDateForm = function (initialForm) {
-            return (initialForm.substr(0, 4) + "/"
-            + initialForm.substr(4, 2) + "/"
-            + initialForm.substr(6, 2));
+            splitDateForm = function (initialForm) {
+                return (initialForm.substr(0, 4) + "/"
+                + initialForm.substr(4, 2) + "/"
+                + initialForm.substr(6, 2));
+            }
+            dbUpload = function (rec, store) {
+                store.add(rec);
+            }
+
+            for (var i = 0; i < tempStore.data.length; i++) {
+                sDBForm = splitDateForm(tempStore.data.items[i].data.startDate);
+                eDBForm = splitDateForm(tempStore.data.items[i].data.endDate);
+                var tempS = new Date(sDBForm);
+                var tempE = new Date(eDBForm);
+
+                var data = {};
+                var M = Ext.calendar.data.EventMappings;
+
+                data[M.CalendarId.name] = 2;
+                data[M.Title.name] = tempStore.data.items[i].data.title;
+                data[M.StartDate.name] = tempS;
+                data[M.EndDate.name] = tempE;
+                data[M.Notes.name] = tempStore.data.items[i].data.notes;
+
+                var rec = new Ext.calendar.data.EventModel(data);
+
+                dbUpload(rec,store);
+            }
         }
-        sDBForm = splitDateForm(sDB);
-        eDBForm = splitDateForm(eDB);
-
-        splitTimeForm = function (initialForm) {
-            var hour = initialForm.substr(8, 2);
-            var minute = initialForm.substr(10, 2);
-            return (hour * 3600 + minute * 60);
-        }
-        sDBTime = splitTimeForm(sDB);
-        eDBTime = splitTimeForm(eDB);
-
-        var tempS = new Date(sDBForm);
-        var tempE = new Date(eDBForm);
-
-        tempS = Ext.Date.add(tempS, Ext.Date.SECOND, sDBTime);
-        tempE = Ext.Date.add(tempE, Ext.Date.SECOND, eDBTime);
-
-        var dbData = [2, 'Title Gus', tempS, tempE, 'Loc Gus', 'Note Gus', 'Url Gus', false, '30', false];
-
-        dbUpload = function (dbData, store) {
-            var data = {};
-            var M = Ext.calendar.data.EventMappings;
-
-            data[M.CalendarId.name] = dbData[0];
-            data[M.Title.name] = dbData[1];
-            data[M.StartDate.name] = dbData[2];
-            data[M.EndDate.name] = dbData[3];
-            data[M.Location.name] = dbData[4];
-            data[M.Notes.name] = dbData[5];
-            data[M.Url.name] = dbData[6];
-            data[M.IsAllDay.name] = dbData[7];
-            data[M.Reminder.name] = dbData[8];
-            data[M.IsNew.name] = dbData[9];
-
-            rec = new Ext.calendar.data.EventModel(data);
-            store.add(rec);
-        }
-
-        dbUpload(dbData, this.eventStore);
-
-        for (var i = 0; i < this.eventStore.loadCount; i++) {
-            console.log(this.eventStore.getAt(i).data.CalendarId);
-        }
+        //-----------------호출부분--------
+        getDevState(this.eventStore);
+        
         //---------------------------------------------------------------------------------------
 
         // This is the app UI layout code.  All of the calendar views are subcomponents of
