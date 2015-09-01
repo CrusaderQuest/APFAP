@@ -725,6 +725,7 @@
     <Content Include="Resource\Themes\images\window\window-default-sides.gif" />
     <Content Include="Resource\Themes\sencha-charts-all.css" />
     <Content Include="ServerCore\DBconnector.aspx" />
+    <Content Include="ServerCore\FileSystem.aspx" />
     <Content Include="Start\Main.view.js" />
     <Content Include="Start\Main-메인폼.css" />
     <Content Include="Start\Main.app.js" />
@@ -761,6 +762,13 @@
     </Compile>
     <Compile Include="ServerCore\DBconnector.aspx.designer.cs">
       <DependentUpon>DBconnector.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\FileSystem.aspx.cs">
+      <DependentUpon>FileSystem.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\FileSystem.aspx.designer.cs">
+      <DependentUpon>FileSystem.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

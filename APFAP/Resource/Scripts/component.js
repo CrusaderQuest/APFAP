@@ -979,28 +979,29 @@ var ApGrid = {
             _ApGrid.addColumn('check', '선택', 'AP_STATE', 50);
         }
         _ApGrid.view.on('itemupdate', function (record, index, node, eOpts) {
-            //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
-            delete record.modified['AP_STATE'];
-            if (record.dirty) {
-                //레코드가 더러울때
-                var i = 0;
-                for (var key in record.previousValues) {
-                    i ++;
-                }
-                if (i == 1) {
-                    if (record.previousValues.APSTATE) {
-                        record.set('AP_STATE', false);
+            if (_ApGrid.checkedGrid) {
+                //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
+                delete record.modified['AP_STATE'];
+                if (record.dirty) {
+                    //레코드가 더러울때
+                    var i = 0;
+                    for (var key in record.previousValues) {
+                        i++;
                     }
-                    record.commit();
+                    if (i == 1) {
+                        if (record.previousValues.APSTATE) {
+                            record.set('AP_STATE', false);
+                        }
+                        record.commit();
+                    } else {
+
+                        record.set('AP_STATE', true);
+                    }
                 } else {
-
-                    record.set('AP_STATE', true);
+                    record.set('AP_STATE', false);
                 }
-            } else {
-                record.set('AP_STATE', false);
+                _ApGrid.view.refresh();
             }
-            _ApGrid.view.refresh();
-
             //for (var key in record.modified) {
             //    for (var i = 0; i < _ApGrid.columnsMap.length; i++) {
             //        try {
