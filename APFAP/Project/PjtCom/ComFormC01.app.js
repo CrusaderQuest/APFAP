@@ -24,6 +24,13 @@ grd_H.eButtonDeleteClick = function () {
 }
 
 grd_H.eSelectionChange = function(record, rowIndex, paramId){
+    //테이블초기화
+    txt_NOTICE_TITLE_HH.setValue('');
+    txa_NOTICE_CONTENT_HH.setValue('');
+    dt_NOTICE_S_DT_HH.setValue('');
+    dt_NOTICE_E_DT_HH.setValue('');
+    cbo_NOTICE_USER_HH.setValue('');
+
     //디테일테이블의 분류란에 데이터 바인드
     txt_NOTICE_TYPE_HH.setValue(record.data.NOTICE_TYPE);
     //디테일조회
@@ -70,6 +77,7 @@ btn_SAVENOICE_HH.eClick = function () {
     if (grd_D.selection == null) {
         //추가
         grd_D.addRow();
+        grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTICE_H_KEY', grd_H.selection.data.NOTICE_H_KEY);
         grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTICE_TITLE', txt_NOTICE_TITLE_HH.getValue());
         grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTICE_CONTENT', txa_NOTICE_CONTENT_HH.getValue());
         grd_D.getRow(grd_D.getTotalCount() - 1).set('NOTICE_S_DT', dt_NOTICE_S_DT_HH.getYMD());
@@ -153,8 +161,6 @@ function ASYNC_DB_H() {
             ds = DBconnect.runProcedure(pr);
         }
     }
-
-
     //삭제된 행
     var deletedRecords = grd_H.getDeletedRecords();
     for (var i = 0; i < deletedRecords.length; i++) {
@@ -164,5 +170,46 @@ function ASYNC_DB_H() {
             ds = DBconnect.runProcedure(pr);
         }
     }
+    ASYNC_DB_D();
     SEARCH_H();
+}
+function ASYNC_DB_D() {
+    //체크된 레코드 가져오기
+    var selectedRecords = grd_D.getSelectedRecords();
+
+    //추가된행과 업데이트된 행 분기하여 디비에 저장
+    var pr = '';
+    var ds = '';
+    for (var i = 0; i < selectedRecords.length; i++) {
+        if (selectedRecords[i].get('NOTICE_D_KEY') == undefined || selectedRecords[i].get('NOTICE_D_KEY') == 0) {
+            pr = DBParams.create('sp_ComFormC01', 'INSERT_D');
+            pr.addParam('NOTICE_H_KEY', selectedRecords[i].get('NOTICE_H_KEY'));
+            pr.addParam('NOTICE_TITLE', selectedRecords[i].get('NOTICE_TITLE'));
+            pr.addParam('NOTICE_CONTENT', selectedRecords[i].get('NOTICE_CONTENT'));
+            pr.addParam('NOTICE_S_DT', ApFn.setYMD(selectedRecords[i].get('NOTICE_S_DT')));
+            pr.addParam('NOTiCE_E_DT', ApFn.setYMD(selectedRecords[i].get('NOTiCE_E_DT')));
+            pr.addParam('NOTICE_USER', selectedRecords[i].get('NOTICE_USER'));
+            ds = DBconnect.runProcedure(pr);
+        } else {
+            pr = DBParams.create('sp_ComFormC01', 'UPDATE_D');
+            pr.addParam('NOTICE_H_KEY', selectedRecords[i].get('NOTICE_H_KEY'));
+            pr.addParam('NOTICE_D_KEY', selectedRecords[i].get('NOTICE_D_KEY'));
+            pr.addParam('NOTICE_TITLE', selectedRecords[i].get('NOTICE_TITLE'));
+            pr.addParam('NOTICE_CONTENT', selectedRecords[i].get('NOTICE_CONTENT'));
+            pr.addParam('NOTICE_S_DT', ApFn.setYMD(selectedRecords[i].get('NOTICE_S_DT')));
+            pr.addParam('NOTiCE_E_DT', ApFn.setYMD(selectedRecords[i].get('NOTiCE_E_DT')));
+            pr.addParam('NOTICE_USER', selectedRecords[i].get('NOTICE_USER'));
+            ds = DBconnect.runProcedure(pr);
+        }
+    }
+    //삭제된 행
+    var deletedRecords = grd_D.getDeletedRecords();
+    for (var i = 0; i < deletedRecords.length; i++) {
+        if (deletedRecords[i].get('NOTICE_H_KEY') != undefined || deletedRecords[i].get('NOTICE_H_KEY') != 0) {
+            pr = DBParams.create('sp_ComFormC01', 'DELETE_H');
+            pr.addParam('NOTICE_H_KEY', deletedRecords[i].get('NOTICE_H_KEY'));
+            pr.addParam('NOTICE_D_KEY', deletedRecords[i].get('NOTICE_D_KEY'));
+            ds = DBconnect.runProcedure(pr);
+        }
+    }
 }

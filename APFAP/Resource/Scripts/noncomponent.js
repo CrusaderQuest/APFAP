@@ -24,6 +24,10 @@ var ApFn = {
     },
     isMaster: function () {
         return true;
+    },
+    setYMD: function (value) {
+        value = value.substr(0, 4) + value.substr(5, 2) + value.substr(8, 2);
+        return value;
     }
 }
 

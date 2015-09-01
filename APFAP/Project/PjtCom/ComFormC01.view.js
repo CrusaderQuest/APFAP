@@ -63,11 +63,11 @@ tbl_HH.cellShare(5);
 var grd_D = ApGrid.create(true, 'D');
 grd_D.addColumn('hide', '', 'NOTICE_H_KEY');
 grd_D.addColumn('hide', '', 'NOTICE_D_KEY');
-grd_D.addColumn('text', '공지사항', 'NOTICE_TITLE', 300);
+grd_D.addColumn('text', '공지사항', 'NOTICE_TITLE', 200);
 grd_D.addColumn('text', '세부내용', 'NOTICE_CONTENT', 300);
-grd_D.addColumn('date', '등록일자', 'NOTICE_S_DT', 300);
-grd_D.addColumn('date', '만료일자', 'NOTiCE_E_DT', 300);
-grd_D.addColumn('combo', '등록자', ['NOTICE_USER', NOTICE_USER[0]], 100);
+grd_D.addColumn('date', '등록일자', 'NOTICE_S_DT', 100);
+grd_D.addColumn('date', '만료일자', 'NOTiCE_E_DT', 100);
+grd_D.addColumn('combo', '등록자', ['NOTICE_USER', NOTICE_USER[0]], 80);
 
 ApEvent.onlaod = function () {
     viewPanel.divideV(tbl_main, pnl_main, tbl_main);

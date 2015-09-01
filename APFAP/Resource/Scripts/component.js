@@ -723,10 +723,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                     xtype: 'combobox',
                     displayField: 'SHOWVALUE',
                     valueField: 'HIDEVALUE',
-                    store: paramId[1],
-                    listeners: {
-                        select: 'onComboboxSelect'
-                    }
+                    store: paramId[1]
                     //listeners: {
                     //    change: function (editor, e, eOpts) {
                     //        console.log('sdf');
@@ -982,16 +979,29 @@ var ApGrid = {
             _ApGrid.addColumn('check', '선택', 'AP_STATE', 50);
         }
         _ApGrid.view.on('itemupdate', function (record, index, node, eOpts) {
-            //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
-            if (record.dirty) {
-                //레코드가 더러울때
-                record.set('AP_STATE', true);
-            } else {
-                record.set('AP_STATE', false);
-            }
-            delete record.modified['AP_STATE'];
-            _ApGrid.view.refresh();
+            if (_ApGrid.checkedGrid) {
+                //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
+                delete record.modified['AP_STATE'];
+                if (record.dirty) {
+                    //레코드가 더러울때
+                    var i = 0;
+                    for (var key in record.previousValues) {
+                        i++;
+                    }
+                    if (i == 1) {
+                        if (record.previousValues.APSTATE) {
+                            record.set('AP_STATE', false);
+                        }
+                        record.commit();
+                    } else {
 
+                        record.set('AP_STATE', true);
+                    }
+                } else {
+                    record.set('AP_STATE', false);
+                }
+                _ApGrid.view.refresh();
+            }
             //for (var key in record.modified) {
             //    for (var i = 0; i < _ApGrid.columnsMap.length; i++) {
             //        try {
