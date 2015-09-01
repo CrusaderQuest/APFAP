@@ -72,7 +72,7 @@ namespace APFAP.ServerCore
 
             SqlDataAdapter adapter = new SqlDataAdapter();
 
-            try
+            try 
             {
                 conn.Open();
                 DataSet ds = new DataSet();
