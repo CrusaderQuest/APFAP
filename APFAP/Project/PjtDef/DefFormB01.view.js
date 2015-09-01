@@ -54,7 +54,7 @@ var dt_SDATE = ApDate.create('조회일자');
 var lbl_a = ApLabel.create('~');
 var dt_EDATE = ApDate.create('');
 dt_EDATE.setWidth(110);
-var btn_SEARCH = ApButton.create('조회');
+var btn_search = ApButton.create('조회');
 tbl_H.cellShare(4);
 dt_EDATE.setToday();
 
@@ -90,10 +90,11 @@ var txta_summary = ApTextArea.create('상세 내용');
 txta_summary.setWidth(800);
 txta_summary.setHeight(200);
 var cbo_NOTICE_USER_HH = ApCombo.create('등록자');
+cbo_NOTICE_USER_HH.bindStore(userInfo);
 //user set
-for (var i = 0; i < userInfo.data.length; i++) {
-    cbo_NOTICE_USER_HH.addItem(userInfo.data.items[i].data.USER_NM, userInfo.data.items[i].data.USER_KEY);
-}
+//for (var i = 0; i < userInfo.data.length; i++) {
+//    cbo_NOTICE_USER_HH.addItem(userInfo.data.items[i].data.SHOWVALUE, userInfo.data.items[i].data.HIDEVALUE);
+//}
 
 var btn_update = ApButton.create('등록');
 btn_update.setMargin('0 10 0 20')
