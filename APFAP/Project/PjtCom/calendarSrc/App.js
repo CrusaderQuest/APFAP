@@ -167,13 +167,13 @@ Ext.define('Ext.calendar.data.Calendars', {
             return {
                 "calendars":[{
                     "id":    1,
-                    "title": "Home"
+                    "title": "Version"
                 },{
                     "id":    2,
-                    "title": "Work"
+                    "title": "Development Unit"
                 },{
                     "id":    3,
-                    "title": "School"
+                    "title": "Customer Request"
                 }]
             };
         }
@@ -5845,9 +5845,43 @@ Ext.define('Ext.calendar.App', {
                 dbUpload(rec,store);
             }
         }
+        getCusReq = function(store){
+            var pr = DBParams.create('sp_ComFormB01', 'GET_CUS_REQ');
+            var ds = DBconnect.runProcedure(pr);
+            var tempStore = ds[0];
+
+            splitDateForm = function (initialForm) {
+                return (initialForm.substr(0, 4) + "/"
+                + initialForm.substr(4, 2) + "/"
+                + initialForm.substr(6, 2));
+            }
+            dbUpload = function (rec, store) {
+                store.add(rec);
+            }
+
+            for (var i = 0; i < tempStore.data.length; i++) {
+                sDBForm = splitDateForm(tempStore.data.items[i].data.startDate);
+                eDBForm = splitDateForm(tempStore.data.items[i].data.endDate);
+                var tempS = new Date(sDBForm);
+                var tempE = new Date(eDBForm);
+
+                var data = {};
+                var M = Ext.calendar.data.EventMappings;
+
+                data[M.CalendarId.name] = 3;
+                data[M.Title.name] = tempStore.data.items[i].data.title;
+                data[M.StartDate.name] = tempS;
+                data[M.EndDate.name] = tempE;
+                data[M.Notes.name] = tempStore.data.items[i].data.notes;
+
+                var rec = new Ext.calendar.data.EventModel(data);
+
+                dbUpload(rec, store);
+            }
+        }
         //-----------------호출부분--------
         getDevState(this.eventStore);
-        
+        getCusReq(this.eventStore);
         //---------------------------------------------------------------------------------------
 
         // This is the app UI layout code.  All of the calendar views are subcomponents of

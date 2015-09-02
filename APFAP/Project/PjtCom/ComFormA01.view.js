@@ -6,14 +6,13 @@
 //View 단 정의 영역 시작
 
 //-------------------폼 전역변수 시작-----------------
-var comboStoreCat;
-var comboSearchCat;
 var comboStoreState;
 var comboSearchState;
 var comboStoreUser;
 var comboSearchUser;
 var grdStore;
 var filterStore;
+var isSearched = 0;
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
@@ -30,14 +29,14 @@ var pnl_summary = ApLabel.create("고객의 추가 요청 내역을 관리할 �
 var pnl_grid = ApPanel.create("그리드");
 var pnl_search = ApPanel.create("조회조건");
 
-var tbl_tabSearch1 = ApTable.create(11);
+var tbl_tabSearch1 = ApTable.create(12);
 tbl_tabSearch1.setTarget();
 tbl_tabSearch1.setStyleSearch();
 var dt_sDate = ApDate.create('요청일자'); var lbl_a = ApLabel.create('~'); var dt_eDate = ApDate.create('');
-var lbl_b = ApLabel.create('요청분류'); var cmb_reqCat = ApCombo.create();
 var lbl_c = ApLabel.create('상태'); var cmb_reqState = ApCombo.create();
 var lbl_d = ApLabel.create('접수자'); var cmb_reqUser1 = ApCombo.create();
 var lbl_e = ApLabel.create('처리자'); var cmb_reqUser2 = ApCombo.create();
+var btn_search = ApButton.create('조회');
 
 var grd = ApGrid.create(true, true);
 //-------------------컴포넌트 끝--------------------
@@ -57,24 +56,24 @@ ApEvent.onlaod = function () {
     pnl_grid.full(grd);
 
     dt_eDate.setWidth(100);
-    cmb_reqCat.setWidth(70);
-    cmb_reqState.setWidth(70);
-    cmb_reqUser1.setWidth(70);
-    cmb_reqUser2.setWidth(70);
+    cmb_reqState.setWidth(100);
+    cmb_reqUser1.setWidth(100);
+    cmb_reqUser2.setWidth(100);
 
-//    dbCatLoad();
-//    dbUserLoad();
-//    dbStateLoad();
+    dbStateLoad();
+    dbUserLoad();
+    cmb_reqState.setStore(comboSearchState);
+    cmb_reqUser1.setStore(comboSearchUser);
+    cmb_reqUser2.setStore(comboSearchUser);
 
     grd.addColumn('date', '요청 날짜', 'REQ_DT', 120);
-    grd.addColumn('combo', '요청 분류', ['REQ_CAT', comboCat], 120);
-    grd.addColumn('combo', '상태', ['STATE_NM', comboState], 120);
+    grd.addColumn('combo', '상태', ['STATE_NM', comboStoreState], 120);
     grd.addColumn('text', '요약', 'SUMMARY', 200);
     grd.addColumn('text', '상세 내용', 'CONTENT', 700);
-    grd.addColumn('combo', '처리자', ['USER1_NM', comboUser], 120);
-    grd.addColumn('combo', '담당자', ['USER2_NM', comboUser], 120);
+    grd.addColumn('combo', '접수자', ['USER_NM1', comboStoreUser], 120);
+    grd.addColumn('combo', '처리자', ['USER_NM2', comboStoreUser], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 
-//    dbLoad();
-
+    dbLoad();
+    getEmptyTable();
 }
