@@ -25,19 +25,12 @@ var comboStore2 = Ext.create('Ext.data.ArrayStore', {
         ['기타', '기타']
     ]
 });
-var comboStore3 = Ext.create('Ext.data.ArrayStore', {
-    fields: ['SHOWVALUE', 'HIDEVALUE'],
-    data: null
-});
-
-var userInfo;
 var gridData;
 var deleteArray = [];
 
 //db user
 var prU = DBParams.create('sp_DefFormB01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
-userInfo = dsu[0];
 
 // tbl_main
 var tbl_main = ApTable.create(1);
@@ -46,7 +39,7 @@ tbl_main.updateLayout();
 tbl_main.setTarget();
 var btn_save = ApButton.create("변경상태 저장");
 
-//tbl_H
+//search
 var tbl_H = ApTable.create(1);
 tbl_H.setTarget();
 tbl_H.setStyleSearch();
@@ -62,9 +55,9 @@ dt_EDATE.setToday();
 var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '기능 중요도', ['FUNC_IMP', comboStore], 100);
 grd_a.addColumn('combo', '기능 분류', ['CATEGORY', comboStore2], 100);
-grd_a.addColumn('text', '기능 명', 'FUNC_NM', 270);
+grd_a.addColumn('text', '기능 명', 'FUNC_NM', 200);
 grd_a.addColumn('date', '등록일', 'S_DT', 110);
-
+grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 80);
 
 
 //var tbl_input = ApTable.create(1);
@@ -89,13 +82,8 @@ txt_nm.setWidth(800);
 var txta_summary = ApTextArea.create('상세 내용');
 txta_summary.setWidth(800);
 txta_summary.setHeight(200);
-var cbo_NOTICE_USER_HH = ApCombo.create('등록자');
-cbo_NOTICE_USER_HH.bindStore(userInfo);
-//user set
-//for (var i = 0; i < userInfo.data.length; i++) {
-//    cbo_NOTICE_USER_HH.addItem(userInfo.data.items[i].data.SHOWVALUE, userInfo.data.items[i].data.HIDEVALUE);
-//}
-
+var cbo_NOTICE_USER_HH = ApCombo.create('등록자', 'NOTICE_USER');
+cbo_NOTICE_USER_HH.bindStore(dsu[0]);
 var btn_update = ApButton.create('등록');
 btn_update.setMargin('0 10 0 20')
 tbl_input.cellShare(2);
@@ -106,7 +94,7 @@ ApEvent.onlaod = function () {
     pnl_grid.divideH(grd_a, tbl_input, grd_a);
     viewPanel.divideV(tbl_main, pnl_contents, tbl_main);
 
-    grd_a.setWidth(600);
+    grd_a.setWidth(530);
     btn_save.setWidth(120);
     dt_EDATE.setWidth(110);
 

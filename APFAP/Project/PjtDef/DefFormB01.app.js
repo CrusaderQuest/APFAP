@@ -49,7 +49,7 @@ btn_save.eClick = function () {
     }
     deleteDB();
     //
-    GRD_LOAD();
+    grd_a.reconfigure(gridData);
 }
 function deleteDB() {
     var pr = DBParams.create('sp_DefFormB01', 'DELETE_TABLE');
@@ -88,7 +88,7 @@ btn_update.eClick = function () {
     if (grd_a.selection.data.S_DT == '') {
         grd_a.selection.data.S_DT = new Date('08/30/2015');
     }
-    //grd_a.reconfigure(gridData);
+    grd_a.reconfigure(gridData);
 }
 
 //search
