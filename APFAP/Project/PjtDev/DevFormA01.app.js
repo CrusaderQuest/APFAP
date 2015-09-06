@@ -20,15 +20,12 @@ function setFilterStore() {
     }
     grd.reconfigure(filterStore);
 }
-
-//콤보박스 변경 이벤트.
-cmb_catView.eChange = function (record) {
-    currentCat = record.selection.data.SHOWVALUE;
-}
 grd.eSelectionChange = function (record, rowIndex, paramId) {
     console.log(paramId, record.data, rowIndex);
     text_cc.setValue(record.data.USERID);
 }
+//콤보박스 변경 이벤트.
+
 */
 //-----------------최상단 공통 컴포넌트-----------------
 btn_save.eClick = function () {
@@ -518,6 +515,31 @@ function isErrTuple(selectedRecords) {
     }
     return false;
 }
+function convertUSER_KEY(input) {
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        if (comboStoreUser.data.items[i].data.SHOWVALUE == input)
+            return comboStoreUser.data.items[i].data.HIDEVALUE;
+    }
+}
+//----------------------------제약 조건--------------------------------
+dt_sStartDate.eChange = function (record) {
+
+}
+dt_eStartDate.eChange = function (record) {
+
+}
+dt_sDeadLine.eChange = function (record) {
+
+}
+dt_eDeadLine.eChange = function (record) {
+
+}
+dt_sEndDate.eChange = function (record) {
+
+}
+dt_eEndDate.eChange = function (record) {
+
+}
 grd.eUpdate = function (record, rowIndex, paramId) {
     /*
     if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
@@ -526,11 +548,7 @@ grd.eUpdate = function (record, rowIndex, paramId) {
         record.set(paramId, t2Date);
     }
     */
+    //날짜, 개발,테스트 상태에 따른 조건과 완료날짜.
+
     isUpdated = 1;
-}
-function convertUSER_KEY(input) {
-    for (var i = 0; i < comboStoreUser.data.length; i++) {
-        if (comboStoreUser.data.items[i].data.SHOWVALUE == input)
-            return comboStoreUser.data.items[i].data.HIDEVALUE;
-    }
 }
