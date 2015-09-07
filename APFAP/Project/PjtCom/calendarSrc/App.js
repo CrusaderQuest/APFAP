@@ -1,4 +1,8 @@
+/// <reference path="../../../Resource/Scripts/noncomponent.js" />
+/// <reference path="../../../Resource/Scripts/component.js" />
 //start util.date
+
+
 Ext.define('Ext.calendar.util.Date', {
 
     singleton: true,
@@ -150,99 +154,7 @@ Ext.define('Ext.calendar.data.Events', {
 
             return {
                 "evts": [
-             /*       {
-                    "id": 1001,
-                    "cid": 1,
-                    "title": "Vacation",
-                    "start": makeDate(-20, 10),
-                    "end": makeDate(-10, 15),
-                    "notes": "Have fun"
-                }, {
-                    "id": 1002,
-                    "cid": 2,
-                    "title": "Lunch with Matt",
-                    "start": makeDate(0, 11, 30),
-                    "end": makeDate(0, 13),
-                    "loc": "Chuy's!",
-                    "url": "http://chuys.com",
-                    "notes": "Order the queso",
-                    "rem": "15"
-                }, {
-                    "id": 1003,
-                    "cid": 3,
-                    "title": "Project due",
-                    "start": makeDate(0, 15),
-                    "end": makeDate(0, 15)
-                }, {
-                    "id": 1004,
-                    "cid": 1,
-                    "title": "Sarah's birthday",
-                    "start": today,
-                    "end": today,
-                    "notes": "Need to get a gift",
-                    "ad": true
-                }, {
-                    "id": 1005,
-                    "cid": 2,
-                    "title": "A long one...",
-                    "start": makeDate(-12),
-                    "end": makeDate(10, 0, 0, -1),
-                    "ad": true
-                }, {
-                    "id": 1006,
-                    "cid": 3,
-                    "title": "School holiday",
-                    "start": makeDate(5),
-                    "end": makeDate(7, 0, 0, -1),
-                    "ad": true,
-                    "rem": "2880"
-                }, {
-                    "id": 1007,
-                    "cid": 1,
-                    "title": "Haircut",
-                    "start": makeDate(0, 9),
-                    "end": makeDate(0, 9, 30),
-                    "notes": "Get cash on the way"
-                }, {
-                    "id": 1008,
-                    "cid": 3,
-                    "title": "An old event",
-                    "start": makeDate(-30),
-                    "end": makeDate(-28),
-                    "ad": true
-                }, {
-                    "id": 1009,
-                    "cid": 2,
-                    "title": "Board meeting",
-                    "start": makeDate(-2, 13),
-                    "end": makeDate(-2, 18),
-                    "loc": "ABC Inc.",
-                    "rem": "60"
-                }, {
-                    "id": 1010,
-                    "cid": 3,
-                    "title": "Jenny's final exams",
-                    "start": makeDate(-2),
-                    "end": makeDate(3, 0, 0, -1),
-                    "ad": true
-                }, {
-                    "id": 1011,
-                    "cid": 1,
-                    "title": "Movie night",
-                    "start": makeDate(2, 19),
-                    "end": makeDate(2, 23),
-                    "notes": "Don't forget the tickets!",
-                    "rem": "60"
-                },{
-                  "id" : 1012,
-                  "cid" : 1,
-                  "title" : "Gus stupid",
-                  "start" : tempS,
-                  "end" : tempE,
-                  "notes" : "gus 25",
-                  "loc" : "cafe queen"
-                }
-            */    ]
+                ]
             }
         }
     }
@@ -255,13 +167,13 @@ Ext.define('Ext.calendar.data.Calendars', {
             return {
                 "calendars":[{
                     "id":    1,
-                    "title": "Home"
+                    "title": "Version"
                 },{
                     "id":    2,
-                    "title": "Work"
+                    "title": "Development Unit"
                 },{
                     "id":    3,
-                    "title": "School"
+                    "title": "Customer Request"
                 }]
             };
         }
@@ -5896,61 +5808,80 @@ Ext.define('Ext.calendar.App', {
         });
 
         //---------------------------------------------------------------------------------------
-        var sDB = "201507200000";
-        var eDB = "201507300130";
-        var sDBForm;
-        var eDBForm;
-        var sDBTime;
-        var eDBTime;
 
-        splitDateForm = function (initialForm) {
-            return (initialForm.substr(0, 4) + "/"
-            + initialForm.substr(4, 2) + "/"
-            + initialForm.substr(6, 2));
+        //수정
+        //-----------------정의부분--------
+        getDevState = function (store) {
+            var pr = DBParams.create('sp_ComFormB01', 'GET_DEV_STATE');
+            var ds = DBconnect.runProcedure(pr);
+            var tempStore = ds[0];
+
+            splitDateForm = function (initialForm) {
+                return (initialForm.substr(0, 4) + "/"
+                + initialForm.substr(4, 2) + "/"
+                + initialForm.substr(6, 2));
+            }
+            dbUpload = function (rec, store) {
+                store.add(rec);
+            }
+
+            for (var i = 0; i < tempStore.data.length; i++) {
+                sDBForm = splitDateForm(tempStore.data.items[i].data.startDate);
+                eDBForm = splitDateForm(tempStore.data.items[i].data.endDate);
+                var tempS = new Date(sDBForm);
+                var tempE = new Date(eDBForm);
+
+                var data = {};
+                var M = Ext.calendar.data.EventMappings;
+
+                data[M.CalendarId.name] = 2;
+                data[M.Title.name] = tempStore.data.items[i].data.title;
+                data[M.StartDate.name] = tempS;
+                data[M.EndDate.name] = tempE;
+                data[M.Notes.name] = tempStore.data.items[i].data.notes;
+
+                var rec = new Ext.calendar.data.EventModel(data);
+
+                dbUpload(rec,store);
+            }
         }
-        sDBForm = splitDateForm(sDB);
-        eDBForm = splitDateForm(eDB);
+        getCusReq = function(store){
+            var pr = DBParams.create('sp_ComFormB01', 'GET_CUS_REQ');
+            var ds = DBconnect.runProcedure(pr);
+            var tempStore = ds[0];
 
-        splitTimeForm = function (initialForm) {
-            var hour = initialForm.substr(8, 2);
-            var minute = initialForm.substr(10, 2);
-            return (hour * 3600 + minute * 60);
+            splitDateForm = function (initialForm) {
+                return (initialForm.substr(0, 4) + "/"
+                + initialForm.substr(4, 2) + "/"
+                + initialForm.substr(6, 2));
+            }
+            dbUpload = function (rec, store) {
+                store.add(rec);
+            }
+
+            for (var i = 0; i < tempStore.data.length; i++) {
+                sDBForm = splitDateForm(tempStore.data.items[i].data.startDate);
+                eDBForm = splitDateForm(tempStore.data.items[i].data.endDate);
+                var tempS = new Date(sDBForm);
+                var tempE = new Date(eDBForm);
+
+                var data = {};
+                var M = Ext.calendar.data.EventMappings;
+
+                data[M.CalendarId.name] = 3;
+                data[M.Title.name] = tempStore.data.items[i].data.title;
+                data[M.StartDate.name] = tempS;
+                data[M.EndDate.name] = tempE;
+                data[M.Notes.name] = tempStore.data.items[i].data.notes;
+
+                var rec = new Ext.calendar.data.EventModel(data);
+
+                dbUpload(rec, store);
+            }
         }
-        sDBTime = splitTimeForm(sDB);
-        eDBTime = splitTimeForm(eDB);
-
-        var tempS = new Date(sDBForm);
-        var tempE = new Date(eDBForm);
-
-        tempS = Ext.Date.add(tempS, Ext.Date.SECOND, sDBTime);
-        tempE = Ext.Date.add(tempE, Ext.Date.SECOND, eDBTime);
-
-        var dbData = [2, 'Title Gus', tempS, tempE, 'Loc Gus', 'Note Gus', 'Url Gus', false, '30', false];
-
-        dbUpload = function (dbData, store) {
-            var data = {};
-            var M = Ext.calendar.data.EventMappings;
-
-            data[M.CalendarId.name] = dbData[0];
-            data[M.Title.name] = dbData[1];
-            data[M.StartDate.name] = dbData[2];
-            data[M.EndDate.name] = dbData[3];
-            data[M.Location.name] = dbData[4];
-            data[M.Notes.name] = dbData[5];
-            data[M.Url.name] = dbData[6];
-            data[M.IsAllDay.name] = dbData[7];
-            data[M.Reminder.name] = dbData[8];
-            data[M.IsNew.name] = dbData[9];
-
-            rec = new Ext.calendar.data.EventModel(data);
-            store.add(rec);
-        }
-
-        dbUpload(dbData, this.eventStore);
-
-        for (var i = 0; i < this.eventStore.loadCount; i++) {
-            console.log(this.eventStore.getAt(i).data.CalendarId);
-        }
+        //-----------------호출부분--------
+        getDevState(this.eventStore);
+        getCusReq(this.eventStore);
         //---------------------------------------------------------------------------------------
 
         // This is the app UI layout code.  All of the calendar views are subcomponents of

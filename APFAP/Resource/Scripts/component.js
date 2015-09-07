@@ -1276,3 +1276,183 @@ var ApLabel = {
         return _ApLabel;
     }
 }
+
+Ext.define('ApImg', {
+    extend: 'Ext.Img',
+    ComponentType: 'image'
+});
+ApImg.prototype.setFileKey = function (fileKey) {
+    if (fileKey != '' && fileKey != undefined) {
+        var _pr = DBParams.create('sp_COMFILE', 'GETFILE');
+        _pr.addParam('FILEKEY', fileKey);
+        var fileDs = DBconnect.runProcedure(_pr);
+
+        if (fileDs[0].data.items.length > 0) {
+            var src = fileDs[0].data.items[0].data.UP_SRC
+            this.key = fileKey;
+            this.setSrc(src);
+        } else {
+            console.error('파일없음');
+        }
+    } else {
+        this.setSrc('../../Resource/Themes/noImage.png');
+    }
+
+}
+var ApImg = {
+    create: function (src, paramId) {
+        if (src == undefined) src = '';
+        //if (labelWidth == undefined) labelWidth = 80;
+        var _ApImg = Ext.create('ApImg', {
+            src: src,
+            width: 180,
+            height: 180,
+            paramId: paramId,
+            Key: ''
+        });
+        if (_ApImg.src == '') {
+            _ApImg.setSrc('../../Resource/Themes/noImage.png');
+        }
+        _setTarget(_ApImg);
+        return _ApImg;
+    }
+}
+
+Ext.define('ApUpload', {
+    //extend: 'Ext.panel.Panel',
+    extend: 'Ext.form.Panel',
+    ComponentType: 'upload'
+});
+ApUpload.prototype.setFileKey = function (filekey) {
+    var pr = DBParams.create('sp_COMFILE', 'GETFILE');
+    pr.addParam('FILEKEY', filekey);
+    var fileDs = DBconnect.runProcedure(pr);
+    if (fileDs[0].data.items.length > 0) {
+        this.items.items[0].setRawValue(fileDs[0].data.items[0].data.UP_EXT);
+        this.items.items[0].button.hide();
+        this.items.items[1].hide();
+        this.items.items[2].show();
+        this.items.items[3].show();
+        this.key = filekey;
+    } else {
+        console.error('파일없음');
+    }
+}
+ApUpload.prototype.getFileKey = function () {
+    return this.key;
+}
+ApUpload.prototype.getFileName = function () {
+    return this.items.items[0].getRawValue();
+}
+ApUpload.prototype.eUpload = function (fileKeys) {
+
+}
+ApUpload.prototype.eClear = function () {
+
+}
+
+
+var ApUpload = {
+    create: function (text, paramId) {
+        var _upButton = Ext.create('Ext.button.Button', {
+            text: '업로드',
+            handler: function () {
+                var form = this.up('form').getForm();
+                //form.url = form.getRawValue();
+                if (form.isValid()) {
+                    form.submit({
+                        url: '../../ServerCore/FileSystem.aspx?FORMNAME=ComFormC01&E_USER=' + ApFn.getUser() + '&PROJECT_KEY=' + ApFn.getProjectKey(),
+                        waitMsg: '파일업로드중...',
+                        params: {
+                            TYPE: 'UPLOAD'
+                        },
+                        success: function (fp, o) {
+                            ApMsg.warning(o.result.data + ', 업로드 되었습니다.');
+                            _ApUpload.items.items[0].setRawValue(o.result.data);
+                            _ApUpload.key = o.result.fileKey;
+                            _upButton.hide();
+                            _downButton.show();
+                            _clearButton.show();
+                            _ApUpload.items.items[0].button.hide();
+                            _ApUpload.eUpload(_ApUpload.key);
+                        }
+                    });
+                }
+            }
+        });
+        var _downButton = Ext.create('Ext.button.Button', {
+            text: '다운로드',
+            handler: function () {
+                var _downForm = Ext.create('Ext.form.Panel', {
+                    title: 'hiddenForm',
+                    standardSubmit: true,
+                    url: '../../ServerCore/FileDownload.aspx?FILEKEY=' + _ApUpload.key + '&E_USER=' + ApFn.getUser() + '&PROJECT_KEY=' + ApFn.getProjectKey(),
+                    hidden: true
+                });
+                //form.url = form.getRawValue();
+                if (_downForm.isValid()) {
+                    _downForm.submit();
+                }
+            }
+        });
+        _clearButton = Ext.create('Ext.button.Button', {
+            text: '삭제',
+            handler: function () {
+                Ext.Ajax.request({
+                    async: false,
+                    url: '../../ServerCore/FileSystem.aspx?FILEKEY=' + _ApUpload.key + '&E_USER=' + ApFn.getUser() + '&PROJECT_KEY=' + ApFn.getProjectKey(),
+                    method: 'POST',
+                    params: {
+                        TYPE: 'CLEAR'
+                    },
+                    reader: {
+                        type: 'text'
+                    },
+                    success: function (response, options) {
+                        //uploader.reset();
+                        _ApUpload.key = '';
+                        _ApUpload.items.items[0].button.show();
+                        _ApUpload.items.items[0].setRawValue('');
+                        _upButton.show();
+                        _clearButton.hide();
+                        _downButton.hide();
+                        _ApUpload.eClear();
+                    },
+                    failure: function (response, options) {
+                        //Ext.Msg.error('Failure', response.responseText);
+                        Ext.Msg.error('Failure', response.statusText);
+                    }
+                });
+            }
+        });
+        var _ApUpload = Ext.create('ApUpload', {
+            title: '파일업로더',
+            header: false,
+            bodyPadding: 10,
+            frame: true,
+            layout: 'hbox',
+            key: '',
+            url: '',
+            items: [{
+                xtype: 'filefield',
+                name: 'photo',
+                fieldLabel: text,
+                labelWidth: 80,
+                width: 400,
+                msgTarget: 'side',
+                allowBlank: false,
+                anchor: '100%',
+                buttonText: '파일선택..'
+            }, _upButton, _downButton, _clearButton]
+        });
+        _ApUpload.on('afterrender', function (me, eOpts) {
+            _ApUpload.items.items[0].on('change', function (me, value, eOpts) {
+                me.setRawValue(value.replace(/C:\\fakepath\\/g, ''));
+            });
+        });
+        _downButton.hide();
+        _clearButton.hide();
+        _setTarget(_ApUpload);
+        return _ApUpload;
+    }
+}
