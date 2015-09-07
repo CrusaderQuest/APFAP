@@ -723,8 +723,10 @@
     <Content Include="Resource\Themes\images\window\toast\icon16_info.png" />
     <Content Include="Resource\Themes\images\window\window-default-corners.gif" />
     <Content Include="Resource\Themes\images\window\window-default-sides.gif" />
+    <Content Include="Resource\Themes\noImage.png" />
     <Content Include="Resource\Themes\sencha-charts-all.css" />
     <Content Include="ServerCore\DBconnector.aspx" />
+    <Content Include="ServerCore\FileDownload.aspx" />
     <Content Include="ServerCore\FileSystem.aspx" />
     <Content Include="Start\Main.view.js" />
     <Content Include="Start\Main-메인폼.css" />
@@ -762,6 +764,13 @@
     </Compile>
     <Compile Include="ServerCore\DBconnector.aspx.designer.cs">
       <DependentUpon>DBconnector.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\FileDownload.aspx.cs">
+      <DependentUpon>FileDownload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\FileDownload.aspx.designer.cs">
+      <DependentUpon>FileDownload.aspx</DependentUpon>
     </Compile>
     <Compile Include="ServerCore\FileSystem.aspx.cs">
       <DependentUpon>FileSystem.aspx</DependentUpon>
