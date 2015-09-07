@@ -4,11 +4,20 @@
 //
 
 //View 단 정의 영역 시작
-var pnl_contents = ApPanel.create("REQ_DOC");
-var pnl_input = ApPanel.create("Input");
-var pnl_grid = ApPanel.create("Grid");
+
+var pnl_contents = ApPanel.create();
+var pnl_input = ApPanel.create();
+var pnl_grid = ApPanel.create();
 
 pnl_contents.divideV(pnl_input, pnl_grid);
+
+// tbl_main
+var tbl_main = ApTable.create(1);
+tbl_main.addCls('tableStyle_main');
+tbl_main.updateLayout();
+tbl_main.setTarget();
+var btn_save = ApButton.create("변경상태 저장");
+
 
 //data-type
 Ext.define('reqData', {
@@ -70,17 +79,24 @@ grd_a.addColumn('text', '개요', 'SUMMARY', 300);
 grd_a.addColumn('text', '상세 내용', 'DESCRIPTION', 300);
 grd_a.addColumn('text', '중요도', 'IMPORTANT', 100);
 grd_a.addColumn('num', '난이도', 'LEVEL', 100);
+grd_a.addColumn('check');
+
 grd_a.reconfigure(gridData);
 
 pnl_grid.divideV(grd_a, tbl_grid);
 
 
+ApEvent.onlaod = function () {
 
-viewPanel.full(pnl_contents);
-//grd.reconfigure(gridData);
+    pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
+    pnl_grid.divideH(grd_a, tbl_input, grd_a);
+    viewPanel.divideV(tbl_main, pnl_contents, tbl_main);
 
+    grd_a.setWidth(530);
+    btn_save.setWidth(120);
+    dt_EDATE.setWidth(110);
 
-
-Ext.onReady(function () {
-
-});
+    tbl_H.setHeight(30);
+    tbl_main.setHeight(35);
+    GRD_LOAD();
+}
