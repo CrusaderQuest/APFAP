@@ -4,6 +4,18 @@
 /// <reference path="DefFormC01.view.js" />
 
 //App 단 정의 영역 시작
+
+function GRD_LOAD() {
+    //데이터생성
+    var pr = DBParams.create('sp_DefFormB01', 'GET_TABLE');
+    //데이터셋
+    var ds = DBconnect.runProcedure(pr);
+    gridData = ds[0];
+    grd_a.reconfigure(gridData);
+
+}
+
+
 var i = 0;
 if (grd_a.selModel.getCount() == 1) {
     i = grd_a.selModel.getSelection();
