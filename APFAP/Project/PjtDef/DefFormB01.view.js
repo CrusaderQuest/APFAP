@@ -33,11 +33,12 @@ var prU = DBParams.create('sp_DefFormB01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
 
 // tbl_main
-var tbl_main = ApTable.create(1);
+var tbl_main = ApTable.create(2);
 tbl_main.addCls('tableStyle_main');
 tbl_main.updateLayout();
 tbl_main.setTarget();
 var btn_save = ApButton.create("변경상태 저장");
+var lb_main = ApLabel.create("기능 정의 ---- 필요한 기능을 미리 사전에 정의해 주세요.");
 
 //search
 var tbl_H = ApTable.create(1);
