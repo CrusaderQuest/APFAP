@@ -12,19 +12,13 @@ function GRD_LOAD() {
     gridData = ds[0];
     grd_a.reconfigure(gridData);
 }
-set_txt = function (bool) {
-    grd_a.setDisabled(bool);
-    btn_save.setVisible(!bool);
-    btn_change.setVisible(bool);
-}
 
 grd_a.eButtonAddClick = function () {
-    gridData.add({UP_KEY:'UI_UP', UI_NM:'', SUMMARY: '', FUNC_NM: '', REQ_SIMILARITY:'M', BLANK: '' });
+    gridData.add({ UI_NM: '', SUMMARY: '', FILE_CATEGORY: 'ETC', REQ_SIMILARITY: '2' });
 }
-
 grd_a.eButtonDeleteClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
-        Ext.Msg.alert("경고 창", "체크 해주세요.");
+        //Ext.Msg.alert("경고 창", "클릭 해주세요.");
     } else {
         for (var i = 0; i < grd_a.getSelection().length; i++) {
             var tempNo = grd_a.getSelection()[i].data.UP_KEY;
@@ -33,40 +27,64 @@ grd_a.eButtonDeleteClick = function () {
         gridData.remove(grd_a.selModel.getSelection());
     }
 }
-
-btn_change.eClick = function () {
-    set_txt(false);
-}
 btn_save.eClick = function () {
     for (var i = 0; i < gridData.data.length; i++) {
         //튜블 수 loop
-        var pr;
-        if (gridData.data.items[i].data.UP_KEY == 'UI_UP') {//insert
+         var pr;
+        if (gridData.data.items[i].data.FUNC_NUM == 0) {//insert
             pr = DBParams.create('sp_ANLFORMA01', 'INSERT_TABLE');
-//------------------------------------------up key 설정 되면 규칙 넣어서 고치기 index 같은거 처리할꺼--------------------------
-            gridData.data.items[i].data.UP_KEY += i;
-            pr.addParam('UP_KEY', gridData.data.items[i].data.UP_KEY);
+            pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
+            pr.addParam('S_DT', gridData.data.items[i].data.S_DT);
         } else {//update
             pr = DBParams.create('sp_ANLFORMA01', 'UPDATE_TABLE');
             pr.addParam('UP_KEY', gridData.data.items[i].data.UP_KEY);
         }
-        pr.addParam('UI_NM', gridData.data.items[i].data.UI_NM);
+        pr.addParam('UI_NM', gridData.data.items[i].data.DOC_NM);
         pr.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
+        pr.addParam('FILE_CATEGORY', gridData.data.items[i].data.FILE_CATEGORY);
         pr.addParam('REQ_SIMILARITY', gridData.data.items[i].data.REQ_SIMILARITY);
-        pr.addParam('BLANK', gridData.data.items[i].data.BLANK);
-
+        pr.addParam('E_DT', gridData.data.items[i].data.E_DT);
         var ds = DBconnect.runProcedure(pr);
     }
     deleteDB();
     //
-    set_txt(true);
-    GRD_LOAD();
+    grd_a.reconfigure(gridData);
 }
 function deleteDB() {
-    var pr = DBParams.create('sp_ANLFORMA01', 'DELETE_TABLE');
+    var pr = DBParams.create('sp_DefFormB01', 'DELETE_TABLE');
     for (var i = 0; i < deleteArray.length; i++) {
         //각 탭 delete list 튜블 수 loop
         pr.addParam('UP_KEY', deleteArray.pop());
         var ds = DBconnect.runProcedure(pr);
     }
 }
+//grid 변환
+grd_a.eSelectionChange = function (record, rowIndex, paramId) {
+    console.log(paramId, record.data, rowIndex);
+
+    cbo_req.setValue(record.data.REQ_SIMILARITY);
+    cbo_fcagtegory.setValue(record.data.FILE_CATEGORY);
+    txt_nm.setValue(record.data.UI_NM);
+    txta_summary.setValue(record.data.SUMMARY);
+    cbo_NOTICE_USER_HH.setValue(record.data.E_USER);
+
+}
+
+//grid update
+btn_update.eClick = function () {
+    grd_a.selection.set('REQ_SIMILARITY', cbo_req.getValue());
+    grd_a.selection.set('FILE_CATEGORY', cbo_fcagtegory.getValue());
+    grd_a.selection.set('SUMMARY', txta_summary.getValue());
+    grd_a.selection.set('UI_NM', txt_nm.getValue());
+
+
+    if (grd_a.selection.data.S_DT == '') {
+        grd_a.selection.data.S_DT = dt_update.getValue();
+    }
+    grd_a.reconfigure(gridData);
+}
+
+//search
+//btn_search.eClick = function () {
+//    dt_EDATE
+//}
