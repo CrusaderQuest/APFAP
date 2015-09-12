@@ -9,12 +9,12 @@ var pnl_contents = ApPanel.create("TITLE");
 var dbData;
 
 // tbl_main
-var tbl_main = ApTable.create(1);
+var tbl_main = ApTable.create(2);
 tbl_main.addCls('tableStyle_main');
 tbl_main.updateLayout();
 tbl_main.setTarget();
 var btn_save = ApButton.create("변경상태 저장");
-
+var lb_main = ApLabel.create("프로젝트 타이틀 ----- 프로젝트의 제목을 정의 해주세요");
 
 //title
 var tbl_title = ApTable.create(1);

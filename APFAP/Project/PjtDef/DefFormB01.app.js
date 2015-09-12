@@ -22,7 +22,7 @@ grd_a.eButtonDeleteClick = function () {
         //Ext.Msg.alert("경고 창", "클릭 해주세요.");
     } else {
         for (var i = 0; i < grd_a.getSelection().length; i++) {
-            var tempNo = grd_a.getSelection()[i].data.UP_KEY;
+            var tempNo = grd_a.getSelection()[i].data.FUNC_NUM;
             deleteArray.push(tempNo);
         }
         gridData.remove(grd_a.selModel.getSelection());
@@ -32,13 +32,13 @@ btn_save.eClick = function () {
     for (var i = 0; i < gridData.data.length; i++) {
         //튜블 수 loop
         var pr;
-        if (gridData.data.items[i].data.UP_KEY == 0) {//insert
+        if (gridData.data.items[i].data.FUNC_NUM == 0) {//insert
             pr = DBParams.create('sp_DefFormB01', 'INSERT_TABLE');
             pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
             //pr.addParam('S_DT', gridData.data.items[i].data.S_DT);
         } else {//update
             pr = DBParams.create('sp_DefFormB01', 'UPDATE_TABLE');
-            pr.addParam('UP_KEY', gridData.data.items[i].data.UP_KEY);
+            pr.addParam('FUNC_NUM', gridData.data.items[i].data.FUNC_NUM);
         }
         pr.addParam('FUNC_IMP', gridData.data.items[i].data.FUNC_IMP);
         pr.addParam('CATEGORY', gridData.data.items[i].data.CATEGORY);
@@ -55,7 +55,7 @@ function deleteDB() {
     var pr = DBParams.create('sp_DefFormB01', 'DELETE_TABLE');
     for (var i = 0; i < deleteArray.length; i++) {
         //각 탭 delete list 튜블 수 loop
-        pr.addParam('UP_KEY', deleteArray.pop());
+        pr.addParam('FUNC_NUM', deleteArray.pop());
         var ds = DBconnect.runProcedure(pr);
     }
 }

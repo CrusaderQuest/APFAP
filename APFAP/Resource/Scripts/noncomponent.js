@@ -160,6 +160,32 @@ var DBconnect = {
         return storeSet;
     }
 }
+function GetSession() {
+    var session = undefined;
+    Ext.Ajax.request({
+        async: false,
+        url: '../../ServerCore/getSession.aspx',
+        method: 'POST',
+        success: function (response, eOpt) {
+            var responseStr = response.responseText;
+            if (responseStr == 'NSESSION') {
+                return false;
+            } else {
+                session = {
+                    S_USER_NO : responseStr.split('※')[0],
+                    S_USER_NM : responseStr.split('※')[1]
+                }
+                return session;
+            }
+        },
+        failure: function (response, options) {
+            alert('통신실패');
+            return false;
+        }
+    });
+    return session;
+}
+
 
 //Ready function start!
 
