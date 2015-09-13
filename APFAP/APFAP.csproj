@@ -220,6 +220,8 @@
     <Content Include="Resource\Scripts\component-컴포넌트 모듈%28화면에 보여지는 것%29.css" />
     <Content Include="Resource\Scripts\component.js" />
     <Content Include="Resource\Scripts\ext-theme-crisp-debug.js" />
+    <Content Include="Resource\Scripts\jquery-1.11.3.min.js" />
+    <Content Include="Resource\Scripts\naverLogin_implicit-1.0.1.js" />
     <Content Include="Resource\Scripts\noncomponent-컴포넌트 외 모듈.css" />
     <Content Include="Resource\Scripts\noncomponent.js" />
     <Content Include="Resource\Scripts\options-toolbar.js" />
@@ -723,9 +725,15 @@
     <Content Include="Resource\Themes\images\window\toast\icon16_info.png" />
     <Content Include="Resource\Themes\images\window\window-default-corners.gif" />
     <Content Include="Resource\Themes\images\window\window-default-sides.gif" />
+    <Content Include="Resource\Themes\noImage.png" />
     <Content Include="Resource\Themes\sencha-charts-all.css" />
     <Content Include="ServerCore\DBconnector.aspx" />
+    <Content Include="ServerCore\FileDownload.aspx" />
     <Content Include="ServerCore\FileSystem.aspx" />
+    <Content Include="ServerCore\getSession.aspx" />
+    <Content Include="ServerCore\Login.aspx" />
+    <Content Include="Start\Login.html" />
+    <Content Include="Start\Login.app.js" />
     <Content Include="Start\Main.view.js" />
     <Content Include="Start\Main-메인폼.css" />
     <Content Include="Start\Main.app.js" />
@@ -737,6 +745,7 @@
     <Content Include="Resource\Themes\config.rb" />
     <Content Include="Resource\Themes\Readme.md" />
     <Content Include="Resource\Themes\images\calendar\Thumbs.db" />
+    <Content Include="Start\Login.view.js" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -763,12 +772,33 @@
     <Compile Include="ServerCore\DBconnector.aspx.designer.cs">
       <DependentUpon>DBconnector.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ServerCore\FileDownload.aspx.cs">
+      <DependentUpon>FileDownload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\FileDownload.aspx.designer.cs">
+      <DependentUpon>FileDownload.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ServerCore\FileSystem.aspx.cs">
       <DependentUpon>FileSystem.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ServerCore\FileSystem.aspx.designer.cs">
       <DependentUpon>FileSystem.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\getSession.aspx.cs">
+      <DependentUpon>getSession.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\getSession.aspx.designer.cs">
+      <DependentUpon>getSession.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -4,83 +4,79 @@
 //
 
 //View 단 정의 영역 시작
-var pnl_contents = ApPanel.create("REQ_DOC");
-var pnl_input = ApPanel.create("Input");
-var pnl_grid = ApPanel.create("Grid");
-
-pnl_contents.divideV(pnl_input, pnl_grid);
-
+var pnl_contents = ApPanel.create();
+var pnl_main = ApPanel.create();
+var pnl_grid = ApPanel.create();
 //data-type
-Ext.define('reqData', {
-    extend: 'Ext.data.Model',
-    fields: [
-        { name: 'USERID' },
-        { name: 'CATEGORY' },
-        { name: 'REQNM' },
-        { name: 'SUMMARY' },
-        { name: 'CONTENT' },
-        { name: 'IMPORTANT' },
-        { name: 'LEVEL',type:'number' }
-    ]
-});
-//pnl_input
-var tbl_input_1 = ApTable.create();
-tbl_input_1.setTarget();
-var txt_category = ApText.create("업무 영역 ");
-var txt_reqNm = ApText.create("요구 사항 ");
-var txt_summary = ApText.create("개요 ");
-//btn
-var btn_ok = ApButton.create("저장");
-btn_ok.eClick();
-var btn_clrear = ApButton.create("삭제");
-btn_clrear.eClick();
-
-var tbl_input_2 = ApTable.create();
-tbl_input_2.setTarget();
-var txt_desc = ApText.create("상세 내용 ");
-var txt_imp = ApText.create("중요도 ");
-//var cbo_level = ApCombo.create("난이도");
-var txt_blank = ApText.create("비고 ");
-//setDisabled
-txt_category.setDisabled(true);
-txt_reqNm.setDisabled(true);
-txt_blank.setDisabled(true);
-
-pnl_input.divideV(tbl_input_1, tbl_input_2);
-pnl_input.setSize(0, 200);
-
-//pnl_grid
-var gridData = Ext.create('Ext.data.ArrayStore', {
-    model: 'reqData',
+var comboStore = Ext.create('Ext.data.ArrayStore', {
+    fields: ['SHOWVALUE', 'HIDEVALUE'],
     data: [
-        ['aaa1', '신규기능추가', '기존 ui와 차별화된 것을 만들어라'],
-        ['aaa2', '신규기능추가', '신규기능 추가하는 요구사항이다'],
-        ['aaa3', '구 기능 수정', '예전 ui를 차별화 되게 바꾸라'],
-        ['aaa4', '구 기능 수정', '구기능을 수정하는 요구사항이다.']
+        ['뭘 넣을까', 'important'],
+        ['문서의 타입', 'type'],
+        ['기타', 'exc']
     ]
 });
-var tbl_grid = ApTable.create();
-tbl_grid.setTarget();
-var btn_add = ApButton.create("추가");
-var grd_a = ApGrid.create();
+var gridData;
+var deleteArray = [];
+//db user
+var prU = DBParams.create('sp_DefFormC01', 'USER_INFO');
+var dsu = DBconnect.runProcedure(prU);
 
-grd_a.addColumn('text', '업무영역', 'CATEGORY', 200);
-grd_a.addColumn('text', '요구사항', 'REQNM', 200);
-grd_a.addColumn('text', '개요', 'SUMMARY', 300);
-grd_a.addColumn('text', '상세 내용', 'DESCRIPTION', 300);
-grd_a.addColumn('text', '중요도', 'IMPORTANT', 100);
-grd_a.addColumn('num', '난이도', 'LEVEL', 100);
-grd_a.reconfigure(gridData);
+// tbl_main
+var tbl_main = ApTable.create(2);
+tbl_main.addCls('tableStyle_main');
+tbl_main.updateLayout();
+tbl_main.setTarget();
+var btn_save = ApButton.create("변경상태 저장");
+var lb_main = ApLabel.create("문서 관리 ---- 프로그램 제작에 필요한 여러 양식 및 문서를 관리합니다.");
 
-pnl_grid.divideV(grd_a, tbl_grid);
+//search
+var tbl_H = ApTable.create(1);
+tbl_H.setTarget();
+tbl_H.setStyleSearch();
+var dt_SDATE = ApDate.create('조회일자');
+var lbl_a = ApLabel.create('~');
+var dt_EDATE = ApDate.create('');
+dt_EDATE.setWidth(110);
+var btn_search = ApButton.create('조회');
+tbl_H.cellShare(4);
+dt_EDATE.setToday();
 
+//grid add column
+var grd_a = ApGrid.create(false, true);
+grd_a.addColumn('combo', '문서 타입', ['CATEGORY', comboStore], 100);
+grd_a.addColumn('text', '문서 명', 'DOC_NM', 200);
+grd_a.addColumn('date', '등록일', 'S_DT', 110);
 
+var tbl_input = ApTable.create(1);
+tbl_input.setTarget();
+var cbo_category = ApCombo.create('문서 타입');
+cbo_category.bindStore(comboStore);
+cbo_category.setWidth(200);
+var txt_nm = ApText.create('문서 명');
+txt_nm.setWidth(800);
+var txta_summary = ApTextArea.create('상세 내용');
+txta_summary.setWidth(800);
+txta_summary.setHeight(200);
+var cbo_NOTICE_USER_HH = ApCombo.create('등록자', 'NOTICE_USER');
+cbo_NOTICE_USER_HH.bindStore(dsu[0]);
+var dt_update = ApDate.create();
+dt_update.setToday();
+var btn_update = ApButton.create('등록');
+btn_update.setMargin('0 10 0 20')
+tbl_input.cellShare(3);
 
-viewPanel.full(pnl_contents);
-//grd.reconfigure(gridData);
+ApEvent.onlaod = function () {
 
+    pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
+    pnl_grid.divideH(grd_a, tbl_input, grd_a);
+    viewPanel.divideV(tbl_main, pnl_contents, tbl_main);
 
+    grd_a.setWidth(460);
+    btn_save.setWidth(120);
+    dt_EDATE.setWidth(110);
 
-Ext.onReady(function () {
-
-});
+    tbl_H.setHeight(30);
+    tbl_main.setHeight(35);
+    GRD_LOAD();
+}
