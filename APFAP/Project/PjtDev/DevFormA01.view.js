@@ -17,14 +17,6 @@ var tabChart;
 var mainTabChart;
 var mainUserChart;
 
-
-var comboStoreValue = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEVALUE', 'SHOWVALUE'],
-    data: [
-        ['true', 'T'],
-        ['false', 'F']
-    ]
-});
 var comboSearchValue = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEVALUE', 'SHOWVALUE'],
     data: [
@@ -160,8 +152,8 @@ ApEvent.onlaod = function () {
 
     grd.addColumn('text', '개발 단위', 'D_DEV_NM', 200);
     grd.addColumn('date', '시작 날짜', 'START_DT', 120);
-    grd.addColumn('combo', '개발 상태', ['DEV_VALUE', comboStoreValue], 120);
-    grd.addColumn('combo', '테스트 상태', ['TEST_VALUE', comboStoreValue], 120);
+    grd.addColumn('check', '개발 상태', 'DEV_VALUE', 120);
+    grd.addColumn('check', '테스트 상태', 'TEST_VALUE', 120);
     grd.addColumn('date', '데드라인', 'DEADLINE', 120);
     grd.addColumn('combo', '담당자', ['USER_NM', comboStoreUser], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
