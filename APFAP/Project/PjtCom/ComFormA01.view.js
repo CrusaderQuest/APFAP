@@ -67,11 +67,11 @@ ApEvent.onlaod = function () {
     cmb_reqUser2.setStore(comboSearchUser);
 
     grd.addColumn('date', '요청 날짜', 'REQ_DT', 120);
-    grd.addColumn('combo', '상태', ['STATE_NM', comboStoreState], 120);
+    grd.addColumn('combo', '상태', ['STATE_CD', comboStoreState], 120);
     grd.addColumn('text', '요약', 'SUMMARY', 200);
     grd.addColumn('text', '상세 내용', 'CONTENT', 700);
-    grd.addColumn('combo', '접수자', ['USER_NM1', comboStoreUser], 120);
-    grd.addColumn('combo', '처리자', ['USER_NM2', comboStoreUser], 120);
+    grd.addColumn('combo', '접수자', ['USER_KEY1', comboStoreUser], 120);
+    grd.addColumn('combo', '처리자', ['USER_KEY2', comboStoreUser], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 
     dbLoad();
