@@ -7,9 +7,9 @@
 
 //-------------전역변수-------------
 var comboStoreCat;
-var comboCatSearch;
+var comboSearchCat;
 var comboStoreUser;
-var comboUserSearch;
+var comboSearchUser;
 var topGrdStore;
 var botGrdStore;
 var filterStore;
