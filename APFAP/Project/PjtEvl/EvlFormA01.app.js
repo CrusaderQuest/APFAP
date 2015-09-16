@@ -42,6 +42,115 @@ function dbUserLoad() {
     var ds2 = DBconnect.runProcedure(pr2);
     comboSearchUser = ds2[0];
 }
+//카테고리를 가져옴.
+function dbCatLoad() {
+    //그리드의 콤보박스
+    var pr1 = DBParams.create('sp_EvlFormA01', 'GET_PROJECT_CAT');
+    var ds1 = DBconnect.runProcedure(pr1);
+    comboStoreCat = ds1[0];
+
+    //조회조건의 콤보박스
+    var pr2 = DBParams.create('sp_EvlFormA01', 'GET_CAT_SEARCH');
+    var ds2 = DBconnect.runProcedure(pr2);
+    comboSearchCat = ds2[0];
+}
+//그래프를 그림.
+function initChart(storeTemp) {
+    var chart = Ext.create('Ext.chart.Chart', {
+        width: 300,
+        height: 100,
+        store: storeTemp,
+        padding: '10 0 0 0',
+        style: 'background: #fff',
+        animate: true,
+        shadow: false,
+        insetPadding: 40,
+
+        legend: {
+            field: 'name',
+            position: 'bottom',
+            boxStrokeWidth: 0,
+            labelFont: '12px Helvetica'
+        },
+
+        series: [{
+            type: 'pie',
+            angleField: 'data',
+            donut: 50,
+            label: {
+                field: 'name',
+                display: 'outside',
+                calloutLine: true
+            },
+            showInLegend: true,
+            highlight: {
+                fill: '#000',
+                'stroke-width': 2,
+                stroke: '#fff'
+            },
+            tips: {
+                trackMouse: true,
+                style: 'background: #FFF',
+                height: 20,
+                width: 100,
+                renderer: function (storeItem, item) {
+                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data') + '일');
+                }
+            }
+        }]
+    });
+
+    return chart;
+}
+function drawChart() {
+    //part chart
+    var pr = DBParams.create('sp_EvlFormA01', 'GET_CHART');
+    var ds = DBconnect.runProcedure(pr);
+    var temp = ds[0].data.items[0];
+
+    for (var i = 0; i < 5; i++) {
+        partStore.add({ name: comboStoreCat.data.items[i].data.SHOWVALUE, data: 0 });
+    }
+    if (temp.data.DEF_E_DT != '' && temp.data.DEF_E_DT != undefined) {
+        partStore.data.items[0].data.data = ApFn.setYMD(temp.data.DEF_E_DT) - ApFn.setYMD(temp.data.START_DT);
+        if (temp.data.ANL_E_DT != '' && temp.data.ANL_E_DT != undefined) {
+            partStore.data.items[1].data.data = ApFn.setYMD(temp.data.ANL_E_DT) - ApFn.setYMD(temp.data.DEF_E_DT);
+            if (temp.data.DES_E_DT != '' && temp.data.DES_E_DT != undefined) {
+                partStore.data.items[2].data.data = ApFn.setYMD(temp.data.DES_E_DT) - ApFn.setYMD(temp.data.ANL_E_DT);
+                if (temp.data.DEV_E_DT != '' && temp.data.DEV_E_DT != undefined) {
+                    partStore.data.items[3].data.data = ApFn.setYMD(temp.data.DEV_E_DT) - ApFn.setYMD(temp.data.DES_E_DT);
+                    if (temp.data.TES_E_DT != '' && temp.data.TES_E_DT != undefined) {
+                        partStore.data.items[4].data.data = ApFn.setYMD(temp.data.TES_E_DT) - ApFn.setYMD(temp.data.DEV_E_DT);
+                    }
+                }
+            }
+        }
+    }
+    //version chart
+    var temp = ds[0];
+    for (var i = 0; i < temp.data.length; i++) {
+        versionStore.add({ name: temp.data.items[i].data.SUMMARY, data: 0 });
+        if (temp.data.items[i].data.TES_E_DT != '' && temp.data.items[i].data.TES_E_DT != undefined) {
+            versionStore.data.items[i].data.data = ApFn.setYMD(temp.data.items[i].data.TES_E_DT) - ApFn.setYMD(temp.data.items[i].data.START_DT);
+        } else if (temp.data.items[i].data.DEV_E_DT != '' && temp.data.items[i].data.DEV_E_DT != undefined) {
+            versionStore.data.items[i].data.data = ApFn.setYMD(temp.data.items[i].data.DEV_E_DT) - ApFn.setYMD(temp.data.items[i].data.START_DT);
+        } else if (temp.data.items[i].data.DES_E_DT != '' && temp.data.items[i].data.DES_E_DT != undefined) {
+            versionStore.data.items[i].data.data = ApFn.setYMD(temp.data.items[i].data.DES_E_DT) - ApFn.setYMD(temp.data.items[i].data.START_DT);
+        } else if (temp.data.items[i].data.ANL_E_DT != '' && temp.data.items[i].data.ANL_E_DT != undefined) {
+            versionStore.data.items[i].data.data = ApFn.setYMD(temp.data.items[i].data.ANL_E_DT) - ApFn.setYMD(temp.data.items[i].data.START_DT);
+        } else if (temp.data.items[i].data.DEF_E_DT != '' && temp.data.items[i].data.DEF_E_DT != undefined) {
+            versionStore.data.items[i].data.data = ApFn.setYMD(temp.data.items[i].data.DEF_E_DT) - ApFn.setYMD(temp.data.items[i].data.START_DT);
+        }
+    }
+
+    partChart.redraw();
+    versionChart.redraw();
+}
+
+
+
+
+/*
 //저장.
 function dbSave() {
     //업데이트 되었는지
@@ -54,7 +163,7 @@ function dbSave() {
     if (isErrTuple(selectedRecords)) return;
 
     //추가된행과 업데이트된 행 분기하여 디비에 저장
-    /*      topGrd 부분, 아직 DB 없음.
+          topGrd 부분, 아직 DB 없음.
     var pr = '';
     var ds = '';
     for (var i = 0; i < selectedRecords.length; i++) {
@@ -95,7 +204,7 @@ function dbSave() {
             ds = DBconnect.runProcedure(pr);
         }
     }
-    */
+    
     //저장되었습니다.
     isUpdated = 0;
 
@@ -222,3 +331,5 @@ function isErrTuple(selectedRecords) {
 
 
 //-----------------------제약조건---------------------------
+
+*/
