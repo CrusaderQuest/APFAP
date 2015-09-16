@@ -1,46 +1,64 @@
 ﻿/// <reference path="../../Resource/Scripts/ext-all-debug.js" />
 /// <reference path="../../Resource/Scripts/component.js" />
 /// <reference path="../../Resource/Scripts/noncomponent.js" />
-/// <reference path="AnlFormB01.app.js" />
+/// <reference path="AnlFormC01.app.js" />
 
 //View 단 정의 영역 시작
-var pnl_contents = ApPanel.create("UI_ANLYSIS");
+var pnl_contents = ApPanel.create();
 
 //data-type
 var comboStore = Ext.create('Ext.data.ArrayStore', {
-    fields: ['SHOWDATA', 'HIDEDATA'],
+    fields: ['SHOWVALUE', 'HIDEVALUE'],
     data: [
-        ['소프트웨어', 'SOFTWARE'],
-        ['하드웨어', 'HARDWARE'],
+        ['소프트웨어', 'SOFT'],
+        ['하드웨어', 'HARD'],
         ['인력', 'HUMAN'],
         ['기타', 'ETC']
     ]
 });
 var gridData;
 var deleteArray = [];
-//pnl_grid
-var tbl_btn = ApTable.create();
-tbl_btn.setTarget();
-var btn_change = ApButton.create("수정");
-var btn_save = ApButton.create("저장");
+//db user
+var prU = DBParams.create('sp_AnlFormC01', 'USER_INFO');
+var dsu = DBconnect.runProcedure(prU);
 
-var grd_a = ApGrid.create(true,true);
+// tbl_main
+var tbl_main = ApTable.create(2);
+tbl_main.addCls('tableStyle_main');
+tbl_main.updateLayout();
+tbl_main.setTarget();
+var btn_save = ApButton.create("변경상태 저장");
+var lb_main = ApLabel.create("개발환경 관리 ---- 현재 개발환경에 대하여 작성해주세요.");
+
+//search
+var tbl_H = ApTable.create(1);
+tbl_H.setTarget();
+tbl_H.setStyleSearch();
+var dt_SDATE = ApDate.create('조회일자');
+var lbl_a = ApLabel.create('~');
+var dt_EDATE = ApDate.create('');
+dt_EDATE.setWidth(110);
+var btn_search = ApButton.create('조회');
+tbl_H.cellShare(4);
+dt_EDATE.setToday();
+
+var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '분류', ['CATEGORY', comboStore], 200);
 grd_a.addColumn('text', '명칭', 'DEV_NM', 300);
 grd_a.addColumn('text', '용도', 'DEV_USE', 400);
-grd_a.addColumn('text', '비고', 'BLANK', 300);
-
+grd_a.addColumn('date', '등록일', 'S_DT', 110);
+grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 80);
 //grd_a.reconfigure(gridData);
 ApEvent.onlaod = function () {
 
-    grd_a.setDisabled(true);
+    pnl_contents.divideV(tbl_H, grd_a, tbl_H);
+    viewPanel.divideV(tbl_main, pnl_contents, tbl_main);
 
-    btn_save.setVisible(false);
-    btn_change.setWidth(70);
-    btn_save.setWidth(70);
+    grd_a.setWidth(460);
+    btn_save.setWidth(120);
+    dt_EDATE.setWidth(110);
 
-    pnl_contents.divideV(tbl_btn, grd_a);
-    tbl_btn.setHeight(50);
-    viewPanel.full(pnl_contents);
+    tbl_H.setHeight(30);
+    tbl_main.setHeight(35);
     GRD_LOAD();
 }
