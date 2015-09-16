@@ -981,7 +981,11 @@ var ApGrid = {
         _ApGrid.view.on('itemupdate', function (record, index, node, eOpts) {
             if (_ApGrid.checkedGrid) {
                 //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
-                delete record.modified['AP_STATE'];
+                try {
+                    delete record.modified['AP_STATE'];
+                } catch (e) {
+
+                }
                 if (record.dirty) {
                     //레코드가 더러울때
                     var i = 0;
