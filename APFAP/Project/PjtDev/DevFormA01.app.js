@@ -9,6 +9,7 @@
 //탭 옮기면 조회조건 초기화.
 //저장하면 조회조건은 그대로고 저장하고 조회조건으로 다시 조회해서 reconfigure
 
+
 /*
 //filterStore 변경.
 function setFilterStore() {
@@ -57,6 +58,7 @@ function dbUserLoad() {
     var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
     var ds1 = DBconnect.runProcedure(pr1);
     comboStoreUser = ds1[0];
+
     //메인의 유저 차트
     for (var i = 0; i < comboStoreUser.data.length; i++) {
         mainUserChartStore.add({ name:comboStoreUser.data.items[i].data.SHOWVALUE, data:0 });
@@ -131,25 +133,25 @@ function dbSearch() {
 
     for (var i = 0; i < filterStore.data.length; i++) {
         // 조회 조건을 충족하지 못하는 레코드 제거
-        if (dt_sStartDate.getValue() != undefined && dt_sStartDate.getValue() != ''
-            && dt_eStartDate.getValue() != undefined && dt_eStartDate.getValue() != '') {
-            if (dt_sStartDate.getValue() > filterStore.getAt(i).data.START_DT || dt_eStartDate.getValue() < filterStore.getAt(i).data.START_DT) {
+        if (dt_sStartDate.getYMD() != undefined && dt_sStartDate.getYMD() != ''
+            && dt_eStartDate.getYMD() != undefined && dt_eStartDate.getYMD() != '') {
+            if (dt_sStartDate.getYMD() > filterStore.getAt(i).data.START_DT || dt_eStartDate.getYMD() < filterStore.getAt(i).data.START_DT) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
-        if (dt_sDeadLine.getValue() != undefined && dt_sDeadLine.getValue() != ''
-            && dt_eDeadLine.getValue() != undefined && dt_eDeadLine.getValue() != '') {
-            if (dt_sDeadLine.getValue() > filterStore.getAt(i).data.DEADLINE || dt_eDeadLine.getValue() < filterStore.getAt(i).data.DEADLINE) {
+        if (dt_sDeadLine.getYMD() != undefined && dt_sDeadLine.getYMD() != ''
+            && dt_eDeadLine.getYMD() != undefined && dt_eDeadLine.getYMD() != '') {
+            if (dt_sDeadLine.getYMD() > filterStore.getAt(i).data.DEADLINE || dt_eDeadLine.getYMD() < filterStore.getAt(i).data.DEADLINE) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
-        if (dt_sEndDate.getValue() != undefined && dt_sEndDate.getValue() != ''
-            && dt_eEndDate.getValue() != undefined && dt_eEndDate.getValue() != '') {
-            if (dt_sEndDate.getValue() > filterStore.getAt(i).data.END_DT || dt_eEndDate.getValue() < filterStore.getAt(i).data.END_DT) {
+        if (dt_sEndDate.getYMD() != undefined && dt_sEndDate.getYMD() != ''
+            && dt_eEndDate.getYMD() != undefined && dt_eEndDate.getYMD() != '') {
+            if (dt_sEndDate.getYMD() > filterStore.getAt(i).data.END_DT || dt_eEndDate.getYMD() < filterStore.getAt(i).data.END_DT) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
@@ -170,7 +172,7 @@ function dbSearch() {
             }
         }
         if (cmb_user.getValue() != '전체' && cmb_user.getValue() != undefined && cmb_user.getValue() != '') {
-            if (cmb_user.getValue() != filterStore.getAt(i).data.USER_NM) {
+            if (cmb_user.getValue() != filterStore.getAt(i).data.USER_KEY) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
@@ -367,7 +369,7 @@ function initChart(storeTemp) {
                 height: 20,
                 width: 100,
                 renderer: function (storeItem, item) {
-                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data'));
+                    this.setTitle(storeItem.get('name') + ': ' + storeItem.get('data') + '%');
                 }
             }
         }]

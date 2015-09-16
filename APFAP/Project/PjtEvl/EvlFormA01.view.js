@@ -5,85 +5,71 @@
 
 //View 단 정의 영역 시작
 
+//-------------전역변수-------------
+var comboStoreCat;
+var comboSearchCat;
+var comboStoreUser;
+var comboSearchUser;
+var topGrdStore;
+var botGrdStore;
+var filterStore;
+var isSearched;
+//-------------컴포넌트-------------
 var pnl_top = ApPanel.create("top field");
 var pnl_content = ApPanel.create("contents field");
 
-viewPanel.divideV(pnl_top, pnl_content);
-pnl_top.setHeight('10%');
+var tbl_top = ApTable.create(3);
+tbl_top.setTarget();
+var btn_save = ApButton.create("저장");
+var pnl_title = ApLabel.create("프로젝트 리뷰");
+var pnl_summary = ApLabel.create("프로젝트를 리뷰할 수 있습니다.");
 
-var pnl_title = ApPanel.create("프로젝트 리뷰");
-//pnl_title.setBodyStyle('background-color','#ff0000');
-var pnl_summary = ApPanel.create("프로젝트가 진행된 내역을 보고 리뷰를 관리할 수 있습니다.");
+var pnl_graph = ApPanel.create('그래프 패널');
+var pnl_grd = ApPanel.create('그리드 패널');
 
-pnl_top.divideH(pnl_title, pnl_summary);
-pnl_title.setWidth('25%');
+var pnl_topGrd = ApPanel.create('상단 그리드 패널');
+//조회
+var tbl_topGrd = ApTable.create(5);
+tbl_topGrd.setTarget();
+tbl_topGrd.setStyleSearch();
+var lbl_a = ApLabel.create('카테고리'); var cmb_category = ApCombo.create();
+var lbl_b = ApLabel.create('담당자'); var cmb_user = ApCombo.create();
+var btn_search = ApButton.create('조회');
 
-var pnl_graph_root = ApPanel.create("루트 그래프 패널");
-var pnl_grid_root = ApPanel.create("그리드 패널");
-var pnl_graph_top = ApPanel.create("상위 그래프 패널");
-var pnl_graph_bottom = ApPanel.create("하위 그래프 패널");
-var pnl_graph1 = ApPanel.create("그래프1");
-var pnl_graph2 = ApPanel.create("그래프2");
-var pnl_graph3 = ApPanel.create("그래프3");
-var pnl_grid = ApPanel.create("평가,Point 그리드");
-//나중에 각각의 패널안에 컴포넌트를 채우면 됩니다.
+var pnl_topGrdCon = ApPanel.create('그리드');
 
-//--------------------------------------------------
-var comboStoreCategory = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA'],
-    data: [
-        ['D01', '정의'],
-        ['D02', '분석'],
-        ['D03', '설계'],
-        ['D04', '개발'],
-        ['D05', '테스트'],
-        ['D06', '수정 지점'],
-        ['D07', '기타']
-    ]
-});
-var comboStoreWorker = Ext.create('Ext.data.ArrayStore', {
-    fields: ['HIDEDATA', 'SHOWDATA'],
-    data: [
-        ['U0000001', '주니니'],
-        ['U0000002', '거니니'],
-        ['U0000003', '지니니'],
-        ['U0000004', '으니니'],
-        ['U0000005', '기니니']
-    ]
-});
-Ext.define('projectReviewData', {
-    extend: 'Ext.data.Model',
-    fields: [
-        { name: 'CATEGORY' },
-        { name: 'SUMMARY' },
-        { name: 'PERIODGAP' },
-        { name: 'REVIEW' },
-        { name: 'WORKER' }
-    ]
-});
-var gridData = Ext.create('Ext.data.ArrayStore', {
-    model: 'projectReviewData',
-    data: [
-        ['정의', '','+20','컨셉이 개 애매해서 20일 더 걸림!!','거니니'],
-        ['개발', '', '+20', '휴가 다녀와서 20일 더 걸림 ㅎㅎ 야호', '으니니'],
-        ['수정 지점', '정의부 요구사항 수정 필요', '', '요구사항 정의를 확실히 못해서 나중에 또 수정해야 했음', '거니니'],
-        ['수정 지점', 'DB 설계도 수정 필요', '', 'DB 설계 잘못해서 수정해야 했음 시밤 ㅠㅠ', '지니니'],
-        ['수정 지점', 'DB 설계도 수정 필요', '', 'DB 설계 잘못해서 수정해야 했음 시밤 ㅠㅠ', '지니니'],
-    ]
-});
-var grd = ApGrid.create();
-grd.addColumn('combo', '카테고리', ['CATEGORY', comboStoreCategory], 120);
-grd.addColumn('text', '요약', 'SUMMARY', 200);
-grd.addColumn('num', '기간 차이', 'PERIODGAP', 120);
-grd.addColumn('text', '상세 리뷰', 'REVIEW', 700);
-grd.addColumn('combo', '담당자', ['WORKER', comboStoreWorker], 120);
+var pnl_botGrd = ApPanel.create('하단 그리드 패널');
 
-grd.reconfigure(gridData);
-//--------------------------------------------------
-pnl_content.divideV(pnl_graph_root, pnl_grid_root);
-pnl_graph_root.divideV(pnl_graph_top, pnl_graph_bottom);
-pnl_graph_top.divideH(pnl_graph1, pnl_graph2);
-pnl_graph_bottom.full(pnl_graph3);
-pnl_grid_root.full(pnl_grid);
+var topGrd = ApGrid.create(true, true);
+var botGrd = ApGrid.create(true, true);
 
-pnl_grid.full(grd);
+ApEvent.onlaod = function () {
+    viewPanel.divideV(pnl_top, pnl_content);
+    pnl_top.setHeight(50);
+
+    btn_save.setWidth(120);
+    pnl_title.setWidth(400);
+    pnl_top.full(tbl_top);
+
+    pnl_content.divideV(pnl_graph, pnl_grd);
+    pnl_grd.divideV(pnl_topGrd, pnl_botGrd);
+
+    pnl_topGrd.divideV(tbl_topGrd, pnl_topGrdCon);
+    tbl_topGrd.setHeight(30);
+
+    pnl_topGrdCon.full(topGrd);
+    pnl_botGrd.full(botGrd);
+
+    topGrd.addColumn('combo', '카테고리', ['CATEGORY',comboStoreCat], 120);
+    topGrd.addColumn('text', '요약', 'SUMMARY', 200);
+    topGrd.addColumn('text', '상세 내용', 'CONTENT', 500);
+    topGrd.addColumn('combo', '관련 담당자', 'USER_KEY', 120);
+
+    //grd.addColumn('text', '개발 단위', 'D_DEV_NM', 200);
+
+    botGrd.addColumn('text', '버전NO', 'VERSION_NO', 100);
+    botGrd.addColumn('text', '요약', 'SUMMARY', 200);
+    botGrd.addColumn('text', '상세 내용', 'CONTENT', 500);
+    botGrd.addColumn('date', '끝난 날짜', 'END_DT', 120);
+
+}

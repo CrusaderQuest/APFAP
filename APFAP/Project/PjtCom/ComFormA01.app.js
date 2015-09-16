@@ -62,11 +62,11 @@ function dbSave() {
             pr = DBParams.create('sp_ComFormA01', 'UPDATE_TABLE');
         }
         pr.addParam('REQ_DT', ApFn.setYMD(selectedRecords[i].get('REQ_DT')));
-        pr.addParam('STATE_CD', selectedRecords[i].get('STATE_NM'));
+        pr.addParam('STATE_CD', selectedRecords[i].get('STATE_CD'));
         pr.addParam('SUMMARY', selectedRecords[i].get('SUMMARY'));
-        pr.addParam('DESCRIPTION', selectedRecords[i].get('DESCRIPTION'));
-        pr.addParam('USER_KEY1', selectedRecords[i].get('USER_NM1'));
-        pr.addParam('USER_KEY2', selectedRecords[i].get('USER_NM2'));
+        pr.addParam('DESCRIPTION', selectedRecords[i].get('CONTENT'));
+        pr.addParam('USER_KEY1', selectedRecords[i].get('USER_KEY1'));
+        pr.addParam('USER_KEY2', selectedRecords[i].get('USER_KEY2'));
         pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
 
         ds = DBconnect.runProcedure(pr);
@@ -89,10 +89,10 @@ function isErrTuple(selectedRecords) {
     for (var i = 0; i < selectedRecords.length; i++) {
         //특정 셀의 값을 확인
         if (selectedRecords[i].get('REQ_DT') == undefined || selectedRecords[i].get('REQ_DT') == ''
-            || selectedRecords[i].get('STATE_NM') == undefined || selectedRecords[i].get('STATE_NM') == ''
-            || selectedRecords[i].get('SUMMARY') == undefined || selectedRecords[i].get('DEV_VALUE') == ''
-            || selectedRecords[i].get('CONTENT') == undefined || selectedRecords[i].get('TEST_VALUE') == ''
-            || selectedRecords[i].get('USER_NM1') == undefined || selectedRecords[i].get('USER_NM1') == '') {
+            || selectedRecords[i].get('STATE_CD') == undefined || selectedRecords[i].get('STATE_CD') == ''
+            || selectedRecords[i].get('SUMMARY') == undefined || selectedRecords[i].get('SUMMARY') == ''
+            || selectedRecords[i].get('CONTENT') == undefined || selectedRecords[i].get('CONTENT') == ''
+            || selectedRecords[i].get('USER_KEY1') == undefined || selectedRecords[i].get('USER_KEY1') == '') {
             var index = grd.getRowIndex(selectedRecords[i]);
             //에러메세지 띄움
             ApMsg.warning(index + 1 + '번째 행의 데이터를 넣어주세요.', function () {
@@ -135,21 +135,21 @@ function dbSearch() {
             }
         }
         if (cmb_reqState.getValue() != undefined && cmb_reqState.getValue() != '') {
-            if (cmb_reqState.getValue() != convertSTATE_CD(filterStore.getAt(i).data.STATE_NM)) {
+            if (cmb_reqState.getValue() != filterStore.getAt(i).data.STATE_CD) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
         if (cmb_reqUser1.getValue() != undefined && cmb_reqUser1.getValue() != '') {
-            if (cmb_reqUser1.getValue() != convertUSER_KEY(filterStore.getAt(i).data.USER_NM1)) {
+            if (cmb_reqUser1.getValue() != filterStore.getAt(i).data.USER_KEY1) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
         if (cmb_reqUser2.getValue() != undefined && cmb_reqUser2.getValue() != '') {
-            if (cmb_reqUser2.getValue() != convertUSER_KEY(filterStore.getAt(i).data.USER_NM2)) {
+            if (cmb_reqUser2.getValue() != filterStore.getAt(i).data.USER_KEY2) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
@@ -176,3 +176,4 @@ grd.eButtonDeleteClick = function () {
     grd.deleteRow(selectedRecords);
     grd.setFocus(index - 1);
 }
+//----------------------제약조건-----------------------------------
