@@ -13,11 +13,13 @@ var comboStore = Ext.create('Ext.data.ArrayStore', {
     data: [
         ['뭘 넣을까', 'important'],
         ['문서의 타입', 'type'],
-        ['기타', 'exc']
+        ['기타', 'ext']
     ]
 });
 var gridData;
 var deleteArray = [];
+var up_key;
+var index = 0;
 //db user
 var prU = DBParams.create('sp_DefFormC01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
@@ -58,6 +60,8 @@ txt_nm.setWidth(800);
 var txta_summary = ApTextArea.create('상세 내용');
 txta_summary.setWidth(800);
 txta_summary.setHeight(200);
+var up_doc = ApUpload.create("파일 업로드", 'aa');
+
 var cbo_NOTICE_USER_HH = ApCombo.create('등록자', 'NOTICE_USER');
 cbo_NOTICE_USER_HH.bindStore(dsu[0]);
 var dt_update = ApDate.create();

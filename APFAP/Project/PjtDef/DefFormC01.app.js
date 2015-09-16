@@ -13,9 +13,11 @@ function GRD_LOAD() {
     grd_a.reconfigure(gridData);
 }
 grd_a.eButtonAddClick = function () {
-    gridData.add({ CATEGORY: '기타', DOC_NM: '', SUMMARY: '', S_DT: '', E_USER: '', E_DT: '' });
+    gridData.add({ UP_KEY: '', CATEGORY: '기타', DOC_NM: '', SUMMARY: '', S_DT: '', E_USER: '', E_DT: '' });
 }
-
+up_doc.eUpload = function (fileKey) {
+    up_key = fileKey;
+}
 grd_a.eButtonDeleteClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
         //Ext.Msg.alert("경고 창", "클릭 해주세요.");
@@ -66,13 +68,18 @@ grd_a.eSelectionChange = function (record, rowIndex, paramId) {
     txt_nm.setValue(record.data.DOC_NM);
     txta_summary.setValue(record.data.SUMMARY);
     cbo_NOTICE_USER_HH.setValue(record.data.E_USER);
+    index = record;
 
 }
 
 //grid update
 btn_update.eClick = function () {
+    if (gridData.data.items[index].data.UP_KEY == '') {
+        gridData.data.items[index].data.UP_KEY = up_key;
+    }
     grd_a.selection.set('CATEGORY', cbo_category.getValue());
     grd_a.selection.set('DOC_NM', txt_nm.getValue());
+
     grd_a.selection.set('SUMMARY', txta_summary.getValue());
     grd_a.selection.set('E_USER', cbo_NOTICE_USER_HH.getValue());
 
