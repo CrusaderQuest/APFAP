@@ -17,6 +17,8 @@ var tabChart;
 var mainTabChart;
 var mainUserChart;
 
+var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
+var ds_User = DBconnect.runProcedure(pr1);
 var comboSearchValue = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEVALUE', 'SHOWVALUE'],
     data: [
@@ -155,7 +157,7 @@ ApEvent.onlaod = function () {
     grd.addColumn('check', '개발 상태', 'DEV_VALUE', 120);
     grd.addColumn('check', '테스트 상태', 'TEST_VALUE', 120);
     grd.addColumn('date', '데드라인', 'DEADLINE', 120);
-    grd.addColumn('combo', '담당자', ['USER_NM', comboStoreUser], 120);
+    grd.addColumn('combo', '담당자', ['USER_NM', ds_User[0]], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 
     pnl_tabGrd.full(grd);

@@ -55,14 +55,14 @@ function getEmptyTable() {
 //프로젝트와 연결된 유저 가져옴.
 function dbUserLoad() {
     //그리드의 콤보박스
-    var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
-    var ds1 = DBconnect.runProcedure(pr1);
-    comboStoreUser = ds1[0];
+    //var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
+    //var ds1 = DBconnect.runProcedure(pr1);
+    //comboStoreUser = ds1[0];
 
-    //메인의 유저 차트
-    for (var i = 0; i < comboStoreUser.data.length; i++) {
-        mainUserChartStore.add({ name:comboStoreUser.data.items[i].data.SHOWVALUE, data:0 });
-    }
+    ////메인의 유저 차트
+    //for (var i = 0; i < comboStoreUser.data.length; i++) {
+    //    mainUserChartStore.add({ name:comboStoreUser.data.items[i].data.SHOWVALUE, data:0 });
+    //}
 
     //조회조건의 콤보박스
     var pr2 = DBParams.create('sp_DevFormA01', 'GET_USER_SEARCH');
@@ -265,11 +265,11 @@ function drawMainChart() {
     var ds4 = DBconnect.runProcedure(pr4);
     var tempStore4 = ds4[0];
 
-    for (var i = 0; i < comboStoreUser.data.length; i++) {
+    for (var i = 0; i < ds_User[0].getCount(); i++) {
         var cnt = 0;
         var userPer = 0;
         for (var j = 0; j < tempStore1.data.length; j++) {
-            if (tempStore1.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+            if (tempStore1.data.items[j].data.USER_NM == ds_User[0].data.items[i].data.SHOWVALUE) {
                 cnt += 1;
                 if (tempStore1.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -280,7 +280,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore2.data.length; j++) {
-            if (tempStore2.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+            if (tempStore2.data.items[j].data.USER_NM == ds_User[0].data.items[i].data.SHOWVALUE) {
                 cnt += 1;
                 if (tempStore2.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -291,7 +291,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore3.data.length; j++) {
-            if (tempStore3.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+            if (tempStore3.data.items[j].data.USER_NM == ds_User[0].data.items[i].data.SHOWVALUE) {
                 cnt += 1;
                 if (tempStore3.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -302,7 +302,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore4.data.length; j++) {
-            if (tempStore4.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+            if (tempStore4.data.items[j].data.USER_NM == ds_User[0].data.items[i].data.SHOWVALUE) {
                 cnt += 1;
                 if (tempStore4.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -316,7 +316,11 @@ function drawMainChart() {
         userPer = userPer / cnt;
         userPer = userPer * 100;
         userPer = Ext.Number.toFixed(userPer, 2);
-        mainUserChartStore.data.items[i].data.data = userPer;
+        try {
+            mainUserChartStore.data.items[i].data.data = userPer;
+        } catch (e) {
+
+        }
     }
 mainTabChart.redraw();
 mainUserChart.redraw();
@@ -518,9 +522,9 @@ function isErrTuple(selectedRecords) {
     return false;
 }
 function convertUSER_KEY(input) {
-    for (var i = 0; i < comboStoreUser.data.length; i++) {
-        if (comboStoreUser.data.items[i].data.SHOWVALUE == input)
-            return comboStoreUser.data.items[i].data.HIDEVALUE;
+    for (var i = 0; i < ds_User[0].data.length; i++) {
+        if (ds_User[0].data.items[i].data.SHOWVALUE == input)
+            return ds_User[0].data.items[i].data.HIDEVALUE;
     }
 }
 //----------------------------제약 조건--------------------------------
