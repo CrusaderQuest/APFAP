@@ -65,7 +65,7 @@ ApEvent.onlaod = function () {
     grd.addColumn('date', '테스트 날짜', 'TES_DT', 120);
     grd.addColumn('combo', '상태', ['STATE_CD', comboStoreState], 120);
     grd.addColumn('text', '요약', 'SUMMARY', 200);
-    grd.addColumn('text', '상세 내용', 'CONTENT', 700);
+    grd.addColumn('text', '상세 내용', 'CONTENT', 500);
     grd.addColumn('combo', '담당자', ['USER_KEY', comboStoreUser], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 

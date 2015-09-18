@@ -30,7 +30,7 @@ grd_a.eButtonDeleteClick = function () {
 btn_save.eClick = function () {
     for (var i = 0; i < gridData.data.length; i++) {
         //튜블 수 loop
-         var pr;
+        var pr;
         if (gridData.data.items[i].data.FUNC_NUM == 0) {//insert
             pr = DBParams.create('sp_ANLFORMA01', 'INSERT_TABLE');
             pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
