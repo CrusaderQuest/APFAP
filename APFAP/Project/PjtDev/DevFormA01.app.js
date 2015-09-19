@@ -31,11 +31,11 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
 //-----------------최상단 공통 컴포넌트-----------------
 btn_save.eClick = function () {
     dbSave();
+    getTable();
     if (isSearched) {
-        //filterStore
-        //dbSearch();
+        dbSearch();
     } else {
-
+        grd.reconfigure(grdStore);
     }
 }
 //-----------------------DB 통신-----------------------
@@ -88,24 +88,24 @@ function dbSave() {
             pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
             pr.addParam('H_DEV_NO', currentBtn - 1);
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
-            pr.addParam('START_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('START_DT')));
+            pr.addParam('START_DT', ApFn.setYMD(selectedRecords[i].get('START_DT')));
             pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
             pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
-            pr.addParam('DEADLINE', ApFn.toDbTyoe('date',selectedRecords[i].get('DEADLINE')));
-            pr.addParam('USER_KEY', convertUSER_KEY(selectedRecords[i].get('USER_NM')));
-            pr.addParam('END_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('END_DT')));
+            pr.addParam('DEADLINE', ApFn.setYMD(selectedRecords[i].get('DEADLINE')));
+            pr.addParam('USER_KEY', selectedRecords[i].get('USER_KEY'));
+            pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
 
             ds = DBconnect.runProcedure(pr);
         } else {
             pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
             pr.addParam('D_DEV_NO', selectedRecords[i].get('D_DEV_NO'));
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
-            pr.addParam('START_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('START_DT')));
+            pr.addParam('START_DT', ApFn.YMD(selectedRecords[i].get('START_DT')));
             pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
             pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
-            pr.addParam('DEADLINE', ApFn.toDbTyoe('date',selectedRecords[i].get('DEADLINE')));
-            pr.addParam('USER_KEY', convertUSER_KEY(selectedRecords[i].get('USER_NM')));
-            pr.addParam('END_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('END_DT')));
+            pr.addParam('DEADLINE', ApFn.setYMD(selectedRecords[i].get('DEADLINE')));
+            pr.addParam('USER_KEY', selectedRecords[i].get('USER_KEY'));
+            pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
 
             ds = DBconnect.runProcedure(pr);
         }
@@ -157,21 +157,21 @@ function dbSearch() {
                 continue;
             }
         }
-        if (cmb_devState.getValue() != '전체' && cmb_devState.getValue() != undefined && cmb_devState.getValue() != '') {
+        if (cmb_devState.getValue() != undefined && cmb_devState.getValue() != '') {
             if (cmb_devState.getValue() != filterStore.getAt(i).data.DEV_STATE) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
-        if (cmb_testState.getValue() != '전체' && cmb_testState.getValue() != undefined && cmb_testState.getValue() != '') {
+        if (cmb_testState.getValue() != undefined && cmb_testState.getValue() != '') {
             if (cmb_testState.getValue() != filterStore.getAt(i).data.TEST_STATE) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
-        if (cmb_user.getValue() != '전체' && cmb_user.getValue() != undefined && cmb_user.getValue() != '') {
+        if (cmb_user.getValue() != undefined && cmb_user.getValue() != '') {
             if (cmb_user.getValue() != filterStore.getAt(i).data.USER_KEY) {
                 filterStore.removeAt(i);
                 i = i - 1;
@@ -269,7 +269,7 @@ function drawMainChart() {
         var cnt = 0;
         var userPer = 0;
         for (var j = 0; j < tempStore1.data.length; j++) {
-            if (tempStore1.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+            if (tempStore1.data.items[j].data.USER_KEY == comboStoreUser.data.items[i].data.HIDEVALUE) {
                 cnt += 1;
                 if (tempStore1.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -280,7 +280,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore2.data.length; j++) {
-            if (tempStore2.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+            if (tempStore2.data.items[j].data.USER_KEY == comboStoreUser.data.items[i].data.HIDEVALUE) {
                 cnt += 1;
                 if (tempStore2.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -291,7 +291,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore3.data.length; j++) {
-            if (tempStore3.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+            if (tempStore3.data.items[j].data.USER_KEY == comboStoreUser.data.items[i].data.HIDEVALUE) {
                 cnt += 1;
                 if (tempStore3.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -302,7 +302,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore4.data.length; j++) {
-            if (tempStore4.data.items[j].data.USER_NM == comboStoreUser.data.items[i].data.SHOWVALUE) {
+            if (tempStore4.data.items[j].data.USER_KEY == comboStoreUser.data.items[i].data.HIDEVALUE) {
                 cnt += 1;
                 if (tempStore4.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -517,30 +517,72 @@ function isErrTuple(selectedRecords) {
     }
     return false;
 }
-function convertUSER_KEY(input) {
-    for (var i = 0; i < comboStoreUser.data.length; i++) {
-        if (comboStoreUser.data.items[i].data.SHOWVALUE == input)
-            return comboStoreUser.data.items[i].data.HIDEVALUE;
-    }
-}
 //----------------------------제약 조건--------------------------------
 dt_sStartDate.eChange = function (record) {
-
+    if (dt_eStartDate.getYMD() != '' && dt_eStartDate.getYMD() != undefined) {
+        if (dt_eStartDate.getYMD() < dt_sStartDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_sStartDate.setValue(sStartDateLast);
+            });
+            return;
+        }
+    }
+    sStartDateLast = dt_sStartDate.getYMD();
 }
 dt_eStartDate.eChange = function (record) {
-
+    if (dt_sStartDate.getYMD() != '' && dt_sStartDate.getYMD() != undefined) {
+        if (dt_eStartDate.getYMD() < dt_sStartDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_eStartDate.setValue(eStartDateLast);
+            });
+            return;
+        }
+    }
+    eStartDateLast = dt_eStartDate.getYMD();
 }
 dt_sDeadLine.eChange = function (record) {
-
+    if (dt_eDeadLine.getYMD() != '' && dt_eDeadLine.getYMD() != undefined) {
+        if (dt_eDeadLine.getYMD() < dt_sDeadLine.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_sDeadLine.setValue(sDeadLineLast);
+            });
+            return;
+        }
+    }
+    sDeadLineLast = dt_sDeadLine.getYMD();
 }
 dt_eDeadLine.eChange = function (record) {
-
+    if (dt_sDeadLine.getYMD() != '' && dt_sDeadLine.getYMD() != undefined) {
+        if (dt_eDeadLine.getYMD() < dt_sDeadLine.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_eDeadLine.setValue(eDeadLineLast);
+            });
+            return;
+        }
+    }
+    eDeadLineLast = dt_eDeadLine.getYMD();
 }
 dt_sEndDate.eChange = function (record) {
-
+    if (dt_eEndDate.getYMD() != '' && dt_eEndDate.getYMD() != undefined) {
+        if (dt_eEndDate.getYMD() < dt_sEndDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_sEndDate.setValue(sEndDateLast);
+            });
+            return;
+        }
+    }
+    sEndDateLast = dt_sEndDate.getYMD();
 }
 dt_eEndDate.eChange = function (record) {
-
+    if (dt_sEndDate.getYMD() != '' && dt_sEndDate.getYMD() != undefined) {
+        if (dt_eEndDate.getYMD() < dt_sEndDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_eEndDate.setValue(eEndDateLast);
+            });
+            return;
+        }
+    }
+    eEndDateLast = dt_eEndDate.getYMD();
 }
 grd.eUpdate = function (record, rowIndex, paramId) {
     /*

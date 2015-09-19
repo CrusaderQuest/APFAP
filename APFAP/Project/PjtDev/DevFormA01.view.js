@@ -13,6 +13,13 @@ var comboSearchUser;    //조회용 User 콤보박스
 var grdStore;           //그리드 스토어
 var filterStore;        //필터 그리드 스토어
 
+var sStartDateLast = '';
+var eStartDateLast = '';
+var sDeadLineLast = '';
+var eDeadLineLast = '';
+var sEndDateLast = '';
+var eEndDateLast = '';
+
 var tabChart;
 var mainTabChart;
 var mainUserChart;
@@ -20,9 +27,9 @@ var mainUserChart;
 var comboSearchValue = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEVALUE', 'SHOWVALUE'],
     data: [
-        ['all', '전체'],
-        ['true', 'T'],
-        ['false', 'F']
+        ['', '전체'],
+        [1, 'T'],
+        [0, 'F']
     ]
 });
 var tabChartStore = Ext.create('Ext.data.JsonStore', {
