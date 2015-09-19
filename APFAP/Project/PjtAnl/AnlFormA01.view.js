@@ -55,7 +55,7 @@ dt_EDATE.setToday();
 var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '유사도', ['REQ_SIMILARITY', comboStore], 60);
 grd_a.addColumn('text', 'UI명', 'UI_NM', 200);
-grd_a.addColumn('combo', '파일 분류',['FILE_CATEGORY', comboStore2], 80);
+grd_a.addColumn('combo', '파일 분류', ['FILE_CATEGORY', comboStore2], 80);
 grd_a.addColumn('date', '등록일', 'S_DT', 100);
 
 var tbl_input = ApTable.create(1);

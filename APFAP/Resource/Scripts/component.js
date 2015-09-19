@@ -188,7 +188,7 @@ ApTree.prototype.eExpand = function (s) { };
 ApTree.prototype.eCollapse = function (s) { };
 ApTree.prototype.setFocus = function (key, value) {
     var index = this.view.getStore().findBy(function (re, id) {
-        if (re.raw.value.getValue(key) == value) {
+        if (re.data.value.getValue(key) == value) {
             return true;
         }
     })
@@ -204,62 +204,67 @@ ApTree.prototype.getIndex = function (key, value) {
     return index;
 };
 ApTree.prototype.addNode = function (node, parentNode) {
-    //타겟이 없을경우
-    var length = 0;
-    if (node.leaf == undefined) {
-        node.leaf = true;
-    };
-    if (parentNode == undefined || parentNode == null) {
-        var parentNode;
-        //루트 레벨
-        if (this.selected == "" || this.selected == undefined) {
-            this.store.addNode(parentNode, node);
-            if (this.rootVisible == true) {
-                length = this.store.root.childNodes.length
-            } else {
-                length = this.store.root.childNodes.length - 1
-            };
-            this.getSelectionModel().select(length);
-            //선택레벨
-        } else {
-            parentNode = this.selected.parentNode;
-            index = this.selected.data.index + 1;
-            this.store.insertNode(parentNode, index, node);
+    try {
 
-            var record = this.getSelectionModel().lastSelected
-            if (record != undefined) {
-                if (record.childNodes.length == 0) {
-                    this.getSelectionModel().selectNext(node);
+        //타겟이 없을경우
+        var length = 0;
+        if (node.leaf == undefined) {
+            node.leaf = true;
+        };
+        if (parentNode == undefined || parentNode == null) {
+            var parentNode;
+            //루트 레벨
+            if (this.selected == "" || this.selected == undefined) {
+                this.store.addNode(parentNode, node);
+                if (this.rootVisible == true) {
+                    length = this.store.root.childNodes.length
                 } else {
-                    record.cascadeBy(function (childNode) {
-                        childNode.expand();
-                    })
-                    record.cascadeBy(function (childNode) {
+                    length = this.store.root.childNodes.length - 1
+                };
+                this.getSelectionModel().select(length);
+                //선택레벨
+            } else {
+                parentNode = this.selected.parentNode;
+                index = this.selected.data.index + 1;
+                this.store.insertNode(parentNode, index, node);
+
+                var record = this.getSelectionModel().lastSelected
+                if (record != undefined) {
+                    if (record.childNodes.length == 0) {
                         this.getSelectionModel().selectNext(node);
-                    }, this);
+                    } else {
+                        record.cascadeBy(function (childNode) {
+                            childNode.expand();
+                        })
+                        record.cascadeBy(function (childNode) {
+                            this.getSelectionModel().selectNext(node);
+                        }, this);
+                    };
                 };
             };
-        };
-    } else {
-        parentNode.set('leaf', false);
-        if (parentNode.childNodes.length == 0) {
-            this.store.addNode(parentNode, node);
-            parentNode.expand();
-            this.getSelectionModel().selectNext();
-
         } else {
-            var depth = parentNode.childNodes[0].data.depth
-            parentNode.cascadeBy(function (childNode) {
-                childNode.expand();
-            });
-            parentNode.cascadeBy(function (childNode) {
-                if (childNode.data.depth == depth || childNode.data.index == parentNode.childNodes.length - 1) return;
-                this.getSelectionModel().selectNext(node);
-            }, this);
-        };
-    };
+            parentNode.set('leaf', false);
+            if (parentNode.childNodes.length == 0) {
+                this.store.addNode(parentNode, node);
+                parentNode.expand();
+                this.getSelectionModel().selectNext();
 
-    this.selected = this.getSelectionModel().lastSelected;
+            } else {
+                var depth = parentNode.childNodes[0].data.depth
+                parentNode.cascadeBy(function (childNode) {
+                    childNode.expand();
+                });
+                parentNode.cascadeBy(function (childNode) {
+                    if (childNode.data.depth == depth || childNode.data.index == parentNode.childNodes.length - 1) return;
+                    this.getSelectionModel().selectNext(node);
+                }, this);
+            };
+        };
+
+        this.selected = this.getSelectionModel().lastSelected;
+    } catch (e) {
+
+    }
 };
 
 ApTree.prototype.removeNode = function (node) {
@@ -279,6 +284,7 @@ ApTree.prototype.removeNode = function (node) {
         if (this.getSelectionModel().lastSelected.childNodes.length == 0) {
             this.getSelectionModel().lastSelected.set('leaf', true);
         }
+        this.eClick(this.getSelectionModel().lastSelected.data);
     } else {
         return false;
     };
@@ -392,12 +398,12 @@ var ApTree = {
             store: ApTree.store,
             rootVisible: rootVisible,
             selected: '',
+            layout: 'fit',
             plugins: plug_in,
             hideHeaders: true,
             useArrows: true,
             columns: editable,
-            cls: '',
-            frame: ApTree.frame
+            cls: ''
         });
 
         _ApTree.on('afterrender', function (me, eOpts) {
@@ -981,7 +987,11 @@ var ApGrid = {
         _ApGrid.view.on('itemupdate', function (record, index, node, eOpts) {
             if (_ApGrid.checkedGrid) {
                 //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
-                delete record.modified['AP_STATE'];
+                try {
+                    delete record.modified['AP_STATE'];
+                } catch (e) {
+
+                }
                 if (record.dirty) {
                     //레코드가 더러울때
                     var i = 0;
@@ -1335,7 +1345,12 @@ ApUpload.prototype.setFileKey = function (filekey) {
         this.items.items[3].show();
         this.key = filekey;
     } else {
-        console.error('파일없음');
+        this.items.items[0].setRawValue('');
+        this.items.items[0].button.show();
+        this.items.items[1].show();
+        this.items.items[2].hide();
+        this.items.items[3].hide();
+        this.key = '';
     }
 }
 ApUpload.prototype.getFileKey = function () {
@@ -1428,8 +1443,9 @@ var ApUpload = {
         var _ApUpload = Ext.create('ApUpload', {
             title: '파일업로더',
             header: false,
-            bodyPadding: 10,
+            //bodyPadding: 10,
             frame: true,
+            border: 0,
             layout: 'hbox',
             key: '',
             url: '',
@@ -1439,6 +1455,7 @@ var ApUpload = {
                 fieldLabel: text,
                 labelWidth: 80,
                 width: 400,
+                border: 0,
                 msgTarget: 'side',
                 allowBlank: false,
                 anchor: '100%',
