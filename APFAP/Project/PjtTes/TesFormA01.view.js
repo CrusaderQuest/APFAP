@@ -12,6 +12,9 @@ var comboSearchUser;
 var grdStore;
 var filterStore;
 var isSearched = 0;
+
+var sDateLast = '';
+var eDateLast = '';
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
