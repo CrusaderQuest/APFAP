@@ -5,7 +5,7 @@
 
 //View 단 정의 영역 시작
 //data Base 설계 부분 
-var tab = ApTab.create();
+
 
 var pnl_DBname = ApPanel.create('table Name');
 
@@ -43,12 +43,7 @@ var example_save;
 
 var pnl_search = ApPanel.create('search');
 
-var tbl_main = ApTable.create(1);
-tbl_main.addCls('tableStyle_main');
-tbl_main.updateLayout();
-tbl_main.setTarget();
-var btn_SAVE = ApButton.create('변경상태 저장');
-btn_SAVE.setWidth(120);
+;
 var pnl_main = ApPanel.create('main');
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -56,9 +51,7 @@ var pnl_main = ApPanel.create('main');
 ApEvent.onlaod = function () {
 
     pnl_main.divideH(pnl_DBname, pnl_DBdetail);
-    tab.addTab('enroll').divideV(tbl_main, pnl_main, tbl_main);
-    tbl_main.setHeight(34);
-    tab.addTab('search')
+   
 
 
     pnl_DBdetail_OUT.full(pnl_DBdetail_up);
@@ -71,6 +64,6 @@ ApEvent.onlaod = function () {
     getTable();
     getColumn();
     getExample();
-    viewPanel.full(tab);
+    viewPanel.full(pnl_main);
    
 }
