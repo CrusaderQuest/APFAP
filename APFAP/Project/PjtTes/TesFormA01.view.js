@@ -74,4 +74,6 @@ ApEvent.onlaod = function () {
 
     dbLoad();
     getEmptyTable();
+
+    grd.setLockColumns('END_DT');
 }
