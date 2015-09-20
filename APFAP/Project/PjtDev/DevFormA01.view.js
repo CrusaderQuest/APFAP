@@ -179,4 +179,6 @@ ApEvent.onlaod = function () {
     cmb_devState.setStore(comboSearchValue);
     cmb_testState.setStore(comboSearchValue);
     cmb_user.setStore(comboSearchUser);
+
+    grd.setLockColumns('END_DT');
 }

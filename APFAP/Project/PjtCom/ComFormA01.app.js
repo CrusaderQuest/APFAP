@@ -60,6 +60,7 @@ function dbSave() {
             pr = DBParams.create('sp_ComFormA01', 'INSERT_TABLE');
         } else {
             pr = DBParams.create('sp_ComFormA01', 'UPDATE_TABLE');
+            pr.addParam('REQ_NO', selectedRecords[i].get('REQ_NO'));
         }
         pr.addParam('REQ_DT', ApFn.setYMD(selectedRecords[i].get('REQ_DT')));
         pr.addParam('STATE_CD', selectedRecords[i].get('STATE_CD'));
@@ -198,4 +199,18 @@ dt_eDate.eChange = function (record) {
         }
     }
     eDateLast = dt_eDate.getYMD();
+}
+
+grd.eUpdate = function (record, rowIndex, paramId) {
+    var a;
+    if (paramId == 'STATE_CD' && record.data.STATE_CD == 3) {
+        var pr = DBParams.create('sp_ComFormA01', 'GET_DATE');
+        var ds = DBconnect.runProcedure(pr);
+        record.data.END_DT = ds[0].data.items[0].data.DATE;
+        if (isSearched) {
+            grd.reconfigure(filterStore);
+        } else {
+            grd.reconfigure(grdStore);
+        }
+    }
 }
