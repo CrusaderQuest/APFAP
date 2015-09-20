@@ -734,6 +734,10 @@
     <Content Include="ServerCore\Login.aspx" />
     <Content Include="Start\Login.html" />
     <Content Include="Start\Login.app.js" />
+    <Content Include="Start\Project.html" />
+    <Content Include="Start\Project_프로젝트 선택.css" />
+    <Content Include="Start\Project.app.js" />
+    <Content Include="Start\Project.view.js" />
     <Content Include="Start\Main.view.js" />
     <Content Include="Start\Main-메인폼.css" />
     <Content Include="Start\Main.app.js" />

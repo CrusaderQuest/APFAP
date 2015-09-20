@@ -1075,6 +1075,48 @@ var ApText = {
         return _ApText;
     }
 }
+//넘버
+Ext.define('ApNum', {
+    extend: 'Ext.form.field.Number',
+    ComponentType: 'number'
+});
+ApNum.prototype.eFocus = function () {
+};
+ApNum.prototype.eChange = function (newValue, oldValue) {
+};
+ApNum.prototype.eKeyDown = function (e) {
+
+}
+ApNum.prototype.setFeildLabelWidth = function (width) {
+    this.labelEl.setWidth(width)
+};
+var ApNum = {
+    create: function (label, paramId, labelWidth) {
+        if (labelWidth == undefined) labelWidth = 80;
+        var _ApNum = Ext.create('ApNum', {
+            labelWidth: 80,
+            width: 180,
+            fieldLabel: label,
+            labelWidth: labelWidth,
+            labelStyle: 'white-space: nowrap;',
+            paramId: paramId,
+            decimalPrecision : 0
+        });
+        _ApNum.on('afterrender', function (me, eOpts) {
+            _ApNum.on('focus', function (me, eOpts) {
+                _ApNum.eFocus();
+            });
+            _ApNum.on('change', function (me, newValue, oldValue) {
+                _ApNum.eChange(newValue, oldValue);
+            })
+            _ApNum.getEl().on('keydown', function (e, t, eOpts) {
+                _ApNum.eKeyDown(e);
+            });
+        });
+        _setTarget(_ApNum);
+        return _ApNum;
+    }
+}
 //텍스트에어리어
 Ext.define('ApTextArea', {
     extend: 'Ext.form.field.TextArea',
