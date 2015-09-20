@@ -170,3 +170,25 @@ grd.eButtonDeleteClick = function () {
 }
 
 //-----------------------제약 조건----------------------------------
+dt_sDate.eChange = function (record) {
+    if (dt_eDate.getYMD() != '' && dt_eDate.getYMD() != undefined) {
+        if (dt_eDate.getYMD() < dt_sDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_sDate.setValue(sDateLast);
+            });
+            return;
+        }
+    }
+    sDateLast = dt_sDate.getYMD();
+}
+dt_eDate.eChange = function (record) {
+    if (dt_sDate.getYMD() != '' && dt_sDate.getYMD() != undefined) {
+        if (dt_eDate.getYMD() < dt_sDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_eDate.setValue(eDateLast);
+            });
+            return;
+        }
+    }
+    eDateLast = dt_eDate.getYMD();
+}

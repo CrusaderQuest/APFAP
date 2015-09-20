@@ -9,29 +9,12 @@ var tab = ApTab.create();
 
 var pnl_DBname = ApPanel.create('table Name');
 
-var grd = ApGrid.create();
+var grd = ApGrid.create(true,true);
 grd.addColumn('text', 'table Name', 'TABLE_NM', 195);
-
-
-
 var pnl_DBdetail_up = ApPanel.create('Up of up on grid');
-//pnl_DBdetail_up.setHieght(180);
 var pnl_DBdetail = ApPanel.create('table Detail');
 
 var pnl_DBdetail_OUT = ApPanel.create('Up');
-
-
-//Ext.define('tableDetail', {
-//    extend: 'Ext.data.Model',
-
-//    fields: [
-//        { name: 'columnName' },
-//        { name: 'dataType' },
-//        { name: 'primaryKey', type: 'boolean' },
-//        { name: 'nullCheck', type: 'boolean' },
-//        { name: 'summary' }
-//    ]
-//});
 var tbl_grd = ApTable.create(1);
 tbl_grd.setTarget();
 var grd_Detail = ApGrid.create(true, true);

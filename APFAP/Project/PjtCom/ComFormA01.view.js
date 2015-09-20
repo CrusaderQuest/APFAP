@@ -13,6 +13,9 @@ var comboSearchUser;
 var grdStore;
 var filterStore;
 var isSearched = 0;
+
+var sDateLast = '';
+var eDateLast = '';
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
@@ -50,7 +53,7 @@ ApEvent.onlaod = function () {
     pnl_top.full(tbl_top);
 
     pnl_content.divideV(pnl_search, pnl_grid);
-    
+
     pnl_search.setHeight(30);
     pnl_search.full(tbl_tabSearch1);
     pnl_grid.full(grd);
@@ -67,11 +70,11 @@ ApEvent.onlaod = function () {
     cmb_reqUser2.setStore(comboSearchUser);
 
     grd.addColumn('date', '요청 날짜', 'REQ_DT', 120);
-    grd.addColumn('combo', '상태', ['STATE_CD', comboStoreState], 120);
+    grd.addColumn('combo', '상태', ['STATE_CD', comboStoreState], 80);
     grd.addColumn('text', '요약', 'SUMMARY', 200);
-    grd.addColumn('text', '상세 내용', 'CONTENT', 500);
-    grd.addColumn('combo', '접수자', ['USER_KEY1', comboStoreUser], 120);
-    grd.addColumn('combo', '처리자', ['USER_KEY2', comboStoreUser], 120);
+    grd.addColumn('text', '상세 내용', 'CONTENT', 400);
+    grd.addColumn('combo', '접수자', ['USER_KEY1', comboStoreUser], 100);
+    grd.addColumn('combo', '처리자', ['USER_KEY2', comboStoreUser], 100);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 
     dbLoad();

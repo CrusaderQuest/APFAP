@@ -16,12 +16,23 @@ function getTable() {
     var prm = DBParams.create('sp_DesFormA01', 'GET_TABLE');
     var dbc = DBconnect.runProcedure(prm);
     dbc_save = dbc[0];
-    //var pn = DBParams.create('sp_DesFormB01', 'GET_TABLE_FOR_TREE');
-    //var dtree = DBconnect.runProcedure(pn);
-    //tree_save = dtree[0];
+    prm.addParam('E_DT', ApFn.setYMD(dbc_save.data.items[0].data.E_DT));
     grd.reconfigure(dbc_save);
-    //var prm2 = DBParams.create('sp_DesFormB01', 'GET_DEFAULT_COLUMN');
-    //var column_detail = DBconnect.runProcedure(prm2);
-    //tbldetail_save = column_detail[0];
-    //grd_Detail.reconfigure(tbldetail_save);
+}
+btn_SAVE.eClick = function () {
+    var prm = DBParams.create('sp_DesFormA01', 'UPDATE_TABLE');
+    dbc_save.data.items[0].data.UP_KEY = upload.getFileKey();
+    if (dbc_save.data.items[0].data.UP_KEY) {
+        dbc_save.data.items[0].data.CHECK_UPLOAD = 'T';
+    }
+    else {
+        dbc_save.data.items[0].data.CHECK_UPLOAD = 'F';
+    }
+    prm.addParam('E_DT', ApFn.setYMD(dbc_save.data.items[0].data.E_DT));
+    prm.addParam('CHECK_UPLOAD', dbc_save.data.items[0].data.CHECK_UPLOAD);
+    prm.addParam('SUMMARY', dbc_save.data.items[0].data.SUMMARY);
+    prm.addParam('UP_KEY', dbc_save.data.items[0].data.UP_KEY);
+    var dbc = DBconnect.runProcedure(prm);
+    
+    getTable();
 }

@@ -49,6 +49,9 @@ grd.eSelectionChange = function (record, rowindex, paramId) {
 grd_Detail.eButtonAddClick = function () {
     tbldetail_save.add({ COLUMN_NM: '', DATA_TYPE: '', PRIMARY_CHECK: 'F', NULL_CHECK: 'F' });
 }
+grd_Detail.eButtonDeleteClick = function () {
+    
+}
 //btn_delete.eClick = function () {
 //    gridData.remove(grd_Detail.getSelection());
 //    gridData_second.remove(grd_Detail.getSelection());
@@ -66,10 +69,7 @@ function getColumn() {
     var column_detail = DBconnect.runProcedure(prm2);
     tbldetail_save = column_detail[0];
     grd_Detail.reconfigure(tbldetail_save);
-    //for (var i = 0; i < tbldetail_save.data.length; i++) {
-    //    grd_Example.addColumn('text', tbldetail_save.data.items[i].data.COLUMN_NM, tbldetail_save.data.items[i].data.COLUMN_NM, 200);
-    //    var TEMP = tbldetail_save.data.items[i].data.COLUMN_NM;
-    //} 요부분이 세로로 나오게 하는부분임 
+  
 
 }
 function getExample() {//
