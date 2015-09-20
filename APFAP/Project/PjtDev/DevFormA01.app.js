@@ -157,21 +157,21 @@ function dbSearch() {
                 continue;
             }
         }
-        if (cmb_devState.getValue() != undefined && cmb_devState.getValue() != '') {
-            if (cmb_devState.getValue() != filterStore.getAt(i).data.DEV_STATE) {
+        if (cmb_devState.getValue() != undefined && cmb_devState.getValue() != '-1') {
+            if (cmb_devState.getValue() != filterStore.getAt(i).data.DEV_VALUE) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
-        if (cmb_testState.getValue() != undefined && cmb_testState.getValue() != '') {
-            if (cmb_testState.getValue() != filterStore.getAt(i).data.TEST_STATE) {
+        if (cmb_testState.getValue() != undefined && cmb_testState.getValue() != '-1') {
+            if (cmb_testState.getValue() != filterStore.getAt(i).data.TEST_VALUE) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
-        if (cmb_user.getValue() != undefined && cmb_user.getValue() != '') {
+        if (cmb_user.getValue() != undefined && cmb_user.getValue() != '-1') {
             if (cmb_user.getValue() != filterStore.getAt(i).data.USER_KEY) {
                 filterStore.removeAt(i);
                 i = i - 1;

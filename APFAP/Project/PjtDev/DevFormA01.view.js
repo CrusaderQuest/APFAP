@@ -27,7 +27,7 @@ var mainUserChart;
 var comboSearchValue = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEVALUE', 'SHOWVALUE'],
     data: [
-        ['', '전체'],
+        ['-1', '전체'],
         [1, 'T'],
         [0, 'F']
     ]
@@ -162,7 +162,7 @@ ApEvent.onlaod = function () {
     grd.addColumn('check', '개발 상태', 'DEV_VALUE', 120);
     grd.addColumn('check', '테스트 상태', 'TEST_VALUE', 120);
     grd.addColumn('date', '데드라인', 'DEADLINE', 120);
-    grd.addColumn('combo', '담당자', ['USER_NM', comboStoreUser], 120);
+    grd.addColumn('combo', '담당자', ['USER_KEY', comboStoreUser], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 
     pnl_tabGrd.full(grd);

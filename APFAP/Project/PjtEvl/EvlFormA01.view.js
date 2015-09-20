@@ -54,7 +54,7 @@ var pnl_topGrdCon = ApPanel.create('그리드');
 var pnl_botGrd = ApPanel.create('하단 그리드 패널');
 
 var topGrd = ApGrid.create(true, true);
-var botGrd = ApGrid.create(true, true);
+var botGrd = ApGrid.create(true);
 
 ApEvent.onlaod = function () {
     viewPanel.divideV(pnl_top, pnl_content);
