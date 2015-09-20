@@ -50,12 +50,17 @@ tbl_main.setTarget();
 var btn_SAVE = ApButton.create('변경상태 저장');
 btn_SAVE.setWidth(120);
 var pnl_main = ApPanel.create('main');
+//////////////////////////////////////////////////////////////////////////////////
+
 
 ApEvent.onlaod = function () {
+
     pnl_main.divideH(pnl_DBname, pnl_DBdetail);
     tab.addTab('enroll').divideV(tbl_main, pnl_main, tbl_main);
     tbl_main.setHeight(34);
-    tab.addTab('search');
+    tab.addTab('search')
+
+
     pnl_DBdetail_OUT.full(pnl_DBdetail_up);
     pnl_DBdetail_up.setWidth('fit');
     pnl_DBdetail.divideV(pnl_DBdetail_OUT, grd_Example, pnl_DBdetail_OUT);
