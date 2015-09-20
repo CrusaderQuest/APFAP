@@ -6,7 +6,7 @@
 //App 단 정의 영역 시작
 //단위, 통합 테스트
 //-----------------최상단 공통 컴포넌트-----------------
-btn_save.eClick = function () {
+btn_SAVE.eClick = function () {
     dbSave();
     dbLoad();
     if (isSearched) {

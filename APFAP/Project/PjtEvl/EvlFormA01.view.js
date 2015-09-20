@@ -24,14 +24,7 @@ var versionStore = Ext.create('Ext.data.JsonStore', {
     fields: ['name', 'data']
 });
 //-------------컴포넌트-------------
-var pnl_top = ApPanel.create("top field");
 var pnl_content = ApPanel.create("contents field");
-
-var tbl_top = ApTable.create(3);
-tbl_top.setTarget();
-var btn_save = ApButton.create("저장");
-var pnl_title = ApLabel.create("프로젝트 리뷰");
-var pnl_summary = ApLabel.create("프로젝트를 리뷰할 수 있습니다.");
 
 var pnl_graph = ApPanel.create('그래프 패널');
 
@@ -57,13 +50,8 @@ var topGrd = ApGrid.create(true, true);
 var botGrd = ApGrid.create(true);
 
 ApEvent.onlaod = function () {
-    viewPanel.divideV(pnl_top, pnl_content);
-    pnl_top.setHeight(50);
-
-    btn_save.setWidth(120);
-    pnl_title.setWidth(400);
-    pnl_top.full(tbl_top);
-
+    viewPanel.full(pnl_content);
+    
     pnl_content.divideV(pnl_graph, pnl_grd);
 
     pnl_graph.divideH(pnl_partGraph, pnl_versionGraph);

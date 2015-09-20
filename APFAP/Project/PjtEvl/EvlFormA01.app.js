@@ -7,7 +7,7 @@
 //프로젝트 리뷰
 
 //-----------------최상단 공통 컴포넌트-----------------
-btn_save.eClick = function () {
+btn_SAVE.eClick = function () {
     dbSave();
     getTable();
     if (isSearched) {
