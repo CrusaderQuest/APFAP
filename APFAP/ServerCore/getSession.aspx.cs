@@ -17,6 +17,8 @@ namespace APFAP.ServerCore
                 response = Session["USER_NO"].ToString();
                 response += '※';
                 response += Session["USER_NM"].ToString();
+                response += '※';
+                response += Session["MASTER"].ToString();
                 Response.Write(response);
             }
             catch
