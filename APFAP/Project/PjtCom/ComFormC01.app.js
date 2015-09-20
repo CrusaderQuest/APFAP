@@ -38,7 +38,12 @@ grd_H.eSelectionChange = function(record, rowIndex, paramId){
 }
 
 grd_D.eSelectionChange = function (record, rowIndex, paramId) {
-  
+    //if (paramId == 'NOTICE_CONTENT') {
+    //    grd_D.setLockColumns('NOTICE_TITLE');
+    //}
+    //if (paramId == 'NOTICE_S_DT') {
+    //    grd_D.setUnLockColumns('NOTICE_TITLE');
+    //}
     //디테일테이블 값 데이터 바인드
     txt_NOTICE_TITLE_HH.setValue(record.data.NOTICE_TITLE);
     txa_NOTICE_CONTENT_HH.setValue(record.data.NOTICE_CONTENT);
@@ -48,6 +53,7 @@ grd_D.eSelectionChange = function (record, rowIndex, paramId) {
     //디테일조회
     //SEARCH_D();
 }
+
 btn_ADDNOICE_HH.eClick = function () {
     txt_NOTICE_TITLE_HH.setValue('');
     txa_NOTICE_CONTENT_HH.setValue('');

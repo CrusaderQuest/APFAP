@@ -6,7 +6,7 @@
 //App 단 정의 영역 시작
 //단위, 통합 테스트
 //-----------------최상단 공통 컴포넌트-----------------
-btn_save.eClick = function () {
+btn_SAVE.eClick = function () {
     dbSave();
     dbLoad();
     if (isSearched) {
@@ -60,6 +60,7 @@ function dbSave() {
             pr = DBParams.create('sp_TesFormA01', 'INSERT_TABLE');
         } else {
             pr = DBParams.create('sp_TesFormA01', 'UPDATE_TABLE');
+            pr.addParam('TES_NO', selectedRecords[i].get('TES_NO'));
         }
         pr.addParam('TES_DT', ApFn.setYMD(selectedRecords[i].get('TES_DT')));
         pr.addParam('STATE_CD', selectedRecords[i].get('STATE_CD'));
@@ -170,3 +171,38 @@ grd.eButtonDeleteClick = function () {
 }
 
 //-----------------------제약 조건----------------------------------
+dt_sDate.eChange = function (record) {
+    if (dt_eDate.getYMD() != '' && dt_eDate.getYMD() != undefined) {
+        if (dt_eDate.getYMD() < dt_sDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_sDate.setValue(sDateLast);
+            });
+            return;
+        }
+    }
+    sDateLast = dt_sDate.getYMD();
+}
+dt_eDate.eChange = function (record) {
+    if (dt_sDate.getYMD() != '' && dt_sDate.getYMD() != undefined) {
+        if (dt_eDate.getYMD() < dt_sDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_eDate.setValue(eDateLast);
+            });
+            return;
+        }
+    }
+    eDateLast = dt_eDate.getYMD();
+}
+grd.eUpdate = function (record, rowIndex, paramId) {
+    var a;
+    if (paramId == 'STATE_CD' && record.data.STATE_CD == 3) {
+        var pr = DBParams.create('sp_ComFormA01', 'GET_DATE');
+        var ds = DBconnect.runProcedure(pr);
+        record.data.END_DT = ds[0].data.items[0].data.DATE;
+        if (isSearched) {
+            grd.reconfigure(filterStore);
+        } else {
+            grd.reconfigure(grdStore);
+        }
+    }
+}

@@ -13,18 +13,23 @@ var comboSearchUser;    //조회용 User 콤보박스
 var grdStore;           //그리드 스토어
 var filterStore;        //필터 그리드 스토어
 
+var sStartDateLast = '';
+var eStartDateLast = '';
+var sDeadLineLast = '';
+var eDeadLineLast = '';
+var sEndDateLast = '';
+var eEndDateLast = '';
+
 var tabChart;
 var mainTabChart;
 var mainUserChart;
 
-var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
-var ds_User = DBconnect.runProcedure(pr1);
 var comboSearchValue = Ext.create('Ext.data.ArrayStore', {
     fields: ['HIDEVALUE', 'SHOWVALUE'],
     data: [
-        ['all', '전체'],
-        ['true', 'T'],
-        ['false', 'F']
+        ['-1', '전체'],
+        [1, 'T'],
+        [0, 'F']
     ]
 });
 var tabChartStore = Ext.create('Ext.data.JsonStore', {
@@ -46,19 +51,13 @@ var mainTabChartStore = Ext.create('Ext.data.JsonStore', {
 var mainUserChartStore = Ext.create('Ext.data.JsonStore', {
     fields: ['name', 'data']
 });
-var grd = ApGrid.create(true,true);
+var grd = ApGrid.create(true, true);
 
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
-var pnl_top = ApPanel.create();         //저장, 타이틀, 설명, 완성도그래프, 상태 콤보박스. (공통 영역)
 var pnl_content = ApPanel.create();     //(컨텐츠 개별 영역)
 
-var tbl_top = ApTable.create(3);
-tbl_top.setTarget();
-var btn_save = ApButton.create("저장");
-var pnl_title = ApLabel.create("개발 진척도");
-var pnl_summary = ApLabel.create("개발 진행 상황에 대한 내역을 관리할 수 있습니다.");
 //그래프
 //상태 콤보박스.
 var pnl_tab = ApPanel.create();         //탭 패널.
@@ -81,16 +80,16 @@ var pnl_tabSearch = ApPanel.create();   //각 탭의 조회조건 패널.
 var tbl_tabSearch1 = ApTable.create(7);
 tbl_tabSearch1.setTarget();
 tbl_tabSearch1.setStyleSearch();
-var dt_sStartDate = ApDate.create('시작일자');  var lbl_a = ApLabel.create('~');        var dt_eStartDate = ApDate.create('');
-var lbl_b = ApLabel.create('개발상태');         var cmb_devState = ApCombo.create();
-var lbl_c = ApLabel.create('테스트상태');       var cmb_testState = ApCombo.create();
+var dt_sStartDate = ApDate.create('시작일자'); var lbl_a = ApLabel.create('~'); var dt_eStartDate = ApDate.create('');
+var lbl_b = ApLabel.create('개발상태'); var cmb_devState = ApCombo.create();
+var lbl_c = ApLabel.create('테스트상태'); var cmb_testState = ApCombo.create();
 
 var tbl_tabSearch2 = ApTable.create(9);
 tbl_tabSearch2.setTarget();
 tbl_tabSearch2.setStyleSearch();
-var dt_sDeadLine = ApDate.create('데드라인');   var lbl_d = ApLabel.create('~');        var dt_eDeadLine = ApDate.create('');
-var dt_sEndDate = ApDate.create('완료일자');    var lbl_e = ApLabel.create('~');        var dt_eEndDate = ApDate.create('');
-var lbl_f = ApLabel.create('담당자');           var cmb_user = ApCombo.create();
+var dt_sDeadLine = ApDate.create('데드라인'); var lbl_d = ApLabel.create('~'); var dt_eDeadLine = ApDate.create('');
+var dt_sEndDate = ApDate.create('완료일자'); var lbl_e = ApLabel.create('~'); var dt_eEndDate = ApDate.create('');
+var lbl_f = ApLabel.create('담당자'); var cmb_user = ApCombo.create();
 var btn_search = ApButton.create('조회');
 
 var pnl_tabGrd = ApPanel.create();      //각 탭의 그리드.
@@ -106,12 +105,7 @@ var btn_etc = ApButton.create("기타");
 
 ApEvent.onlaod = function () {
     //공통 영역
-    viewPanel.divideV(pnl_top, pnl_content);
-    pnl_top.setHeight(50);
-
-    btn_save.setWidth(120);
-    pnl_title.setWidth(400);
-    pnl_top.full(tbl_top);
+    viewPanel.full(pnl_content);
 
     pnl_content.divideV(pnl_tab, pnl_tabView);
     pnl_tab.setHeight(30);
@@ -157,7 +151,7 @@ ApEvent.onlaod = function () {
     grd.addColumn('check', '개발 상태', 'DEV_VALUE', 120);
     grd.addColumn('check', '테스트 상태', 'TEST_VALUE', 120);
     grd.addColumn('date', '데드라인', 'DEADLINE', 120);
-    grd.addColumn('combo', '담당자', ['USER_NM', ds_User[0]], 120);
+    grd.addColumn('combo', '담당자', ['USER_KEY', comboStoreUser], 120);
     grd.addColumn('date', '완료 날짜', 'END_DT', 120);
 
     pnl_tabGrd.full(grd);
@@ -174,4 +168,6 @@ ApEvent.onlaod = function () {
     cmb_devState.setStore(comboSearchValue);
     cmb_testState.setStore(comboSearchValue);
     cmb_user.setStore(comboSearchUser);
+
+    grd.setLockColumns('END_DT');
 }

@@ -29,13 +29,13 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
 
 */
 //-----------------최상단 공통 컴포넌트-----------------
-btn_save.eClick = function () {
+btn_SAVE.eClick = function () {
     dbSave();
+    getTable();
     if (isSearched) {
-        //filterStore
-        //dbSearch();
+        dbSearch();
     } else {
-
+        grd.reconfigure(grdStore);
     }
 }
 //-----------------------DB 통신-----------------------
@@ -55,14 +55,14 @@ function getEmptyTable() {
 //프로젝트와 연결된 유저 가져옴.
 function dbUserLoad() {
     //그리드의 콤보박스
-    //var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
-    //var ds1 = DBconnect.runProcedure(pr1);
-    //comboStoreUser = ds1[0];
+    var pr1 = DBParams.create('sp_DevFormA01', 'GET_PROJECT_USER');
+    var ds1 = DBconnect.runProcedure(pr1);
+    comboStoreUser = ds1[0];
 
-    ////메인의 유저 차트
-    //for (var i = 0; i < comboStoreUser.data.length; i++) {
-    //    mainUserChartStore.add({ name:comboStoreUser.data.items[i].data.SHOWVALUE, data:0 });
-    //}
+    //메인의 유저 차트
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
+        mainUserChartStore.add({ name: comboStoreUser.data.items[i].data.SHOWVALUE, data: 0 });
+    }
 
     //조회조건의 콤보박스
     var pr2 = DBParams.create('sp_DevFormA01', 'GET_USER_SEARCH');
@@ -88,24 +88,24 @@ function dbSave() {
             pr = DBParams.create('sp_DevFormA01', 'INSERT_TABLE');
             pr.addParam('H_DEV_NO', currentBtn - 1);
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
-            pr.addParam('START_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('START_DT')));
+            pr.addParam('START_DT', ApFn.setYMD(selectedRecords[i].get('START_DT')));
             pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
             pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
-            pr.addParam('DEADLINE', ApFn.toDbTyoe('date',selectedRecords[i].get('DEADLINE')));
-            pr.addParam('USER_KEY', convertUSER_KEY(selectedRecords[i].get('USER_NM')));
-            pr.addParam('END_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('END_DT')));
+            pr.addParam('DEADLINE', ApFn.setYMD(selectedRecords[i].get('DEADLINE')));
+            pr.addParam('USER_KEY', selectedRecords[i].get('USER_KEY'));
+            pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
 
             ds = DBconnect.runProcedure(pr);
         } else {
             pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
             pr.addParam('D_DEV_NO', selectedRecords[i].get('D_DEV_NO'));
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
-            pr.addParam('START_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('START_DT')));
+            pr.addParam('START_DT', ApFn.YMD(selectedRecords[i].get('START_DT')));
             pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
             pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
-            pr.addParam('DEADLINE', ApFn.toDbTyoe('date',selectedRecords[i].get('DEADLINE')));
-            pr.addParam('USER_KEY', convertUSER_KEY(selectedRecords[i].get('USER_NM')));
-            pr.addParam('END_DT', ApFn.toDbTyoe('date',selectedRecords[i].get('END_DT')));
+            pr.addParam('DEADLINE', ApFn.setYMD(selectedRecords[i].get('DEADLINE')));
+            pr.addParam('USER_KEY', selectedRecords[i].get('USER_KEY'));
+            pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
 
             ds = DBconnect.runProcedure(pr);
         }
@@ -157,21 +157,21 @@ function dbSearch() {
                 continue;
             }
         }
-        if (cmb_devState.getValue() != '전체' && cmb_devState.getValue() != undefined && cmb_devState.getValue() != '') {
-            if (cmb_devState.getValue() != filterStore.getAt(i).data.DEV_STATE) {
+        if (cmb_devState.getValue() != undefined && cmb_devState.getValue() != '-1') {
+            if (cmb_devState.getValue() != filterStore.getAt(i).data.DEV_VALUE) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
-        if (cmb_testState.getValue() != '전체' && cmb_testState.getValue() != undefined && cmb_testState.getValue() != '') {
-            if (cmb_testState.getValue() != filterStore.getAt(i).data.TEST_STATE) {
+        if (cmb_testState.getValue() != undefined && cmb_testState.getValue() != '-1') {
+            if (cmb_testState.getValue() != filterStore.getAt(i).data.TEST_VALUE) {
                 filterStore.removeAt(i);
                 i = i - 1;
                 continue;
             }
         }
-        if (cmb_user.getValue() != '전체' && cmb_user.getValue() != undefined && cmb_user.getValue() != '') {
+        if (cmb_user.getValue() != undefined && cmb_user.getValue() != '-1') {
             if (cmb_user.getValue() != filterStore.getAt(i).data.USER_KEY) {
                 filterStore.removeAt(i);
                 i = i - 1;
@@ -222,7 +222,7 @@ function drawTabChart() {
 function drawMainChart() {
     //mainTabChartStore 채우기
     var totalPer = 0;
-    
+
     for (var i = 0; i < 4; i++) {
         var pr = DBParams.create('sp_DevFormA01', 'GET_TABLE');
         pr.addParam('H_DEV_NO', i);
@@ -242,7 +242,7 @@ function drawMainChart() {
         tabPer = tabPer * 100;
         totalPer += (tabPer / 4);
         tabPer = Ext.Number.toFixed(tabPer, 2);
-        mainTabChartStore.data.items[3-i].data.data = tabPer;
+        mainTabChartStore.data.items[3 - i].data.data = tabPer;
     }
     totalPer = Ext.Number.toFixed(totalPer, 2);
     mainTabChartStore.data.items[4].data.data = totalPer;
@@ -265,11 +265,11 @@ function drawMainChart() {
     var ds4 = DBconnect.runProcedure(pr4);
     var tempStore4 = ds4[0];
 
-    for (var i = 0; i < ds_User[0].getCount(); i++) {
+    for (var i = 0; i < comboStoreUser.data.length; i++) {
         var cnt = 0;
         var userPer = 0;
         for (var j = 0; j < tempStore1.data.length; j++) {
-            if (tempStore1.data.items[j].data.USER_NM == ds_User[0].data.items[i].data.SHOWVALUE) {
+            if (tempStore1.data.items[j].data.USER_KEY == comboStoreUser.data.items[i].data.HIDEVALUE) {
                 cnt += 1;
                 if (tempStore1.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -280,7 +280,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore2.data.length; j++) {
-            if (tempStore2.data.items[j].data.USER_NM == ds_User[0].data.items[i].data.SHOWVALUE) {
+            if (tempStore2.data.items[j].data.USER_KEY == comboStoreUser.data.items[i].data.HIDEVALUE) {
                 cnt += 1;
                 if (tempStore2.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -291,7 +291,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore3.data.length; j++) {
-            if (tempStore3.data.items[j].data.USER_NM == ds_User[0].data.items[i].data.SHOWVALUE) {
+            if (tempStore3.data.items[j].data.USER_KEY == comboStoreUser.data.items[i].data.HIDEVALUE) {
                 cnt += 1;
                 if (tempStore3.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -302,7 +302,7 @@ function drawMainChart() {
             }
         }
         for (var j = 0; j < tempStore4.data.length; j++) {
-            if (tempStore4.data.items[j].data.USER_NM == ds_User[0].data.items[i].data.SHOWVALUE) {
+            if (tempStore4.data.items[j].data.USER_KEY == comboStoreUser.data.items[i].data.HIDEVALUE) {
                 cnt += 1;
                 if (tempStore4.data.items[j].data.DEV_VALUE == false)
                     userPer += 0;
@@ -316,14 +316,10 @@ function drawMainChart() {
         userPer = userPer / cnt;
         userPer = userPer * 100;
         userPer = Ext.Number.toFixed(userPer, 2);
-        try {
-            mainUserChartStore.data.items[i].data.data = userPer;
-        } catch (e) {
-
-        }
+        mainUserChartStore.data.items[i].data.data = userPer;
     }
-mainTabChart.redraw();
-mainUserChart.redraw();
+    mainTabChart.redraw();
+    mainUserChart.redraw();
 }
 function initChart(storeTemp) {
     var chart = Ext.create('Ext.chart.Chart', {
@@ -445,7 +441,7 @@ function msgSaveWarning(selBtn) {
                 isUpdated = 0;
                 btnState = 'yes';
                 viewSelTab(selBtn);
-            } else if(btn == 'no'){
+            } else if (btn == 'no') {
                 isUpdated = 0;
                 btnState = 'no';
                 viewSelTab(selBtn);
@@ -461,7 +457,7 @@ function viewSelTab(selBtn) {
     if (selBtn != 0) {
         getTable();
         grd.reconfigure(grdStore);
-        
+
         pnl_mainTabView.setHidden(true);
         pnl_subTabView.setHidden(false);
         pnl_tabView.full(pnl_subTabView);
@@ -521,40 +517,86 @@ function isErrTuple(selectedRecords) {
     }
     return false;
 }
-function convertUSER_KEY(input) {
-    for (var i = 0; i < ds_User[0].data.length; i++) {
-        if (ds_User[0].data.items[i].data.SHOWVALUE == input)
-            return ds_User[0].data.items[i].data.HIDEVALUE;
-    }
-}
 //----------------------------제약 조건--------------------------------
 dt_sStartDate.eChange = function (record) {
-
+    if (dt_eStartDate.getYMD() != '' && dt_eStartDate.getYMD() != undefined) {
+        if (dt_eStartDate.getYMD() < dt_sStartDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_sStartDate.setValue(sStartDateLast);
+            });
+            return;
+        }
+    }
+    sStartDateLast = dt_sStartDate.getYMD();
 }
 dt_eStartDate.eChange = function (record) {
-
+    if (dt_sStartDate.getYMD() != '' && dt_sStartDate.getYMD() != undefined) {
+        if (dt_eStartDate.getYMD() < dt_sStartDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_eStartDate.setValue(eStartDateLast);
+            });
+            return;
+        }
+    }
+    eStartDateLast = dt_eStartDate.getYMD();
 }
 dt_sDeadLine.eChange = function (record) {
-
+    if (dt_eDeadLine.getYMD() != '' && dt_eDeadLine.getYMD() != undefined) {
+        if (dt_eDeadLine.getYMD() < dt_sDeadLine.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_sDeadLine.setValue(sDeadLineLast);
+            });
+            return;
+        }
+    }
+    sDeadLineLast = dt_sDeadLine.getYMD();
 }
 dt_eDeadLine.eChange = function (record) {
-
+    if (dt_sDeadLine.getYMD() != '' && dt_sDeadLine.getYMD() != undefined) {
+        if (dt_eDeadLine.getYMD() < dt_sDeadLine.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_eDeadLine.setValue(eDeadLineLast);
+            });
+            return;
+        }
+    }
+    eDeadLineLast = dt_eDeadLine.getYMD();
 }
 dt_sEndDate.eChange = function (record) {
-
+    if (dt_eEndDate.getYMD() != '' && dt_eEndDate.getYMD() != undefined) {
+        if (dt_eEndDate.getYMD() < dt_sEndDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_sEndDate.setValue(sEndDateLast);
+            });
+            return;
+        }
+    }
+    sEndDateLast = dt_sEndDate.getYMD();
 }
 dt_eEndDate.eChange = function (record) {
-
+    if (dt_sEndDate.getYMD() != '' && dt_sEndDate.getYMD() != undefined) {
+        if (dt_eEndDate.getYMD() < dt_sEndDate.getYMD()) {
+            ApMsg.warning('날짜 오류', function () {
+                dt_eEndDate.setValue(eEndDateLast);
+            });
+            return;
+        }
+    }
+    eEndDateLast = dt_eEndDate.getYMD();
 }
 grd.eUpdate = function (record, rowIndex, paramId) {
-    /*
-    if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
-        var t1Date = record.get(paramId);
-        var t2Date = Ext.Date.dateFormat(t1Date, 'Y-m-d');
-        record.set(paramId, t2Date);
-    }
-    */
-    //날짜, 개발,테스트 상태에 따른 조건과 완료날짜.
+    
+        if (paramId == 'TEST_VALUE' && record.data.TEST_VALUE == 1 && record.data.DEV_VALUE ==1) {
+            var pr = DBParams.create('sp_ComFormA01', 'GET_DATE');
+            var ds = DBconnect.runProcedure(pr);
+            record.data.END_DT = ds[0].data.items[0].data.DATE;
+            if (isSearched) {
+                grd.reconfigure(filterStore);
+            } else {
+                grd.reconfigure(grdStore);
+            }
+        }
+
 
     isUpdated = 1;
 }
