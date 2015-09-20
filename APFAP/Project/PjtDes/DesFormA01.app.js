@@ -33,6 +33,5 @@ btn_SAVE.eClick = function () {
     prm.addParam('SUMMARY', dbc_save.data.items[0].data.SUMMARY);
     prm.addParam('UP_KEY', dbc_save.data.items[0].data.UP_KEY);
     var dbc = DBconnect.runProcedure(prm);
-    
     getTable();
 }
