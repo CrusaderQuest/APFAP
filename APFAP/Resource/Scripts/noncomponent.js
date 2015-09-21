@@ -228,8 +228,11 @@ menuFrame.addCls('tableStyle_main');
 menuFrame.updateLayout();
 menuFrame.setTarget();
 
-var btn_SAVE = ApButton.create('변경상태 저장');
-btn_SAVE.setWidth(120);
+var btn_SAVE = ApButton.create('Sync');
+btn_SAVE.setIcon('../../Resource/Themes/Save_1.png');
+btn_SAVE.setIconCls('btn_save');
+btn_SAVE.setWidth(70);
+
 var txt = '로드실패';
 try {
     txt = parent.tab_main.getActiveTab().items.items[0].explane;
@@ -255,7 +258,8 @@ menuFrame.items.items[1].setWidth(700);
 
 
 Ext.onReady(function () {
-    var urlArray = ['Start/Main.html', 'Start/Login.html', 'Start/Project.html'];
+    var urlArray = ['Start/Main.html', 'Start/Login.html', 'Start/Project.html', 'Project/PjtCom'];
+    var urlArray2 = ['Project/PjtCom/COMFORMB01.html'];
     for (var i = 0; i < urlArray.length; i++) {
         if (unescape(document.location.href.indexOf(urlArray[i])) > -1) {
             viewPort = Ext.create('Ext.container.Viewport', {
@@ -264,6 +268,9 @@ Ext.onReady(function () {
                 items: [viewPanel]
             });
             ApEvent.onlaod();
+            return;
+        }
+        if (unescape(document.location.href.indexOf(urlArray2[0])) > -1) {
             return;
         }
     }
@@ -286,6 +293,12 @@ Ext.onReady(function () {
         },
         viewPanel]
     });
+
+    //if (unescape(document.location.href.indexOf(urlArray2[i])) > -1) {
+    //    num_RATE.setHidden(true);
+    //    lbl_RATE.setHidden(true);
+    //    btn_RATESAVE.setHidden(true);
+    //}
     ApEvent.onlaod();
     return;
 });

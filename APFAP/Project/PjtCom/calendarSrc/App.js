@@ -5923,20 +5923,24 @@ Ext.define('Ext.calendar.App', {
         // CalendarPanel, but the app title bar and sidebar/navigation calendar are separate
         // pieces that are composed in app-specific layout code since they could be omitted
         // or placed elsewhere within the application.
+        var table = ApTable.create(1);
+        table.setTarget()
+        var btn_DATE_save = ApButton.create('Sync');
+        btn_DATE_save.setIcon('../../../Resource/Themes/Save_1.png');
+        btn_DATE_save.setIconCls('btn_save');
+        btn_DATE_save.setWidth(70);
+        //btn_DATE_save.setIcon('../../../Resource/Themes/Save.ico');
+        //btn_DATE_save.setIcon('../../../Resource/Themes/Save.ico');
         Ext.create('Ext.Viewport', {
             layout: 'border',
             renderTo: 'calendar-ct',
-            items: [
-                
-                {
-                xtype: 'component',
+            items: [{
+                xtype: 'panel',
                 id: 'app-header',
                 region: 'north',
-                height: 35,
-                contentEl: 'app-header-content'
-            },
-            
-            {
+                height: 30,
+                items: [table]
+            },{
                 id: 'app-center',
                 title: '...', // will be updated to the current view's date range
                 region: 'center',

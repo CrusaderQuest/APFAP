@@ -6,8 +6,6 @@
 //View 단 정의 영역 시작
 //data Base 설계 부분 
 
-var isUpdated = 0;
-var currentTable = 0;
 
 var pnl_DBname = ApPanel.create('table Name');
 
@@ -63,10 +61,9 @@ ApEvent.onlaod = function () {
    
     pnl_DBname.full(grd);
     pnl_DBname.setWidth(250);
-    getTable(0);
-    getColumn(currentTable);
-    getExample(currentTable);
+    getTable();
+    getColumn();
+    getExample();
     viewPanel.full(pnl_main);
    
-    grd_Example.setLockColumns('COLUMN_NM');
 }
