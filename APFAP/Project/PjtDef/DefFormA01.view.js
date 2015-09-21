@@ -8,14 +8,6 @@ var pnl_contents = ApPanel.create("TITLE");
 //data
 var dbData;
 
-// tbl_main
-var tbl_main = ApTable.create(2);
-tbl_main.addCls('tableStyle_main');
-tbl_main.updateLayout();
-tbl_main.setTarget();
-var btn_save = ApButton.create("변경상태 저장");
-var lb_main = ApLabel.create("프로젝트 타이틀 ----- 프로젝트의 제목을 정의 해주세요");
-
 //title
 var tbl_title = ApTable.create(1);
 tbl_title.setTarget();
@@ -27,11 +19,8 @@ var txta_subtitle = ApTextArea.create('부제');
 
 ApEvent.onlaod = function () {
 
-    pnl_contents.divideV(tbl_main,tbl_title);
-    viewPanel.full(pnl_contents);
-
-    //tbl main 
-    tbl_main.setHeight(35);
+    pnl_contents.full(tbl_title);
+    viewPanel.full(tbl_title);
 
     //title, subtitle
     txt_title.setWidth(500);

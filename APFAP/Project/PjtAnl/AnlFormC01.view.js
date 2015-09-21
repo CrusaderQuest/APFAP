@@ -18,17 +18,11 @@ var comboStore = Ext.create('Ext.data.ArrayStore', {
 });
 var gridData;
 var deleteArray = [];
+var searchData;
+
 //db user
 var prU = DBParams.create('sp_AnlFormC01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
-
-// tbl_main
-var tbl_main = ApTable.create(2);
-tbl_main.addCls('tableStyle_main');
-tbl_main.updateLayout();
-tbl_main.setTarget();
-var btn_save = ApButton.create("변경상태 저장");
-var lb_main = ApLabel.create("개발환경 관리 ---- 현재 개발환경에 대하여 작성해주세요.");
 
 //search
 var tbl_H = ApTable.create(1);
@@ -43,22 +37,18 @@ tbl_H.cellShare(4);
 dt_EDATE.setToday();
 
 var grd_a = ApGrid.create(false, true);
-grd_a.addColumn('combo', '분류', ['CATEGORY', comboStore], 200);
+grd_a.addColumn('combo', '분류', ['CATEGORY', comboStore], 110);
 grd_a.addColumn('text', '명칭', 'DEV_NM', 300);
-grd_a.addColumn('text', '용도', 'DEV_USE', 400);
-grd_a.addColumn('date', '등록일', 'S_DT', 110);
-grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 80);
+grd_a.addColumn('text', '용도', 'DEV_USE', 500);
+grd_a.addColumn('date', '등록일', 'E_DT', 120);
+grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 100);
 //grd_a.reconfigure(gridData);
 ApEvent.onlaod = function () {
 
     pnl_contents.divideV(tbl_H, grd_a, tbl_H);
-    viewPanel.divideV(tbl_main, pnl_contents, tbl_main);
-
-    grd_a.setWidth(460);
-    btn_save.setWidth(120);
+    tbl_H.setHeight(30);
+    viewPanel.full(pnl_contents);
     dt_EDATE.setWidth(110);
 
-    tbl_H.setHeight(30);
-    tbl_main.setHeight(35);
     GRD_LOAD();
 }

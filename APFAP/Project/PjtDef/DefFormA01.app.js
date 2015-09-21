@@ -16,7 +16,7 @@ function GRD_LOAD() {
 
 }
 
-btn_save.eClick = function () {
+btn_SAVE.eClick = function () {
     if(dbData.getCount == 0){
         var prIU = DBParams.create('sp_DEFFORMA01', 'INSERT_TABLE');
     }else{

@@ -14,7 +14,7 @@ var comboStore = Ext.create('Ext.data.ArrayStore', {
         ['신규기능', 'new'],
         ['기능수정', 'change'],
         ['기능삭제', 'del'],
-        ['기타', 'ext']
+        ['기타', 'etc']
     ]
 });
 var comboStore1 = Ext.create('Ext.data.ArrayStore', {
@@ -28,28 +28,20 @@ var comboStore1 = Ext.create('Ext.data.ArrayStore', {
 var comboStore2 = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
     data: [
-        ['★', 1],
-        ['★★', 2],
-        ['★★★', 3],
-        ['★★★★', 4],
-        ['★★★★★', 5]
+        ['★', 'a'],
+        ['★★', 'b'],
+        ['★★★', 'c'],
+        ['★★★★', 'd'],
+        ['★★★★★', 'e']
     ]
 });
 var gridData;
+var searchData;
 var deleteArray = [];
-var up_key;
-var index = 0;
+var up_key = 1;
 //db user
 var prU = DBParams.create('sp_AnlFormB01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
-
-// tbl_main
-var tbl_main = ApTable.create(2);
-tbl_main.addCls('tableStyle_main');
-tbl_main.updateLayout();
-tbl_main.setTarget();
-var btn_save = ApButton.create("변경상태 저장");
-var lb_main = ApLabel.create("요구사항관리 ---- 프로그램의 UI를 분석한 결과를 업로드 해주세요.");
 
 //search
 var tbl_H = ApTable.create(1);
@@ -69,6 +61,7 @@ grd_a.addColumn('combo', '업무영역', ['CATEGORY', comboStore], 80);
 grd_a.addColumn('combo', '중요도', ['IMPORTANT', comboStore1], 70);
 grd_a.addColumn('text', '요구사항 명', 'REQ_NM', 200);
 grd_a.addColumn('date', '등록일', 'E_DT', 100);
+grd_a.addColumn('combo', '난이도', ['LEV', comboStore2], 100);
 
 var tbl_input = ApTable.create(1);
 tbl_input.setTarget();
@@ -98,15 +91,13 @@ tbl_input.cellShare(3);
 
 ApEvent.onlaod = function () {
 
+    viewPanel.full(pnl_contents);
     pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
+    tbl_H.setHeight(30);
     pnl_grid.divideH(grd_a, tbl_input, grd_a);
-    viewPanel.divideV(tbl_main, pnl_contents, tbl_main);
 
     grd_a.setWidth(470);
-    btn_save.setWidth(120);
     dt_EDATE.setWidth(110);
 
-    tbl_H.setHeight(30);
-    tbl_main.setHeight(35);
     GRD_LOAD();
 }
