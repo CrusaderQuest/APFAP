@@ -17,20 +17,20 @@ var comboStore = Ext.create('Ext.data.ArrayStore', {
     ]
 });
 var gridData;
+var searchData;
 var deleteArray = [];
-var up_key;
-var index = 0;
+var up_key = 1;
 //db user
 var prU = DBParams.create('sp_DefFormC01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
 
-// tbl_main
-var tbl_main = ApTable.create(2);
-tbl_main.addCls('tableStyle_main');
-tbl_main.updateLayout();
-tbl_main.setTarget();
-var btn_save = ApButton.create("변경상태 저장");
-var lb_main = ApLabel.create("문서 관리 ---- 프로그램 제작에 필요한 여러 양식 및 문서를 관리합니다.");
+//// tbl_main
+//var tbl_main = ApTable.create(2);
+//tbl_main.addCls('tableStyle_main');
+//tbl_main.updateLayout();
+//tbl_main.setTarget();
+//var btn_save = ApButton.create("변경상태 저장");
+//var lb_main = ApLabel.create("문서 관리 ---- 프로그램 제작에 필요한 여러 양식 및 문서를 관리합니다.");
 
 //search
 var tbl_H = ApTable.create(1);
@@ -48,7 +48,8 @@ dt_EDATE.setToday();
 var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '문서 타입', ['CATEGORY', comboStore], 100);
 grd_a.addColumn('text', '문서 명', 'DOC_NM', 200);
-grd_a.addColumn('date', '등록일', 'S_DT', 110);
+grd_a.addColumn('date', '등록일', 'E_DT', 110);
+grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 110);
 
 var tbl_input = ApTable.create(1);
 tbl_input.setTarget();
@@ -72,15 +73,13 @@ tbl_input.cellShare(3);
 
 ApEvent.onlaod = function () {
 
+    viewPanel.full(pnl_contents);
     pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
+    tbl_H.setHeight(30);
     pnl_grid.divideH(grd_a, tbl_input, grd_a);
-    viewPanel.divideV(tbl_main, pnl_contents, tbl_main);
 
-    grd_a.setWidth(460);
-    btn_save.setWidth(120);
+    grd_a.setWidth(435);
     dt_EDATE.setWidth(110);
 
-    tbl_H.setHeight(30);
-    tbl_main.setHeight(35);
     GRD_LOAD();
 }
