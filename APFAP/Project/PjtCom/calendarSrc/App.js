@@ -5926,13 +5926,17 @@ Ext.define('Ext.calendar.App', {
         Ext.create('Ext.Viewport', {
             layout: 'border',
             renderTo: 'calendar-ct',
-            items: [{
+            items: [
+                
+                {
                 xtype: 'component',
                 id: 'app-header',
                 region: 'north',
                 height: 35,
                 contentEl: 'app-header-content'
-            },{
+            },
+            
+            {
                 id: 'app-center',
                 title: '...', // will be updated to the current view's date range
                 region: 'center',

@@ -20,8 +20,9 @@
     <script src="../../Resource/Scripts/noncomponent.js"></script>
         -->
     <link href="../../Resource/Themes/ext-theme-crisp-all-debug.css" rel="stylesheet" />
-
+    <!--
     <script src="../../Resource/Scripts/options-toolbar.js"></script>
+        -->
 
     <script type="text/javascript">
         Ext.Loader.setConfig({
@@ -40,20 +41,14 @@
             Ext.create('Ext.calendar.App');
 
             // update the header logo date:
-            document.getElementById('logo-body').innerHTML = new Date().getDate();
+            //document.getElementById('logo-body').innerHTML = new Date().getDate();
         });
     </script>
 </head>
 <body>
     <div style="display:none;">
         <div id="app-header-content">
-            <div id="app-logo">
-                <div class="logo-top">&nbsp;</div>
-                <div id="logo-body">&nbsp;</div>
-                <div class="logo-bottom">&nbsp;</div>
-            </div>
-            <h1>Calendar</h1>
-            <span id="app-msg" class="x-hidden"></span>
+            
         </div>
     </div>
 </body>
