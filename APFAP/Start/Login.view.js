@@ -65,7 +65,7 @@ viewPanel.add({
         },
         {
             xtype: 'panel',
-            width : 800,
+            width : 850,
             header: false,
             title: 'My Panel',
             layout: {
@@ -77,7 +77,27 @@ viewPanel.add({
                     xtype: 'panel',
                     flex: 1,
                     header: false,
-                    title: 'My Panel'
+                    title: 'My Panel',
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    items: [
+                        {
+                            xtype: 'tbspacer',
+                            //flex: 1,
+                            height: 157
+                        },
+                        {
+                            xtype: 'tbspacer',
+                            height: 350,
+                            cls: 'loginLogo'
+                        },
+                        {
+                            xtype: 'tbspacer',
+                            flex: 1
+                        }
+                    ]
                 },
                 {
                     xtype: 'panel',

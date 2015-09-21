@@ -725,6 +725,7 @@
     <Content Include="Resource\Themes\images\window\toast\icon16_info.png" />
     <Content Include="Resource\Themes\images\window\window-default-corners.gif" />
     <Content Include="Resource\Themes\images\window\window-default-sides.gif" />
+    <Content Include="Resource\Themes\Logo.jpg" />
     <Content Include="Resource\Themes\noImage.png" />
     <Content Include="Resource\Themes\sencha-charts-all.css" />
     <Content Include="ServerCore\DBconnector.aspx" />
@@ -732,6 +733,7 @@
     <Content Include="ServerCore\FileSystem.aspx" />
     <Content Include="ServerCore\getSession.aspx" />
     <Content Include="ServerCore\Login.aspx" />
+    <Content Include="ServerCore\setSession.aspx" />
     <Content Include="Start\Login.html" />
     <Content Include="Start\Login.app.js" />
     <Content Include="Start\Project.html" />
@@ -803,6 +805,13 @@
     </Compile>
     <Compile Include="ServerCore\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\setSession.aspx.cs">
+      <DependentUpon>setSession.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\setSession.aspx.designer.cs">
+      <DependentUpon>setSession.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
