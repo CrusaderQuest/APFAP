@@ -46,12 +46,7 @@ grd.eSelectionChange = function (record, rowindex, paramId) {
     //    }
     //}
 }
-grd_Detail.eButtonAddClick = function () {
-    tbldetail_save.add({ COLUMN_NM: '', DATA_TYPE: '', PRIMARY_CHECK: 'F', NULL_CHECK: 'F' });
-}
-grd_Detail.eButtonDeleteClick = function () {
-    
-}
+
 //btn_delete.eClick = function () {
 //    gridData.remove(grd_Detail.getSelection());
 //    gridData_second.remove(grd_Detail.getSelection());
@@ -79,4 +74,33 @@ function getExample() {//
     example_save = column_ex[0];
     grd_Example.reconfigure(example_save);
     //prm3.addParam('COLUMN_NO', tbldetail_save.data.items[0].data.COLUMN_NO); 
+}
+grd.eButtonAddClick = function () {
+    grd.addRow();
+}
+grd.eButtonDeleteClick = function () {
+    var selectedRecords = grd.getSelectedRecords();
+    var index = grd.getRowIndex(grd.getSelectedRecords()[0]);
+    grd.deleteRow(selectedRecords);
+    grd.setFocus(index - 1);
+}
+grd_Detail.eButtonAddClick = function () {
+    grd_Detail.addRow();
+    
+}
+grd_Detail.eButtonDeleteClick = function () {
+    var selectedRecords = grd_Detail.getSelectedRecords();
+    var index = grd_Detail.getRowIndex(grd_Detail.getSelectedRecords()[0]);
+    grd_Detail.deleteRow(selectedRecords);
+    grd_Detail.setFocus(index - 1);
+}
+btn_SAVE.eClick = function () {
+    var prm = DBParams.create('sp_DesFormB01', 'UPDATE_TABLE');
+    tblnm_save.data.items[0].data.TABLE_KEY=grd.getSelection();
+    prm.addParam('TABLE_NM', tblnm_save.data.items[0].data.TABLE_NM);
+    prm.addParam('TABLE_KEY', tblnm_save.data.items[0].data.TABLE_KEY);
+    var dbc = DBconnect.runProcedure(prm);
+    getTable();
+
+    var prm2 = DBParams.create('sp_DesFormB01', 'UPDATE_COLUMN');
 }
