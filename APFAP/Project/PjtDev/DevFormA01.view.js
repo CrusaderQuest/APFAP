@@ -56,14 +56,8 @@ var grd = ApGrid.create(true, true);
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
-var pnl_top = ApPanel.create();         //저장, 타이틀, 설명, 완성도그래프, 상태 콤보박스. (공통 영역)
 var pnl_content = ApPanel.create();     //(컨텐츠 개별 영역)
 
-var tbl_top = ApTable.create(3);
-tbl_top.setTarget();
-var btn_save = ApButton.create("저장");
-var pnl_title = ApLabel.create("개발 진척도");
-var pnl_summary = ApLabel.create("개발 진행 상황에 대한 내역을 관리할 수 있습니다.");
 //그래프
 //상태 콤보박스.
 var pnl_tab = ApPanel.create();         //탭 패널.
@@ -111,12 +105,7 @@ var btn_etc = ApButton.create("기타");
 
 ApEvent.onlaod = function () {
     //공통 영역
-    viewPanel.divideV(pnl_top, pnl_content);
-    pnl_top.setHeight(50);
-
-    btn_save.setWidth(120);
-    pnl_title.setWidth(400);
-    pnl_top.full(tbl_top);
+    viewPanel.full(pnl_content);
 
     pnl_content.divideV(pnl_tab, pnl_tabView);
     pnl_tab.setHeight(30);
@@ -179,4 +168,6 @@ ApEvent.onlaod = function () {
     cmb_devState.setStore(comboSearchValue);
     cmb_testState.setStore(comboSearchValue);
     cmb_user.setStore(comboSearchUser);
+
+    grd.setLockColumns('END_DT');
 }

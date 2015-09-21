@@ -18,15 +18,7 @@ var eDateLast = '';
 //-------------------폼 전역변수 끝-----------------
 
 //-------------------컴포넌트 시작--------------------
-var pnl_top = ApPanel.create("top field");
 var pnl_content = ApPanel.create("contents field");
-
-var tbl_top = ApTable.create(3);
-tbl_top.setTarget();
-
-var btn_save = ApButton.create("저장");
-var pnl_title = ApLabel.create("테스트 내역");
-var pnl_summary = ApLabel.create("통합 테스트를 할 수 있습니다.");
 
 var pnl_grid = ApPanel.create("그리드");
 var pnl_search = ApPanel.create("조회조건");
@@ -43,12 +35,7 @@ var grd = ApGrid.create(true, true);
 //-------------------컴포넌트 끝--------------------
 
 ApEvent.onlaod = function () {
-    viewPanel.divideV(pnl_top, pnl_content);
-    pnl_top.setHeight(50);
-
-    btn_save.setWidth(120);
-    pnl_title.setWidth(400);
-    pnl_top.full(tbl_top);
+    viewPanel.full(pnl_content);
 
     pnl_content.divideV(pnl_search, pnl_grid);
 
@@ -74,4 +61,6 @@ ApEvent.onlaod = function () {
 
     dbLoad();
     getEmptyTable();
+
+    grd.setLockColumns('END_DT');
 }

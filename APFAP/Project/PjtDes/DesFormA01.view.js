@@ -39,22 +39,15 @@ ApEvent.onlaod = function () {
 ///////////////////
 var dbc_save;
 
-var tbl_main = ApTable.create(1);
-tbl_main.addCls('tableStyle_main');
-tbl_main.updateLayout();
-tbl_main.setTarget();
-var btn_SAVE = ApButton.create('변경상태 저장');
-btn_SAVE.setWidth(120);
+
 var pnl_main = ApPanel.create('main');
 ApEvent.onlaod = function () {
     pnl_proNM.full(grd);
-    //pnl_sysArchi.divideV(tbl_image,pnl_sys_imageView,tbl_image);
     pnl_sysArchi.full(tbl_image);
    
     pnl_main.divideV(pnl_proNM, pnl_sysArchi, pnl_proNM);
     pnl_proNM.setHeight(90);
-    viewPanel.divideV(tbl_main, pnl_main, tbl_main);
-    tbl_main.setHeight(34);
+    viewPanel.full(pnl_main);
     tbl_image.setHeight(34);
     getTable();
 

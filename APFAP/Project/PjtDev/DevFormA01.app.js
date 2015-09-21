@@ -29,7 +29,7 @@ grd.eSelectionChange = function (record, rowIndex, paramId) {
 
 */
 //-----------------최상단 공통 컴포넌트-----------------
-btn_save.eClick = function () {
+btn_SAVE.eClick = function () {
     dbSave();
     getTable();
     if (isSearched) {
@@ -585,14 +585,18 @@ dt_eEndDate.eChange = function (record) {
     eEndDateLast = dt_eEndDate.getYMD();
 }
 grd.eUpdate = function (record, rowIndex, paramId) {
-    /*
-    if (paramId == 'START_DT' || paramId == 'DEADLINE' || paramId == 'END_DT') {
-        var t1Date = record.get(paramId);
-        var t2Date = Ext.Date.dateFormat(t1Date, 'Y-m-d');
-        record.set(paramId, t2Date);
-    }
-    */
-    //날짜, 개발,테스트 상태에 따른 조건과 완료날짜.
+    
+        if (paramId == 'TEST_VALUE' && record.data.TEST_VALUE == 1 && record.data.DEV_VALUE ==1) {
+            var pr = DBParams.create('sp_ComFormA01', 'GET_DATE');
+            var ds = DBconnect.runProcedure(pr);
+            record.data.END_DT = ds[0].data.items[0].data.DATE;
+            if (isSearched) {
+                grd.reconfigure(filterStore);
+            } else {
+                grd.reconfigure(grdStore);
+            }
+        }
+
 
     isUpdated = 1;
 }
