@@ -101,4 +101,6 @@ btn_SAVE.eClick = function () {
     prm.addParam('TABLE_KEY', tblnm_save.data.items[0].data.TABLE_KEY);
     var dbc = DBconnect.runProcedure(prm);
     getTable();
+
+    var prm2 = DBParams.create('sp_DesFormB01', 'UPDATE_COLUMN');
 }
