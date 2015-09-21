@@ -17,9 +17,9 @@ var comboStore = Ext.create('Ext.data.ArrayStore', {
     ]
 });
 var gridData;
+var searchData;
 var deleteArray = [];
-var up_key;
-var index = 0;
+var up_key=1;
 //db user
 var prU = DBParams.create('sp_DefFormC01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
@@ -48,7 +48,7 @@ dt_EDATE.setToday();
 var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '문서 타입', ['CATEGORY', comboStore], 100);
 grd_a.addColumn('text', '문서 명', 'DOC_NM', 200);
-grd_a.addColumn('date', '등록일', 'S_DT', 110);
+grd_a.addColumn('date', '등록일', 'E_DT', 110);
 
 var tbl_input = ApTable.create(1);
 tbl_input.setTarget();

@@ -26,6 +26,7 @@ var comboStore2 = Ext.create('Ext.data.ArrayStore', {
     ]
 });
 var gridData;
+
 var deleteArray = [];
 
 //db user
@@ -57,7 +58,7 @@ var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '기능 중요도', ['FUNC_IMP', comboStore], 100);
 grd_a.addColumn('combo', '기능 분류', ['CATEGORY', comboStore2], 100);
 grd_a.addColumn('text', '기능 명', 'FUNC_NM', 200);
-grd_a.addColumn('date', '등록일', 'S_DT', 110);
+grd_a.addColumn('date', '등록일', 'E_DT', 110);
 grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 80);
 
 
@@ -83,11 +84,14 @@ txt_nm.setWidth(800);
 var txta_summary = ApTextArea.create('상세 내용');
 txta_summary.setWidth(800);
 txta_summary.setHeight(200);
+
 var cbo_NOTICE_USER_HH = ApCombo.create('등록자', 'NOTICE_USER');
 cbo_NOTICE_USER_HH.bindStore(dsu[0]);
+var dt_update = ApDate.create();
+dt_update.setToday();
 var btn_update = ApButton.create('등록');
 btn_update.setMargin('0 10 0 20')
-tbl_input.cellShare(2);
+tbl_input.cellShare(3);
 
 ApEvent.onlaod = function () {
 

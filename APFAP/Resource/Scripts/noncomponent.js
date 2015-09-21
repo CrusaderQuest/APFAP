@@ -16,19 +16,33 @@ var ApFn = {
         return tag
     },
     getUser: function () {
-        return 'U0000001';
+        if (GetSession() == undefined) {
+            return 'X';
+        } else {
+            var value = GetSession().S_USER_NO;
+            return value;
+        }
     },
     getProjectKey: function () {
-        //var key = getSelection().PROJECT_KEY;
-        //if (key == undefined) {
-        //    return '';
-        //} else {
-        //    return key;
-        //}
-        return 'P0000000001';
+        if (GetSession() == undefined) {
+            return 'X';
+        } else {
+            var value = GetSession().S_PROJECT_KEY;
+            return value;
+        }
+        //return 'P0000000001';
     },
     isMaster: function () {
-        return false;
+        if (GetSession() == undefined) {
+            return 'X';
+        } else {
+
+            if (GetSession().S_MASTER_TF == 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        }
     },
     setYMD: function (value) {
         value = value.substr(0, 4) + value.substr(5, 2) + value.substr(8, 2);
@@ -82,6 +96,8 @@ var DBconnect = {
         var procedureName = dbParams.procedureName;
         var procedureSection = dbParams.procedureSection;
         dbParams.addParam('PROJECT_KEY', ApFn.getProjectKey());
+        var params = dbParams.params;
+        dbParams.addParam('E_USER', ApFn.getUser());
         var params = dbParams.params;
         var storeSet = [];
         Ext.Ajax.request({
@@ -179,7 +195,8 @@ function GetSession() {
                 session = {
                     S_USER_NO : responseStr.split('※')[0],
                     S_USER_NM: responseStr.split('※')[1],
-                    MASTER: responseStr.split('※')[2]
+                    S_PROJECT_KEY: responseStr.split('※')[2],
+                    S_MASTER_TF: responseStr.split('※')[3]
                 }
                 return session;
             }
@@ -238,7 +255,7 @@ menuFrame.items.items[1].setWidth(700);
 
 
 Ext.onReady(function () {
-    var urlArray = ['Start/Main.html', 'Start/Login.html'];
+    var urlArray = ['Start/Main.html', 'Start/Login.html', 'Start/Project.html'];
     for (var i = 0; i < urlArray.length; i++) {
         if (unescape(document.location.href.indexOf(urlArray[i])) > -1) {
             viewPort = Ext.create('Ext.container.Viewport', {

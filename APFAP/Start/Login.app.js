@@ -72,7 +72,7 @@ function TRY_LOGIN(userid, userpw) {
                 });
                 return;
             } else {
-                location.replace('../Start/Main.html');
+                location.replace('../Start/Project.html');
             }
         },
         failure: function (response, options) {

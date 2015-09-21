@@ -14,7 +14,8 @@ function GRD_LOAD() {
 
 }
 grd_a.eButtonAddClick = function () {
-    gridData.add({ FUNC_IMP: '선택사항', CATEGORY: '기타', FUNC_NM: '', SUMMARY: '', S_DT: '', E_USER: '' });
+    gridData.add({ FUNC_IMP: '선택사항', CATEGORY: '기타', FUNC_NM: null, SUMMARY: null, S_DT: null, E_DT: null, E_USER: null });
+    grd_a.setFocus(grd_a.getTotalCount() - 1);
 }
 
 grd_a.eButtonDeleteClick = function () {
@@ -34,8 +35,7 @@ btn_save.eClick = function () {
         var pr;
         if (gridData.data.items[i].data.FUNC_NUM == 0) {//insert
             pr = DBParams.create('sp_DefFormB01', 'INSERT_TABLE');
-            pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
-            //pr.addParam('S_DT', gridData.data.items[i].data.S_DT);
+            pr.addParam('S_DT', gridData.data.items[i].data.S_DT);
         } else {//update
             pr = DBParams.create('sp_DefFormB01', 'UPDATE_TABLE');
             pr.addParam('FUNC_NUM', gridData.data.items[i].data.FUNC_NUM);
@@ -45,11 +45,12 @@ btn_save.eClick = function () {
         pr.addParam('FUNC_NM', gridData.data.items[i].data.FUNC_NM);
         pr.addParam('SUMMARY', gridData.data.items[i].data.SUMMARY);
         pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
+        pr.addParam('E_DT', gridData.data.items[i].data.E_DT);
         var ds = DBconnect.runProcedure(pr);
     }
     deleteDB();
     //
-    grd_a.reconfigure(gridData);
+    GRD_LOAD();
 }
 function deleteDB() {
     var pr = DBParams.create('sp_DefFormB01', 'DELETE_TABLE');
@@ -78,20 +79,22 @@ btn_update.eClick = function () {
     grd_a.selection.set('SUMMARY', txta_summary.getValue());
     grd_a.selection.set('E_USER', cbo_NOTICE_USER_HH.getValue());
 
-
-    //gridData.data.items[index].data.FUNC_IMP = cbo_imp.getValue();
-    //gridData.data.items[index].data.CATEGORY = cbo_category.getValue();
-    //gridData.data.items[index].data.FUNC_NM = txt_nm.getValue();
-    //gridData.data.items[index].data.SUMMARY = txta_summary.getValue();
-    ////gridData.data.items[index].data.E_USER = cbo_NOTICE_USER_HH.getValue();
-    //grd_a.getRow(index).set('E_USER', cbo_NOTICE_USER_HH.getValue());
-    if (grd_a.selection.data.S_DT == '') {
-        grd_a.selection.data.S_DT = new Date('08/30/2015');
+    if (grd_a.selection.data.S_DT == null) {
+        grd_a.selection.data.S_DT = dt_update.getYMD();
     }
+    grd_a.selection.data.E_DT = dt_update.getYMD();
     grd_a.reconfigure(gridData);
 }
 
-//search
-//btn_search.eClick = function () {
-//    dt_EDATE
-//}
+btn_search.eClick = function () {
+    if (dt_SDATE.getYMD() > dt_EDATE.getYMD()) { }
+    else {
+        var prS = DBParams.create('sp_DefFormB01', 'DT_SEARCH');
+        prS.addParam('S_SEARCH', dt_SDATE.getValue());
+        prS.addParam('E_SEARCH', dt_EDATE.getValue());
+        var dsS = DBconnect.runProcedure(prS);
+        grd_a.reconfigure(dsS[0]);
+
+        
+    }
+}
