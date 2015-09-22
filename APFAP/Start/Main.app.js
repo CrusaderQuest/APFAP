@@ -117,6 +117,7 @@ function SYS_INIT() {
     //데이터셋
     var ds = DBconnect.runProcedure(pr);
     cbo_formType.bindStore(ds[0]);
+    cbo_formType.setIndex(0);
 }
 
 //**이벤트 영역
@@ -145,4 +146,18 @@ tre_EVL.eDbclick = function (node) {
 }
 tre_TES.eDbclick = function (node) {
     MAINTAB_CONTROLLER(node, 'Tes');
+}
+cbo_formType.eChange = function (record) {
+    if (cbo_formType.getValue() == 'A2') {
+        Ext.MessageBox.confirm('', '프로젝트 선택 페이지로 이동하시겠어요?', function (btn) {
+
+            if (btn == 'yes') {
+                location.replace('../Start/Project.html');
+            }
+            else {
+                cbo_formType.setIndex(0);
+            }
+
+        });
+    }
 }

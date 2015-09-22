@@ -140,8 +140,10 @@ var cha_ING_D = Ext.create('Ext.chart.Chart', {
         }
     }]
 });
-var panel3 = ApGrid.create();
-panel3.addColumn('text', 'text3', 'aa')
+var grd_NOTICE = ApGrid.create();
+grd_NOTICE.addColumn('text', '공지', 'NOTICE_TITLE', 400);
+grd_NOTICE.addColumn('text', '내용', 'NOTICE_CONTENT', 200);
+grd_NOTICE.setLockColumns('NOTICE_TITLE', 'NOTICE_CONTENT');
 var panel4 = ApGrid.create();
 panel4.addColumn('text', 'text4', 'aa')
 //메인포탈 설계
@@ -201,14 +203,15 @@ Ext.define('Main', {
 	
 });
 
-var aa = Ext.create('Main');
+var MAIN = Ext.create('Main');
 Ext.onReady(function () {
     viewPort = Ext.create('Ext.container.Viewport', {
         layout: 'fit',
-        items: [aa]
+        items: [MAIN]
     });
-    aa.items.items[0].items.items[0].items.items[0].add(cha_ING_H)
-    aa.items.items[0].items.items[2].items.items[0].add(cha_ING_D)
-    aa.items.items[0].items.items[0].items.items[1].add(panel3)
-    aa.items.items[0].items.items[2].items.items[1].add(panel4)
+    MAIN.items.items[0].items.items[0].items.items[0].add(cha_ING_H);
+    MAIN.items.items[0].items.items[2].items.items[0].add(cha_ING_D);
+    MAIN.items.items[0].items.items[0].items.items[1].add(grd_NOTICE);
+    MAIN.items.items[0].items.items[2].items.items[1].add(panel4);
+    SYS_INIT();
 })

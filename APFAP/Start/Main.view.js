@@ -67,10 +67,6 @@ var menu = Ext.create('Ext.panel.Panel', {
         activeOnTop: true
     },
     items: [{
-        title: '공통',
-        layout: 'fit',
-        items: [tre_COM]
-    },{
         title: '정의',
         layout: 'fit',
         items:[tre_DEF]
@@ -94,6 +90,10 @@ var menu = Ext.create('Ext.panel.Panel', {
         title: '평가',
         layout: 'fit',
         items: [tre_EVL]
+    }, {
+        title: '공통',
+        layout: 'fit',
+        items: [tre_COM]
     }]
 });
 //공지사항

@@ -11,6 +11,13 @@
 */
 
 //**전역변수영역
-
+grd_NOTICE.eCellDbClick = function (record, rowindex, paramId) {
+    ApMsg.warning(record.data.NOTICE_CONTENT);
+}
 
 //**일반함수영역
+function SYS_INIT() {
+    var pr = DBParams.create('SP_COMMAIN', 'SEARCH_NOTICE');
+    var ds = DBconnect.runProcedure(pr);
+    grd_NOTICE.bindStore(ds[0]);
+}

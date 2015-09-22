@@ -737,6 +737,10 @@
     <Content Include="ServerCore\getSession.aspx" />
     <Content Include="ServerCore\Login.aspx" />
     <Content Include="ServerCore\setSession.aspx" />
+    <Content Include="Start\Home.app.js" />
+    <Content Include="Start\Home.html" />
+    <Content Include="Start\Home.view.js" />
+    <Content Include="Start\Home_홈화면.css" />
     <Content Include="Start\Login.html" />
     <Content Include="Start\Login.app.js" />
     <Content Include="Start\Project.html" />

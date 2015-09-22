@@ -258,7 +258,7 @@ menuFrame.items.items[1].setWidth(700);
 
 if (document.location.href.indexOf('Start/Home.html') == -1 && document.location.href.indexOf('Start/Project.html') == -1) {
     Ext.onReady(function () {
-        var urlArray = ['Start/Main.html', 'Start/Login.html', 'Start/Project.html', 'Project/PjtCom'];
+        var urlArray = ['Start/Main.html', 'Start/Login.html', 'Start/Project.html'];
         var urlArray2 = ['Project/PjtCom/COMFORMB01.html'];
         for (var i = 0; i < urlArray.length; i++) {
             if (unescape(document.location.href.indexOf(urlArray[i])) > -1) {
@@ -274,7 +274,12 @@ if (document.location.href.indexOf('Start/Home.html') == -1 && document.location
                 return;
             }
         }
-
+        if (unescape(document.location.href.indexOf('Project/PjtCom')) > -1) {
+            //lbl_DISCRIPT.setHidden(true);
+            num_RATE.setHidden(true);
+            lbl_RATE.setHidden(true);
+            btn_RATESAVE.setHidden(true);
+        }
         viewPort = Ext.create('Ext.container.Viewport', {
             layout: 'border',
             border: 0,

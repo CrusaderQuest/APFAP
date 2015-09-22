@@ -25,12 +25,13 @@ function SYS_INIT() {
     pr = DBParams.create('sp_COMPROJECT', 'SEARCH_PROJECT');
     ds = DBconnect.runProcedure(pr);
     grd_SELECT.bindStore(ds[0]);
-    grd_GOING.bindStore(ds[1]);
-    grd_CLOSED.bindStore(ds[2]);
     //진행중인 프로젝트 로드
-
-    //프로젝트 참가하기 로드
+    grd_GOING.bindStore(ds[1]);
     //완료된 프로젝트 로드
+    grd_CLOSED.bindStore(ds[2]);
+    //프로젝트 참가하기 로드
+    grd_JOIN.bindStore(ds[3]);
+    
 }
 //이미지처리
 upl_TEAMIMG.eUpload = function (fileKey) {
@@ -107,8 +108,19 @@ btn_CREATE.eClick = function () {
 grd_SELECT.eCellDbClick = function (record, rowIndex, paramId) {
     _setSession(record.data.PROJECT_KEY, 'X');
 }
-grd_JOIN.eCellDbClick = function (record, rowIndex, paramId) {
-    //
+grd_JOIN.eCellDbClick = function (record, rowindex, paramId) {
+    Ext.MessageBox.confirm('♧프로젝트 참가 알림♧', '"' + record.data.TITLE + '"프로젝트에 참가 하실려구요?', function (btn) {
+
+        if (btn == 'yes') {
+            var pr = DBParams.create('sp_COMPROJECT', 'JOIN_PROJECT');
+            pr.addParam('P_KEY', record.data.PROJECT_KEY);
+            var ds = DBconnect.runProcedure(pr);
+            SYS_INIT();
+        }
+        else {
+        }
+
+    });
 }
 grd_GOING.eCellDbClick = function (record, rowIndex, paramId) {
     _setSession(record.data.PROJECT_KEY, record.data.MASTER_TF);
