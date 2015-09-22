@@ -53,13 +53,13 @@ function GET_CONTENT() {
 
 
 //폼 렌더링시 초기화
-function TREE_LOAD() {
-    //데이터생성
-    var pr = DBParams.create('SP_COMMAIN', 'SEARCH_TREE');
-    //데이터셋
-    var ds = DBconnect.runProcedure(pr);
-    grd_form.reconfigure(ds[0]);
-}
+//function TREE_LOAD() {
+//    //데이터생성
+//    var pr = DBParams.create('SP_COMMAIN', 'SEARCH_TREE');
+//    //데이터셋
+//    var ds = DBconnect.runProcedure(pr);
+//    grd_form.reconfigure(ds[0]);
+//}
 
 //메인탭에 폼 추가하는 함수
 function MAINTAB_CONTROLLER(node, pjtType) {
@@ -86,10 +86,33 @@ function MAINTAB_CONTROLLER(node, pjtType) {
 
     }
 }
+btn_messenger.eClick = function () {
+    win_Join.show();
+    SEARCH_USER();
+}
+btn_search_Join.eClick = function () {
+    SEARCH_USER();
+}
+function SEARCH_USER() {
+    var pr = DBParams.create('SP_COMMAIN', 'SEARCH_USER');
+    pr.addParam('USER_NM', txt_search_Join.getValue());
+    var ds = DBconnect.runProcedure(pr);
+    grd_Join.bindStore(ds[0]);
+}
+grd_Join.eCellDbClick = function (record, rowindex, paramId) {
+    Ext.MessageBox.confirm('♧초대확인♧', record.data.USER_NM + '님을 초대하실 건가요?', function (btn) {
 
+        if (btn == 'yes') {
+            var pr = DBParams.create('SP_COMMAIN', 'JOIN_USER');
+            pr.addParam('USER_KEY', record.data.USER_KEY);
+            var ds = DBconnect.runProcedure(pr);
+        }
+        else{
+        }
 
+    });
+}
 function SYS_INIT() {
-    txt_TEAMNAME.setValue('Master Plan');
     var pr = DBParams.create('SP_COMMAIN', 'SEARCH_FORMTYPE');
     //데이터셋
     var ds = DBconnect.runProcedure(pr);
