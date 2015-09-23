@@ -16,19 +16,33 @@ var ApFn = {
         return tag
     },
     getUser: function () {
-        return 'U0000001';
+        if (GetSession() == undefined) {
+            return 'X';
+        } else {
+            var value = GetSession().S_USER_NO;
+            return value;
+        }
     },
     getProjectKey: function () {
-        //var key = getSelection().PROJECT_KEY;
-        //if (key == undefined) {
-        //    return '';
-        //} else {
-        //    return key;
-        //}
-        return 'P0000000001';
+        if (GetSession() == undefined) {
+            return 'X';
+        } else {
+            var value = GetSession().S_PROJECT_KEY;
+            return value;
+        }
+        //return 'P0000000001';
     },
     isMaster: function () {
-        return false;
+        if (GetSession() == undefined) {
+            return 'X';
+        } else {
+
+            if (GetSession().S_MASTER_TF == 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        }
     },
     setYMD: function (value) {
         value = value.substr(0, 4) + value.substr(5, 2) + value.substr(8, 2);
@@ -82,6 +96,7 @@ var DBconnect = {
         var procedureName = dbParams.procedureName;
         var procedureSection = dbParams.procedureSection;
         dbParams.addParam('PROJECT_KEY', ApFn.getProjectKey());
+        dbParams.addParam('E_USER', ApFn.getUser());
         var params = dbParams.params;
         var storeSet = [];
         Ext.Ajax.request({
@@ -179,7 +194,8 @@ function GetSession() {
                 session = {
                     S_USER_NO : responseStr.split('※')[0],
                     S_USER_NM: responseStr.split('※')[1],
-                    MASTER: responseStr.split('※')[2]
+                    S_PROJECT_KEY: responseStr.split('※')[2],
+                    S_MASTER_TF: responseStr.split('※')[3]
                 }
                 return session;
             }
@@ -211,8 +227,11 @@ menuFrame.addCls('tableStyle_main');
 menuFrame.updateLayout();
 menuFrame.setTarget();
 
-var btn_SAVE = ApButton.create('변경상태 저장');
-btn_SAVE.setWidth(120);
+var btn_SAVE = ApButton.create('Sync');
+btn_SAVE.setIcon('../../Resource/Themes/Save_1.png');
+btn_SAVE.setIconCls('btn_save');
+btn_SAVE.setWidth(70);
+
 var txt = '로드실패';
 try {
     txt = parent.tab_main.getActiveTab().items.items[0].explane;
@@ -232,43 +251,60 @@ if (ApFn.isMaster() != true) {
     btn_RATESAVE.setHidden(true);
 }
 menuFrame.cellShare(3);
-menuFrame.items.items[0].setWidth(150);
+menuFrame.items.items[0].setWidth(90);
 menuFrame.items.items[1].setWidth(700);
 
 
 
-Ext.onReady(function () {
-    var urlArray = ['Start/Main.html', 'Start/Login.html'];
-    for (var i = 0; i < urlArray.length; i++) {
-        if (unescape(document.location.href.indexOf(urlArray[i])) > -1) {
-            viewPort = Ext.create('Ext.container.Viewport', {
-                layout: 'border',
-                border: 0,
-                items: [viewPanel]
-            });
-            ApEvent.onlaod();
-            return;
+if (document.location.href.indexOf('Start/Home.html') == -1 && document.location.href.indexOf('Start/Project.html') == -1) {
+    Ext.onReady(function () {
+        var urlArray = ['Start/Main.html', 'Start/Login.html', 'Start/Project.html'];
+        var urlArray2 = ['Project/PjtCom/COMFORMB01.html'];
+        for (var i = 0; i < urlArray.length; i++) {
+            if (unescape(document.location.href.indexOf(urlArray[i])) > -1) {
+                viewPort = Ext.create('Ext.container.Viewport', {
+                    layout: 'border',
+                    border: 0,
+                    items: [viewPanel]
+                });
+                ApEvent.onlaod();
+                return;
+            }
+            if (unescape(document.location.href.indexOf(urlArray2[0])) > -1) {
+                return;
+            }
         }
-    }
-
-    viewPort = Ext.create('Ext.container.Viewport', {
-        layout: 'border',
-        border: 0,
-        items: [{
-            region: 'north',
+        if (unescape(document.location.href.indexOf('Project/PjtCom')) > -1) {
+            //lbl_DISCRIPT.setHidden(true);
+            num_RATE.setHidden(true);
+            lbl_RATE.setHidden(true);
+            btn_RATESAVE.setHidden(true);
+        }
+        viewPort = Ext.create('Ext.container.Viewport', {
+            layout: 'border',
             border: 0,
-            collapsible: false,
-            split: false,
-            height: 40,
-            cls:'tableStyle_main',
-            layout: {
-                type: 'hbox',
-                align: 'stretch'
+            items: [{
+                region: 'north',
+                border: 0,
+                collapsible: false,
+                split: false,
+                height: 40,
+                cls:'tableStyle_main',
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                },
+                items: [menuFrame]
             },
-            items: [menuFrame]
-        },
-        viewPanel]
+            viewPanel]
+        });
+
+        //if (unescape(document.location.href.indexOf(urlArray2[i])) > -1) {
+        //    num_RATE.setHidden(true);
+        //    lbl_RATE.setHidden(true);
+        //    btn_RATESAVE.setHidden(true);
+        //}
+        ApEvent.onlaod();
+        return;
     });
-    ApEvent.onlaod();
-    return;
-});
+}

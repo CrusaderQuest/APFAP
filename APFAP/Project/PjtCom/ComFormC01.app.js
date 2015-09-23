@@ -115,6 +115,7 @@ function SEARCH_H() {
 
 //디테일그리드 조회
 function SEARCH_D() {
+    if (grd_H.getSelectedRecords()[0].data.NOTICE_H_KEY == undefined) return;
     var pr = DBParams.create('sp_ComFormC01', 'SEARCH_D');
     pr.addParam('NOTICE_H_KEY', grd_H.getSelectedRecords()[0].data.NOTICE_H_KEY);
     var ds = DBconnect.runProcedure(pr);

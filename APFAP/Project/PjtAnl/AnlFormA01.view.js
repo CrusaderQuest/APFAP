@@ -21,23 +21,17 @@ var comboStore2 = Ext.create('Ext.data.ArrayStore', {
     data: [
         ['이미지', 'Image'],
         ['문서', 'DOC'],
-        ['기타', 'EXC']
+        ['기타', 'ETC']
     ]
 });
 var gridData;
+var searchData;
 var deleteArray = [];
+var up_key = 1;
 
 //db user
 var prU = DBParams.create('sp_AnlFormA01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
-
-// tbl_main
-var tbl_main = ApTable.create(2);
-tbl_main.addCls('tableStyle_main');
-tbl_main.updateLayout();
-tbl_main.setTarget();
-var btn_save = ApButton.create("변경상태 저장");
-var lb_main = ApLabel.create("UI 분석 ---- 프로그램의 UI를 분석한 결과를 업로드 해주세요.");
 
 //search
 var tbl_H = ApTable.create(1);
@@ -56,7 +50,8 @@ var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '유사도', ['REQ_SIMILARITY', comboStore], 60);
 grd_a.addColumn('text', 'UI명', 'UI_NM', 200);
 grd_a.addColumn('combo', '파일 분류', ['FILE_CATEGORY', comboStore2], 80);
-grd_a.addColumn('date', '등록일', 'S_DT', 100);
+grd_a.addColumn('date', '등록일', 'E_DT', 100);
+grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 110);
 
 var tbl_input = ApTable.create(1);
 tbl_input.setTarget();
@@ -71,6 +66,8 @@ txt_nm.setWidth(800);
 var txta_summary = ApTextArea.create('상세 내용');
 txta_summary.setWidth(800);
 txta_summary.setHeight(200);
+var up_doc = ApUpload.create("파일 업로드", 'aa');
+
 var cbo_NOTICE_USER_HH = ApCombo.create('등록자', 'NOTICE_USER');
 cbo_NOTICE_USER_HH.bindStore(dsu[0]);
 var dt_update = ApDate.create();
@@ -81,15 +78,14 @@ tbl_input.cellShare(3);
 
 ApEvent.onlaod = function () {
 
-    pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
-    pnl_grid.divideH(grd_a, tbl_input, grd_a);
-    viewPanel.divideV(tbl_main, pnl_contents, tbl_main);
 
-    grd_a.setWidth(470);
-    btn_save.setWidth(120);
+    viewPanel.full(pnl_contents);
+    pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
+    tbl_H.setHeight(30);
+    pnl_grid.divideH(grd_a, tbl_input, grd_a);
+
+    grd_a.setWidth(465);
     dt_EDATE.setWidth(110);
 
-    tbl_H.setHeight(30);
-    tbl_main.setHeight(35);
     GRD_LOAD();
 }

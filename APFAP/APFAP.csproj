@@ -133,7 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
-    <Content Include="Index.aspx" />
+    <Content Include="index.html" />
     <Content Include="packages.config" />
     <Content Include="Project\PjtAnl\AnlFormA01-UI 관리폼.css" />
     <Content Include="Project\PjtAnl\AnlFormA01.app.js" />
@@ -148,6 +148,7 @@
     <Content Include="Project\PjtAnl\AnlFormC01.html" />
     <Content Include="Project\PjtAnl\AnlFormC01.view.js" />
     <Content Include="Project\PjtCom\calendarSrc\App.js" />
+    <Content Include="Project\PjtCom\ComFormB01.html" />
     <Content Include="Project\PjtCom\ComFormC01.html" />
     <Content Include="Project\PjtCom\ComFormC01-공지사항관리.css" />
     <Content Include="Project\PjtCom\ComFormA01-고객요청폼.css" />
@@ -158,7 +159,6 @@
     <Content Include="Project\PjtCom\ComFormA01.view.js" />
     <Content Include="Project\PjtCom\ComFormB01-캘린더폼.css" />
     <Content Include="Project\PjtCom\ComFormB01.app.js" />
-    <Content Include="Project\PjtCom\ComFormB01.html" />
     <Content Include="Project\PjtCom\ComFormB01.view.js" />
     <Content Include="Project\PjtDef\DefFormA01-TITLE 관리폼.css" />
     <Content Include="Project\PjtDef\DefFormA01.app.js" />
@@ -225,6 +225,7 @@
     <Content Include="Resource\Scripts\noncomponent-컴포넌트 외 모듈.css" />
     <Content Include="Resource\Scripts\noncomponent.js" />
     <Content Include="Resource\Scripts\options-toolbar.js" />
+    <Content Include="Resource\Themes\Save.ico" />
     <Content Include="Resource\Themes\ApStyle.css" />
     <Content Include="Resource\Themes\calendar.css" />
     <Content Include="Resource\Themes\examples.css" />
@@ -725,13 +726,21 @@
     <Content Include="Resource\Themes\images\window\toast\icon16_info.png" />
     <Content Include="Resource\Themes\images\window\window-default-corners.gif" />
     <Content Include="Resource\Themes\images\window\window-default-sides.gif" />
+    <Content Include="Resource\Themes\Logo.jpg" />
     <Content Include="Resource\Themes\noImage.png" />
+    <Content Include="Resource\Themes\save.png" />
+    <Content Include="Resource\Themes\save_1.png" />
     <Content Include="Resource\Themes\sencha-charts-all.css" />
     <Content Include="ServerCore\DBconnector.aspx" />
     <Content Include="ServerCore\FileDownload.aspx" />
     <Content Include="ServerCore\FileSystem.aspx" />
     <Content Include="ServerCore\getSession.aspx" />
     <Content Include="ServerCore\Login.aspx" />
+    <Content Include="ServerCore\setSession.aspx" />
+    <Content Include="Start\Home.app.js" />
+    <Content Include="Start\Home.html" />
+    <Content Include="Start\Home.view.js" />
+    <Content Include="Start\Home_홈화면.css" />
     <Content Include="Start\Login.html" />
     <Content Include="Start\Login.app.js" />
     <Content Include="Start\Project.html" />
@@ -761,13 +770,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Index.aspx.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Index.aspx.designer.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerCore\DBconnector.aspx.cs">
       <DependentUpon>DBconnector.aspx</DependentUpon>
@@ -803,6 +805,13 @@
     </Compile>
     <Compile Include="ServerCore\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\setSession.aspx.cs">
+      <DependentUpon>setSession.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\setSession.aspx.designer.cs">
+      <DependentUpon>setSession.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

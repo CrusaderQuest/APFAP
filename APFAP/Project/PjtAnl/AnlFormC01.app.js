@@ -15,7 +15,9 @@ function GRD_LOAD() {
 }
 
 grd_a.eButtonAddClick = function () {
-    gridData.add({ CATEGORY: '기타', DEV_NM: '', DEV_USE: '', S_DT: '', E_USER: '', E_DT: '' });
+    grd_a.reconfigure(gridData);
+    gridData.add({ CATEGORY: '기타', DEV_NM: null, DEV_USE: null, S_DT: null, E_USER: null, E_DT: null });
+    grd_a.setFocus(grd_a.getTotalCount() - 1);
 }
 grd_a.eButtonDeleteClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
@@ -29,13 +31,13 @@ grd_a.eButtonDeleteClick = function () {
     }
 }
 
-btn_save.eClick = function () {
+btn_SAVE.eClick = function () {
     for (var i = 0; i < gridData.data.length; i++) {
         //튜블 수 loop
         var pr;
         if (gridData.data.items[i].data.DEV_NO == 0) {//insert
             pr = DBParams.create('sp_AnlFormC01', 'INSERT_TABLE');
-            //pr.addParam('S_DT', gridData.data.items[i].data.S_DT);
+            pr.addParam('S_DT', gridData.data.items[i].data.S_DT);
         } else {//update
             pr = DBParams.create('sp_AnlFormC01', 'UPDATE_TABLE');
             pr.addParam('DEV_NO', gridData.data.items[i].data.DEV_NO);
@@ -43,14 +45,13 @@ btn_save.eClick = function () {
         pr.addParam('CATEGORY', gridData.data.items[i].data.CATEGORY);
         pr.addParam('DEV_NM', gridData.data.items[i].data.DEV_NM);
         pr.addParam('DEV_USE', gridData.data.items[i].data.DEV_USE);
-        // pr.addParam('E_DT', gridData.data.items[i].data.E_DT);
+        pr.addParam('E_DT', gridData.data.items[i].data.E_DT);
         pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
 
         var ds = DBconnect.runProcedure(pr);
     }
     deleteDB();
     //
-    set_txt(true);
     GRD_LOAD();
 }
 function deleteDB() {
@@ -59,5 +60,17 @@ function deleteDB() {
         //각 탭 delete list 튜블 수 loop
         pr.addParam('DEV_NO', deleteArray.pop());
         var ds = DBconnect.runProcedure(pr);
+    }
+}
+btn_search.eClick = function () {
+    if (dt_SDATE.getYMD() > dt_EDATE.getYMD()) { }
+    else {
+        var prS = DBParams.create('sp_AnlFormC01', 'DT_SEARCH');
+        prS.addParam('S_SEARCH', dt_SDATE.getYMD());
+        prS.addParam('E_SEARCH', dt_EDATE.getYMD());
+        var dsS = DBconnect.runProcedure(prS);
+        grd_a.reconfigure(dsS[0]);
+
+
     }
 }

@@ -801,7 +801,7 @@ ApGrid.prototype.getSelectedRecords = function () {
             }
         }
     } else {
-        returnRecords.push(grd_H.selection);
+        returnRecords.push(this.selection);
     }
    
     return returnRecords;
@@ -845,6 +845,7 @@ ApGrid.prototype.eBeforeEdit = function (store, rowIndex, paramId, record, value
 ApGrid.prototype.eSelectionChange = function (record, rowindex, paramId) { };
 ApGrid.prototype.eUpdate = function (record, rowIndex, paramId) { };
 ApGrid.prototype.eCellClick = function (store, rowIndex, paramId, record) { };
+ApGrid.prototype.eCellDbClick = function (record, rowindex, paramId) { };
 ApGrid.prototype.eButtonAddClick = function () {
 
 }
@@ -923,19 +924,30 @@ var ApGrid = {
                 cellclick: function (grd, rowIndex, colIndex, e) {
                     var record = grd.getStore().getAt(grd.selModel.getCurrentPosition().rowIdx);
                     dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
-
+                    if (record == undefined) return;
                     this.eSelectionChange(record, grd.selModel.getCurrentPosition().rowIdx, dataIndex);
+                },
+                celldblclick: function (grd, rowIndex, colIndex, e) {
+                    var record = grd.getStore().getAt(grd.selModel.getCurrentPosition().rowIdx);
+                    dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
+
+                    this.eCellDbClick(record, grd.selModel.getCurrentPosition().rowIdx, dataIndex);
+                   
                 },
                 cellkeydown: function (grd, row, colIndex, z, a, b, event) {
                     var code = event.getCharCode();
-                    var rowIndex = grd.selModel.getCurrentPosition().rowIdx;
+                    try {
+                        var rowIndex = grd.selModel.getCurrentPosition().rowIdx;
+                    } catch (e) {
+
+                    }
                     if (code == 38 || code == 40) {
                         if (code == 38) rowIndex--;
                         if (code == 40) rowIndex++;
                         try {
                             var record = grd.getStore().getAt(rowIndex);
                             dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
-
+                            if (record == undefined) return;
                             this.eSelectionChange(record, rowIndex, dataIndex);
                         } catch (e) {
 
