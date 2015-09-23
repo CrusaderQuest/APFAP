@@ -96,7 +96,6 @@ var DBconnect = {
         var procedureName = dbParams.procedureName;
         var procedureSection = dbParams.procedureSection;
         dbParams.addParam('PROJECT_KEY', ApFn.getProjectKey());
-        var params = dbParams.params;
         dbParams.addParam('E_USER', ApFn.getUser());
         var params = dbParams.params;
         var storeSet = [];
@@ -252,53 +251,60 @@ if (ApFn.isMaster() != true) {
     btn_RATESAVE.setHidden(true);
 }
 menuFrame.cellShare(3);
-menuFrame.items.items[0].setWidth(150);
+menuFrame.items.items[0].setWidth(90);
 menuFrame.items.items[1].setWidth(700);
 
 
 
-Ext.onReady(function () {
-    var urlArray = ['Start/Main.html', 'Start/Login.html', 'Start/Project.html', 'Project/PjtCom'];
-    var urlArray2 = ['Project/PjtCom/COMFORMB01.html'];
-    for (var i = 0; i < urlArray.length; i++) {
-        if (unescape(document.location.href.indexOf(urlArray[i])) > -1) {
-            viewPort = Ext.create('Ext.container.Viewport', {
-                layout: 'border',
-                border: 0,
-                items: [viewPanel]
-            });
-            ApEvent.onlaod();
-            return;
+if (document.location.href.indexOf('Start/Home.html') == -1 && document.location.href.indexOf('Start/Project.html') == -1) {
+    Ext.onReady(function () {
+        var urlArray = ['Start/Main.html', 'Start/Login.html', 'Start/Project.html'];
+        var urlArray2 = ['Project/PjtCom/COMFORMB01.html'];
+        for (var i = 0; i < urlArray.length; i++) {
+            if (unescape(document.location.href.indexOf(urlArray[i])) > -1) {
+                viewPort = Ext.create('Ext.container.Viewport', {
+                    layout: 'border',
+                    border: 0,
+                    items: [viewPanel]
+                });
+                ApEvent.onlaod();
+                return;
+            }
+            if (unescape(document.location.href.indexOf(urlArray2[0])) > -1) {
+                return;
+            }
         }
-        if (unescape(document.location.href.indexOf(urlArray2[0])) > -1) {
-            return;
+        if (unescape(document.location.href.indexOf('Project/PjtCom')) > -1) {
+            //lbl_DISCRIPT.setHidden(true);
+            num_RATE.setHidden(true);
+            lbl_RATE.setHidden(true);
+            btn_RATESAVE.setHidden(true);
         }
-    }
-
-    viewPort = Ext.create('Ext.container.Viewport', {
-        layout: 'border',
-        border: 0,
-        items: [{
-            region: 'north',
+        viewPort = Ext.create('Ext.container.Viewport', {
+            layout: 'border',
             border: 0,
-            collapsible: false,
-            split: false,
-            height: 40,
-            cls:'tableStyle_main',
-            layout: {
-                type: 'hbox',
-                align: 'stretch'
+            items: [{
+                region: 'north',
+                border: 0,
+                collapsible: false,
+                split: false,
+                height: 40,
+                cls:'tableStyle_main',
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                },
+                items: [menuFrame]
             },
-            items: [menuFrame]
-        },
-        viewPanel]
-    });
+            viewPanel]
+        });
 
-    //if (unescape(document.location.href.indexOf(urlArray2[i])) > -1) {
-    //    num_RATE.setHidden(true);
-    //    lbl_RATE.setHidden(true);
-    //    btn_RATESAVE.setHidden(true);
-    //}
-    ApEvent.onlaod();
-    return;
-});
+        //if (unescape(document.location.href.indexOf(urlArray2[i])) > -1) {
+        //    num_RATE.setHidden(true);
+        //    lbl_RATE.setHidden(true);
+        //    btn_RATESAVE.setHidden(true);
+        //}
+        ApEvent.onlaod();
+        return;
+    });
+}

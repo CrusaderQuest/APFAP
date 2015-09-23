@@ -17,9 +17,7 @@ btn_LOGIN_L.eClick = function () {
         })
         return;
     }
-    if (TRY_LOGIN(txt_USERID_L.getValue(), txt_USERPW_L.getValue())) {
-
-    }
+    TRY_LOGIN(txt_USERID_L.getValue(), txt_USERPW_L.getValue());
 }
 //회원가입 클릭
 btn_JOIN_J.eClick = function () {
@@ -41,7 +39,7 @@ btn_JOIN_J.eClick = function () {
         })
         return;
     }
-
+    TRY_JOIN(txt_USERID_J.getValue(), txt_USERPW_J.getValue(), txt_EMAIL_J.getValue())
 }
 
 function TRY_LOGIN(userid, userpw) {
@@ -73,6 +71,51 @@ function TRY_LOGIN(userid, userpw) {
                 return;
             } else {
                 location.replace('../Start/Project.html');
+            }
+        },
+        failure: function (response, options) {
+            ApMsg.warning('헉.. 통신이 실패했습니다. 인터넷 연결상태를 확인해 주세요.');
+        }
+    });
+}
+
+function TRY_JOIN(userid, userpw, email) {
+    Ext.Ajax.request({
+        async: false,
+        url: '../ServerCore/Join.aspx',
+        method: 'POST',
+        params: {
+            USERID: userid,
+            USERPW: userpw,
+            EMAIL: email
+        },
+        reader: {
+            type: 'json'
+        },
+        success: function (response, eOpt) {
+            console.log(response)
+            var resText = response.responseText;
+            if (resText == 'EID') {
+                ApMsg.warning('멋진 아이디인, "' + txt_USERID_J.getValue() + '"는 이미 다른 분이 사용중입니다..-_-', function () {
+                    txt_USERID_J.setValue('');
+                    txt_USERID_J.focus();
+                });
+                return;
+            } else if (resText == 'EEMAIL') {
+                ApMsg.warning('"' + txt_EMAIL_J.getValue() + '" 이 이메일로는 이미 가입된 것 같은데요?', function () {
+                    txt_EMAIL_J.setValue('');
+                    txt_EMAIL_J.focus();
+                });
+                return;
+            } else {
+                ApMsg.warning('축하합니다! 회원가입에 성공 했습니다. 환영합니다. "' + txt_USERID_J.getValue() + "님!'", function () {
+                    txt_USERID_L.setValue(txt_USERID_J.getValue());
+                    txt_USERPW_L.setValue(txt_USERPW_J.getValue());
+                    txt_USERID_J.setValue('');
+                    txt_EMAIL_J.setValue('');
+                    txt_USERPW_J.setValue('');
+                    txt_USERPW_L.focus();
+                });
             }
         },
         failure: function (response, options) {
