@@ -18,7 +18,6 @@ var btn_child_H = ApButton.create('하위+');
 var btn_remove_H = ApButton.create('-');
 var btn_up_H = ApButton.create('↑');
 var btn_down_H = ApButton.create('↓');
-var btn_save_H = ApButton.create('D');
 
 var pnl_D = ApPanel.create();
 var pnl_DD = ApPanel.create();
