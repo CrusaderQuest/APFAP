@@ -36,7 +36,7 @@ btn_up_H.eClick = function () {
 btn_down_H.eClick = function () {
     tre_H.downNode(tre_H.selected);
 }
-btn_save_H.eClick = function () {
+btn_SAVE.eClick = function () {
     if (tre_H.selected != '');
     TREE_SAVE();
 }
