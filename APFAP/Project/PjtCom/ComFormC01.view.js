@@ -18,17 +18,6 @@ var NOTICE_USER = DBconnect.runProcedure(pr);
 //-------------------컴포넌트 시작--------------------
 var pnl_main = ApPanel.create();
 
-var btn_SAVE = ApButton.create('변경상태 저장');
-btn_SAVE.setWidth(120);
-var tbl_H = ApTable.create(1);
-tbl_H.setTarget();
-tbl_H.setStyleSearch()
-var dt_SDATE = ApDate.create('조회일자');
-var lbl_a = ApLabel.create('~');
-var dt_EDATE = ApDate.create('');
-dt_EDATE.setWidth(110);
-var btn_SEARCH = ApButton.create('조회');
-tbl_H.cellShare(4);
 var pnl_H = ApPanel.create();
 var pnl_D = ApPanel.create();
 
@@ -67,8 +56,7 @@ grd_D.addColumn('combo', '등록자', ['NOTICE_USER', NOTICE_USER[0]], 80);
 
 ApEvent.onlaod = function () {
     viewPanel.full(pnl_main);
-    pnl_main.divideV(tbl_H, pnl_H, tbl_H);
-    tbl_H.setHeight(30);
+    pnl_main.full(pnl_H);
     pnl_H.divideH(grd_H, pnl_D, grd_H);
     pnl_D.divideV(tbl_HH, grd_D, tbl_HH);
     tbl_HH.setHeight(300);

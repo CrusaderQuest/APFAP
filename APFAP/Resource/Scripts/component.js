@@ -924,7 +924,7 @@ var ApGrid = {
                 cellclick: function (grd, rowIndex, colIndex, e) {
                     var record = grd.getStore().getAt(grd.selModel.getCurrentPosition().rowIdx);
                     dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
-
+                    if (record == undefined) return;
                     this.eSelectionChange(record, grd.selModel.getCurrentPosition().rowIdx, dataIndex);
                 },
                 celldblclick: function (grd, rowIndex, colIndex, e) {
@@ -936,14 +936,18 @@ var ApGrid = {
                 },
                 cellkeydown: function (grd, row, colIndex, z, a, b, event) {
                     var code = event.getCharCode();
-                    var rowIndex = grd.selModel.getCurrentPosition().rowIdx;
+                    try {
+                        var rowIndex = grd.selModel.getCurrentPosition().rowIdx;
+                    } catch (e) {
+
+                    }
                     if (code == 38 || code == 40) {
                         if (code == 38) rowIndex--;
                         if (code == 40) rowIndex++;
                         try {
                             var record = grd.getStore().getAt(rowIndex);
                             dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
-
+                            if (record == undefined) return;
                             this.eSelectionChange(record, rowIndex, dataIndex);
                         } catch (e) {
 

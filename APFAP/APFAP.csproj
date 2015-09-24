@@ -133,7 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
-    <Content Include="Index.aspx" />
+    <Content Include="index.html" />
     <Content Include="packages.config" />
     <Content Include="Project\PjtAnl\AnlFormA01-UI 관리폼.css" />
     <Content Include="Project\PjtAnl\AnlFormA01.app.js" />
@@ -735,8 +735,13 @@
     <Content Include="ServerCore\FileDownload.aspx" />
     <Content Include="ServerCore\FileSystem.aspx" />
     <Content Include="ServerCore\getSession.aspx" />
+    <Content Include="ServerCore\Join.aspx" />
     <Content Include="ServerCore\Login.aspx" />
     <Content Include="ServerCore\setSession.aspx" />
+    <Content Include="Start\Home.app.js" />
+    <Content Include="Start\Home.html" />
+    <Content Include="Start\Home.view.js" />
+    <Content Include="Start\Home_홈화면.css" />
     <Content Include="Start\Login.html" />
     <Content Include="Start\Login.app.js" />
     <Content Include="Start\Project.html" />
@@ -766,13 +771,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Index.aspx.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Index.aspx.designer.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerCore\DBconnector.aspx.cs">
       <DependentUpon>DBconnector.aspx</DependentUpon>
@@ -801,6 +799,13 @@
     </Compile>
     <Compile Include="ServerCore\getSession.aspx.designer.cs">
       <DependentUpon>getSession.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\Join.aspx.cs">
+      <DependentUpon>Join.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\Join.aspx.designer.cs">
+      <DependentUpon>Join.aspx</DependentUpon>
     </Compile>
     <Compile Include="ServerCore\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
