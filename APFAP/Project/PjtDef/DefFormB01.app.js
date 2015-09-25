@@ -11,7 +11,7 @@ function GRD_LOAD() {
     var ds = DBconnect.runProcedure(pr);
     gridData = ds[0];
     grd_a.reconfigure(gridData);
-
+    grd_a.findPlugin('cellediting').disable();
 }
 grd_a.eButtonAddClick = function () {
     grd_a.reconfigure(gridData);
