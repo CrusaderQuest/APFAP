@@ -64,6 +64,7 @@ grd_a.addColumn('combo', '중요도', ['IMPORTANT', comboStore1], 70);
 grd_a.addColumn('text', '요구사항 명', 'REQ_NM', 200);
 grd_a.addColumn('date', '등록일', 'E_DT', 100);
 grd_a.addColumn('combo', '난이도', ['LEV', comboStore2], 100);
+grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 0);
 
 //input Field
 var tbl_input = ApTable.create(1);

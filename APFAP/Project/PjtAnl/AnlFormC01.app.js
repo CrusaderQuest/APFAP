@@ -19,7 +19,7 @@ grd_a.eButtonAddClick = function () {
     grd_a.reconfigure(gridData);
     gridData.add({
         CATEGORY: '기타', DEV_NM: null, DEV_USE: null,
-        S_DT: null, E_USER: null, E_DT: null
+        S_DT: null, E_USER: GetSession().S_USER_NO, E_DT: null
     }); //초기값 세팅 
     grd_a.setFocus(grd_a.getTotalCount() - 1); //마지막으로 추가된 칼럼에 포커스
 }
