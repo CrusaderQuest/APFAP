@@ -66,32 +66,39 @@ var menu = Ext.create('Ext.panel.Panel', {
         animate: true,
         activeOnTop: true
     },
-    items: [{
-        title: '정의',
+    items: [{ 
+        title: '◀정&nbsp&nbsp&nbsp의▶',
         layout: 'fit',
+        cls: 'colorA',
         items:[tre_DEF]
     }, {
-        title: '분석',
+        title: '◀분&nbsp&nbsp&nbsp석▶',
         layout: 'fit',
+        cls: 'colorB',
         items: [tre_ANL]
     }, {
-        title: '설계',
+        title: '◀설&nbsp&nbsp&nbsp계▶',
         layout: 'fit',
+        cls: 'colorC',
         items: [tre_DES]
     }, {
-        title: '개발',
+        title: '◀개&nbsp&nbsp&nbsp발▶',
         layout: 'fit',
+        cls: 'colorD',
         items: [tre_DEV]
     }, {
-        title: '테스트',
+        title: '◀테스트▶',
         layout: 'fit',
+        cls: 'colorE',
         items: [tre_TES]
     }, {
-        title: '평가',
+        title: '◀평&nbsp&nbsp&nbsp가▶',
+        cls: 'colorF',
         layout: 'fit',
         items: [tre_EVL]
     }, {
-        title: '공통',
+        title: '◀공&nbsp&nbsp&nbsp통▶',
+        cls: 'colorG',
         layout: 'fit',
         items: [tre_COM]
     }]
@@ -146,7 +153,7 @@ ApEvent.onlaod = function () {
     tab_main.addTab('메인').full({
         html: '<iframe src="Home.html?" width="100%" height="100%" frameborder="0"></iframe>'
     });
-    menu.setWidth(200);
+    menu.setWidth(230);
     homePanel.full();
     SYS_INIT();
     //TREE_LOAD();

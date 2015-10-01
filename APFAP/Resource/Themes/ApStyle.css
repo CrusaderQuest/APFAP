@@ -24,3 +24,12 @@
     /*background-image: url(../../../Resource/Themes/Save_1.png) !important;*/
     background-size:contain;
 }
+.x-column-header {
+    font-weight: 500;
+    font-size: 15px;
+    font-family: NanumGothic !important;
+}
+.x-grid-item {
+    font-size: 13px;
+    font-family: NanumGothic !important;
+}

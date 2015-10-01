@@ -141,6 +141,11 @@ var cha_ING_H = Ext.create('Ext.chart.Chart', {
                             'stroke-width': 2,
                             stroke: '#fff'
                         },
+                        renderer: function (sprite, record, attr, index, store) {
+                            return Ext.apply(attr, {
+                                fill: '#3590D2'
+                            });
+                        },
                         tips: {
                             trackMouse: true,
                             style: 'background: #FFF',
@@ -211,7 +216,7 @@ var cha_ING_D = Ext.create('Ext.chart.Chart', {
         yField: 'RATE',
         renderer: function(sprite, record, attr, index, store){
             return Ext.apply(attr, {
-                fill: 'yellow'
+                fill: '#3590D2'
             });
         },
         style: {
@@ -287,7 +292,7 @@ Ext.define('Main', {
 		    height: 150
 		}, {
 			type: 'portlet',
-			title: '이번주 할일',
+			title: '이번 주 할일',
 		    columnIndex: 1,
 		    height: 250
 		}]
