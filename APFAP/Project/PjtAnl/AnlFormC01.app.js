@@ -37,7 +37,7 @@ btn_SAVE.eClick = function () {
         var pr;
         if (gridData.data.items[i].data.DEV_NO == 0) {//insert
             pr = DBParams.create('sp_AnlFormC01', 'INSERT_TABLE');
-            pr.addParam('S_DT', gridData.data.items[i].data.S_DT);
+            pr.addParam('S_DT', ApFn.setYMD(gridData.data.items[i].data.S_DT));
         } else {//update
             pr = DBParams.create('sp_AnlFormC01', 'UPDATE_TABLE');
             pr.addParam('DEV_NO', gridData.data.items[i].data.DEV_NO);
@@ -45,8 +45,7 @@ btn_SAVE.eClick = function () {
         pr.addParam('CATEGORY', gridData.data.items[i].data.CATEGORY);
         pr.addParam('DEV_NM', gridData.data.items[i].data.DEV_NM);
         pr.addParam('DEV_USE', gridData.data.items[i].data.DEV_USE);
-        pr.addParam('E_DT', gridData.data.items[i].data.E_DT);
-        pr.addParam('E_USER', gridData.data.items[i].data.E_USER);
+        pr.addParam('E_DT', ApFn.setYMD(gridData.data.items[i].data.E_DT));
 
         var ds = DBconnect.runProcedure(pr);
     }

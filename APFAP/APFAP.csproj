@@ -735,6 +735,7 @@
     <Content Include="ServerCore\FileDownload.aspx" />
     <Content Include="ServerCore\FileSystem.aspx" />
     <Content Include="ServerCore\getSession.aspx" />
+    <Content Include="ServerCore\Join.aspx" />
     <Content Include="ServerCore\Login.aspx" />
     <Content Include="ServerCore\setSession.aspx" />
     <Content Include="Start\Home.app.js" />
@@ -798,6 +799,13 @@
     </Compile>
     <Compile Include="ServerCore\getSession.aspx.designer.cs">
       <DependentUpon>getSession.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\Join.aspx.cs">
+      <DependentUpon>Join.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerCore\Join.aspx.designer.cs">
+      <DependentUpon>Join.aspx</DependentUpon>
     </Compile>
     <Compile Include="ServerCore\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
