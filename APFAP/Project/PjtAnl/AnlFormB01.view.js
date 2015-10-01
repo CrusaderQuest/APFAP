@@ -7,38 +7,40 @@
 var pnl_contents = ApPanel.create();
 var pnl_main = ApPanel.create();
 var pnl_grid = ApPanel.create();
+
 //data-type
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
-    data: [
+    data: [  //업무영역
         ['신규기능', 'new'],
         ['기능수정', 'change'],
         ['기능삭제', 'del'],
         ['기타', 'etc']
-    ]
-});
+    ]   
+}); 
 var comboStore1 = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
-    data: [
+    data: [  //중요도
         ['상', 'H'],
         ['중', 'M'],
         ['하', 'L']
-    ]
+    ]    
 });
 var comboStore2 = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
-    data: [
+    data: [  //난이도
         ['★', 'a'],
         ['★★', 'b'],
         ['★★★', 'c'],
         ['★★★★', 'd'],
         ['★★★★★', 'e']
-    ]
+    ]   
 });
-var gridData;
-var searchData;
+
+var gridData;   //기본 gridstore
 var deleteArray = [];
 var up_key = 1;
+
 //db user
 var prU = DBParams.create('sp_AnlFormB01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
@@ -53,7 +55,7 @@ var dt_EDATE = ApDate.create('');
 dt_EDATE.setWidth(110);
 var btn_search = ApButton.create('조회');
 tbl_H.cellShare(4);
-dt_EDATE.setToday();
+dt_EDATE.setToday();    //현재 날짜로
 
 //grid add column
 var grd_a = ApGrid.create(false, true);
@@ -62,7 +64,9 @@ grd_a.addColumn('combo', '중요도', ['IMPORTANT', comboStore1], 70);
 grd_a.addColumn('text', '요구사항 명', 'REQ_NM', 200);
 grd_a.addColumn('date', '등록일', 'E_DT', 100);
 grd_a.addColumn('combo', '난이도', ['LEV', comboStore2], 100);
+grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 0);
 
+//input Field
 var tbl_input = ApTable.create(1);
 tbl_input.setTarget();
 var cbo_category = ApCombo.create('업무영역');
@@ -86,11 +90,13 @@ cbo_NOTICE_USER_HH.bindStore(dsu[0]);
 var dt_update = ApDate.create();
 dt_update.setToday();
 var btn_update = ApButton.create('등록');
-btn_update.setMargin('0 10 0 20')
+btn_update.setMargin('0 10 0 20')   //사이 간격 조절
 tbl_input.cellShare(3);
 
+//ApEvent
 ApEvent.onlaod = function () {
 
+    //set Panel & size
     viewPanel.full(pnl_contents);
     pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
     tbl_H.setHeight(30);

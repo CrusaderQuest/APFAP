@@ -19,7 +19,7 @@ grd_a.eButtonAddClick = function () {
     grd_a.reconfigure(gridData);
     gridData.add({
         UP_KEY: null, UI_NM: null, SUMMARY: null, FILE_CATEGORY: 'ETC',
-        REQ_SIMILARITY: '2', S_DT: null, E_USER: null, E_DT: null, E_FORM: null
+        REQ_SIMILARITY: '2', S_DT: null, E_USER: GetSession().S_USER_NO, E_DT: null, E_FORM: null
     }); //초기값 세팅 
     grd_a.setFocus(grd_a.getTotalCount() - 1);  //마지막으로 추가된 칼럼에 포커스
 }
@@ -36,7 +36,7 @@ up_doc.eClear = function () {
     if (gridData.data.items[i].data.E_FORM) {
         var tempNo = grd_a.getSelection()[0].data.UP_KEY;
         deleteArray.push(tempNo);
-
+        //새로 받는 UP_KEY 설정을 위해 삭제 후 새로 업데이트
         gridData.remove(grd_a.getSelection());
         grd_a.addRow();
         grid_update();
@@ -52,7 +52,7 @@ grd_a.eButtonDeleteClick = function () {
         for (var i = 0; i < grd_a.getSelection().length; i++) {
             var tempNo = grd_a.getSelection()[i].data.UP_KEY;
             deleteArray.push(tempNo);
-        }
+        }   //delete 한 행의 UP_KEY를 deleteArray에 저장 후 sync시 db에서 삭제
         gridData.remove(grd_a.getSelection());
     }
 }
@@ -78,11 +78,11 @@ btn_SAVE.eClick = function () {
         var ds = DBconnect.runProcedure(pr);
     }
     deleteDB(); //삭제 행이 있으면 삭제
-    //
+
     grd_a.reconfigure(gridData);
 }
 
-//그리드 삭제 내용 db에서 삭제
+//그리드 삭제 내용 db에서 삭제 deleteAraay
 function deleteDB() {
     var pr = DBParams.create('sp_AnlFormA01', 'DELETE_TABLE');
     for (var i = 0; i < deleteArray.length; i++) {
@@ -119,17 +119,18 @@ grid_update = function () {
     grd_a.selection.set('E_USER', cbo_NOTICE_USER_HH.getValue());
     if (grd_a.selection.data.S_DT == null) {
         grd_a.selection.set('S_DT', dt_update.getYMD());
-    }
+    }   //S_DT는 없을때 한번만 입력 되게 E_DT는 매번 갱신
     grd_a.selection.set('E_DT', dt_update.getYMD());
 
     grd_a.reconfigure(gridData);
 }
+
 //grid update(등록 버튼)
 btn_update.eClick = function () {
     if(cbo_req.getValue() == "" || cbo_fcagtegory.getValue() == "" || txt_nm.getValue() == "" || 
         txta_summary.getValue() == "" || up_doc.getFileKey() == "") {
         Ext.Msg.alert("경고 창", "모든 필드에 값을 넣어주세요.");
-    }
+    }//빈 항목 없도록
     else {
         grid_update();  //필드 내용 그리드로 하는 함수 호출
 

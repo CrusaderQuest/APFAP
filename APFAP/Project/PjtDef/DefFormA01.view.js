@@ -28,9 +28,10 @@ img_TEAMIMG.setSize(100, 100);
 
 var dbData;
 
-
+//ApEvent
 ApEvent.onlaod = function () {
 
+    //set Panel
     viewPanel.full(tbl_MAKE);
 
     GRD_LOAD();
