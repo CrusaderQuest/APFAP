@@ -5,14 +5,28 @@
 
 //View 단 정의 영역 시작
 var pnl_proNM = ApPanel.create('Project Name');
+//Ext.define('systemArchi', {
+//    extend: 'Ext.data.Model',
+//    fields: [
+//        { name: 'E_DT', type: 'date', dateFormat: 'Y-m-d' },
+//        { name: 'CHECK_UPLOAD', type: 'boolean' },
+//        { name: 'SUMMARY' }
+//    ]
+//});
 
+//var gridData = Ext.create('Ext.data.ArrayStore', {
+//    model: 'systemArchi',
+//    data: [
+//        ['', 'F', '']
+//    ]
+//});
 var grd = ApGrid.create();
 grd.addColumn('date', '날짜', 'E_DT', 200);
 grd.addColumn('check', '업로드 여부', 'CHECK_UPLOAD', 200);
 grd.addColumn('text', 'Summary', 'SUMMARY', 730);
 
-
 grd.setWidth('fit');
+
 ////////////////////////////////////////////
 
 
@@ -49,8 +63,11 @@ ApEvent.onlaod = function () {
     pnl_proNM.setHeight(90);
     viewPanel.full(pnl_main);
     tbl_image.setHeight(34);
-    getTable();
 
+
+    get_Init_Table();
+    getTable();
+   
 }
 
 

@@ -4,30 +4,34 @@
 /// <reference path="DefFormA01.app.js" />
 
 //View 단 정의 영역 시작
-var pnl_contents = ApPanel.create("TITLE");
-//data
+var tbl_MAKE = ApTable.create(1);
+tbl_MAKE.setTarget();
+//제목
+var txt_TITLE = ApText.create('제목');
+txt_TITLE.setWidth(600);
+var txa_SUBTITLE = ApTextArea.create('설명');
+txa_SUBTITLE.setWidth(600);
+//프로젝트 타입
+
+var cbo_TYPE_1 = ApCombo.create('성향', '');
+//프로젝트 형태
+var cbo_TYPE_2 = ApCombo.create('형태', '');
+//팀명
+var txt_TEAMNAME = ApText.create('팀명');
+txt_TEAMNAME.setWidth(230);
+tbl_MAKE.cellShare(3);
+//이미지
+var upl_TEAMIMG = ApUpload.create('대표 이미지');
+var img_TEAMIMG = ApImg.create();
+img_TEAMIMG.setSize(100, 100);
+
+
 var dbData;
-
-//title
-var tbl_title = ApTable.create(1);
-tbl_title.setTarget();
-var txt_title = ApTextArea.create("제목");
-//sub title
-var txta_subtitle = ApTextArea.create('부제');
-
 
 
 ApEvent.onlaod = function () {
 
-    pnl_contents.full(tbl_title);
-    viewPanel.full(tbl_title);
+    viewPanel.full(tbl_MAKE);
 
-    //title, subtitle
-    txt_title.setWidth(500);
-    txt_title.setHeight(50);
-    txt_title.setMargin(30);
-    txta_subtitle.setWidth(600);
-    txta_subtitle.setHeight(100);
-    txta_subtitle.setMargin(30);
     GRD_LOAD();
 }

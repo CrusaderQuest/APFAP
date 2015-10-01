@@ -67,7 +67,8 @@ function dbSave() {
         pr.addParam('SUMMARY', selectedRecords[i].get('SUMMARY'));
         pr.addParam('DESCRIPTION', selectedRecords[i].get('CONTENT'));
         pr.addParam('USER_KEY', selectedRecords[i].get('USER_KEY'));
-        pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
+        if (selectedRecords[i].get('END_DT') != undefined)
+            pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
 
         ds = DBconnect.runProcedure(pr);
     }
