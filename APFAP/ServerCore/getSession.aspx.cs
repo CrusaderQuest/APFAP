@@ -23,6 +23,8 @@ namespace APFAP.ServerCore
                     response += Session["PROJECT_KEY"].ToString();
                     response += '※';
                     response += Session["MASTER_TF"].ToString();
+                    response += '※';
+                    response += Session["READ_ONLY"].ToString();
                 }
                 catch (Exception)
                 {
