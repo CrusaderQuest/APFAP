@@ -28,6 +28,14 @@ namespace APFAP.ServerCore
             {
                 Session.Add("MASTER_TF", Request["MASTER_TF"]);
             }
+            try
+            {
+                Session["READ_ONLY"] = Request["READ_ONLY"];
+            }
+            catch
+            {
+                Session.Add("READ_ONLY", Request["READ_ONLY"]);
+            }
             Response.Write(response);
             Response.End();
         }

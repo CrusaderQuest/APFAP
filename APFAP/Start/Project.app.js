@@ -106,7 +106,7 @@ btn_CREATE.eClick = function () {
     })
 }
 grd_SELECT.eCellDbClick = function (record, rowIndex, paramId) {
-    _setSession(record.data.PROJECT_KEY, 'X');
+    _setSession(record.data.PROJECT_KEY, 'X', true);
 }
 grd_JOIN.eCellDbClick = function (record, rowindex, paramId) {
     Ext.MessageBox.confirm('♧프로젝트 참가 알림♧', '"' + record.data.TITLE + '"프로젝트에 참가 하실려구요?', function (btn) {
@@ -123,24 +123,25 @@ grd_JOIN.eCellDbClick = function (record, rowindex, paramId) {
     });
 }
 grd_GOING.eCellDbClick = function (record, rowIndex, paramId) {
-    _setSession(record.data.PROJECT_KEY, record.data.MASTER_TF);
+    _setSession(record.data.PROJECT_KEY, record.data.MASTER_TF, false);
 }
 
 grd_CLOSED.eCellDbClick = function (record, rowIndex, paramId) {
-    _setSession(record.data.PROJECT_KEY, record.data.MASTER_TF);
+    _setSession(record.data.PROJECT_KEY, record.data.MASTER_TF, true);
 }
 
 
 
 
-function _setSession(projectkey, master_tf) {
+function _setSession(projectkey, master_tf, readOnly) {
     Ext.Ajax.request({
         async: false,
         url: '../../ServerCore/setSession.aspx',
         method: 'POST',
         params: {
             PROJECT_KEY: projectkey,
-            MASTER_TF: master_tf
+            MASTER_TF: master_tf,
+            READ_ONLY: readOnly
         },
         success: function (response, eOpt) {
             location.replace('../Start/Main.html');

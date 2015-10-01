@@ -195,7 +195,8 @@ function GetSession() {
                     S_USER_NO : responseStr.split('※')[0],
                     S_USER_NM: responseStr.split('※')[1],
                     S_PROJECT_KEY: responseStr.split('※')[2],
-                    S_MASTER_TF: responseStr.split('※')[3]
+                    S_MASTER_TF: responseStr.split('※')[3],
+                    S_READ_ONLY: responseStr.split('※')[4]
                 }
                 return session;
             }
@@ -239,13 +240,29 @@ try {
 
 }
 var lbl_DISCRIPT = ApLabel.create(txt);
+
+var pr = DBParams.create('sp_COMMAIN', 'SEARCH_PROG');
+pr.addParam('CONTENT_CD', document.location.href.substr(document.location.href.indexOf('Project') + 15, 3).toUpperCase() + document.location.href.substr(document.location.href.indexOf('Project') + 22, 1).toUpperCase());
+var ds = DBconnect.runProcedure(pr);
 var num_RATE = ApNum.create('진행율');
 num_RATE.setMaxValue(100);
 num_RATE.setWidth(170);
+try {
+    num_RATE.setValue(ds[0].getAt(0).get('RATE'));
+} catch (e) {
+
+}
 var lbl_RATE = ApLabel.create('%');
 lbl_RATE.setMargin('5 0 0 2');
 var btn_RATESAVE = ApButton.create('저장');
 btn_RATESAVE.setWidth(50);
+btn_RATESAVE.eClick = function () {
+    var pr = DBParams.create('sp_COMMAIN', 'UPDATE_PROG');
+    pr.addParam('CONTENT_CD', document.location.href.substr(document.location.href.indexOf('Project') + 15, 3).toUpperCase() + document.location.href.substr(document.location.href.indexOf('Project') + 22, 1).toUpperCase());
+    pr.addParam('RATE', num_RATE.getValue());
+    var ds = DBconnect.runProcedure(pr);
+    location.replace(document.location.href);
+}
 if (ApFn.isMaster() != true) {
     num_RATE.setReadOnly(true);
     btn_RATESAVE.setHidden(true);
@@ -253,7 +270,12 @@ if (ApFn.isMaster() != true) {
 menuFrame.cellShare(3);
 menuFrame.items.items[0].setWidth(90);
 menuFrame.items.items[1].setWidth(700);
-
+if (unescape(document.location.href.indexOf('Project/')) > -1) {
+    if (GetSession().S_READ_ONLY == 'true') {
+        btn_SAVE.setHidden(true);
+        btn_RATESAVE.setHidden(true);
+    }
+}
 
 
 if (document.location.href.indexOf('Start/Home.html') == -1 && document.location.href.indexOf('Start/Project.html') == -1) {

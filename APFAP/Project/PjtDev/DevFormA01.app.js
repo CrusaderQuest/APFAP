@@ -89,11 +89,12 @@ function dbSave() {
             pr.addParam('H_DEV_NO', currentBtn - 1);
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
             pr.addParam('START_DT', ApFn.setYMD(selectedRecords[i].get('START_DT')));
-            pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
-            pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
+            pr.addParam('DEV_VALUE', convertValue(selectedRecords[i].get('DEV_VALUE')));
+            pr.addParam('TEST_VALUE', convertValue(selectedRecords[i].get('TEST_VALUE')));
             pr.addParam('DEADLINE', ApFn.setYMD(selectedRecords[i].get('DEADLINE')));
             pr.addParam('USER_KEY', selectedRecords[i].get('USER_KEY'));
-            pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
+            if (selectedRecords[i].get('END_DT') != undefined)
+                pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
 
             ds = DBconnect.runProcedure(pr);
         } else {
@@ -101,11 +102,12 @@ function dbSave() {
             pr.addParam('D_DEV_NO', selectedRecords[i].get('D_DEV_NO'));
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
             pr.addParam('START_DT', ApFn.YMD(selectedRecords[i].get('START_DT')));
-            pr.addParam('DEV_VALUE', selectedRecords[i].get('DEV_VALUE'));
-            pr.addParam('TEST_VALUE', selectedRecords[i].get('TEST_VALUE'));
+            pr.addParam('DEV_VALUE', convertValue(selectedRecords[i].get('DEV_VALUE')));
+            pr.addParam('TEST_VALUE', convertValue(selectedRecords[i].get('TEST_VALUE')));
             pr.addParam('DEADLINE', ApFn.setYMD(selectedRecords[i].get('DEADLINE')));
             pr.addParam('USER_KEY', selectedRecords[i].get('USER_KEY'));
-            pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
+            if (selectedRecords[i].get('END_DT') != undefined)
+                pr.addParam('END_DT', ApFn.setYMD(selectedRecords[i].get('END_DT')));
 
             ds = DBconnect.runProcedure(pr);
         }
@@ -429,6 +431,13 @@ btn_etc.eClick = function () {
 }
 
 //-------------------------util function------------------------
+function convertValue(value) {
+    if (value == true) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
 function msgSaveWarning(selBtn) {
     var btnState;
     Ext.Msg.show({
@@ -502,10 +511,8 @@ function isErrTuple(selectedRecords) {
         //특정 셀의 값을 확인
         if (selectedRecords[i].get('D_DEV_NM') == undefined || selectedRecords[i].get('D_DEV_NM') == ''
             || selectedRecords[i].get('START_DT') == undefined || selectedRecords[i].get('START_DT') == ''
-            || selectedRecords[i].get('DEV_VALUE') == undefined || selectedRecords[i].get('DEV_VALUE') == ''
-            || selectedRecords[i].get('TEST_VALUE') == undefined || selectedRecords[i].get('TEST_VALUE') == ''
             || selectedRecords[i].get('DEADLINE') == undefined || selectedRecords[i].get('DEADLINE') == ''
-            || selectedRecords[i].get('USER_NM') == undefined || selectedRecords[i].get('USER_NM') == '') {
+            || selectedRecords[i].get('USER_KEY') == undefined || selectedRecords[i].get('USER_KEY') == '') {
             var index = grd.getRowIndex(selectedRecords[i]);
             //에러메세지 띄움
             ApMsg.warning(index + 1 + '번째 행의 데이터를 넣어주세요.', function () {
