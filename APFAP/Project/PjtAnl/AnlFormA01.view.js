@@ -7,6 +7,7 @@
 var pnl_contents = ApPanel.create();
 var pnl_main = ApPanel.create();
 var pnl_grid = ApPanel.create();
+
 //data-type
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
@@ -15,7 +16,7 @@ var comboStore = Ext.create('Ext.data.ArrayStore', {
         ['중', '2'],
         ['하', '3']
     ]
-});
+}); //유사도
 var comboStore2 = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
     data: [
@@ -23,10 +24,10 @@ var comboStore2 = Ext.create('Ext.data.ArrayStore', {
         ['문서', 'DOC'],
         ['기타', 'ETC']
     ]
-});
-var gridData;
-var searchData;
-var deleteArray = [];
+}); //파일분류
+
+var gridData;   //기본 gridstore
+var deleteArray = []; 
 var up_key = 1;
 
 //db user
@@ -43,9 +44,9 @@ var dt_EDATE = ApDate.create('');
 dt_EDATE.setWidth(110);
 var btn_search = ApButton.create('조회');
 tbl_H.cellShare(4);
-dt_EDATE.setToday();
+dt_EDATE.setToday();    //현재 날짜로
 
-//grid add columnvar grd_a = ApGrid.create(true, true);
+//grid add column
 var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '유사도', ['REQ_SIMILARITY', comboStore], 60);
 grd_a.addColumn('text', 'UI명', 'UI_NM', 200);
@@ -53,6 +54,7 @@ grd_a.addColumn('combo', '파일 분류', ['FILE_CATEGORY', comboStore2], 80);
 grd_a.addColumn('date', '등록일', 'E_DT', 100);
 grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 110);
 
+//input Field
 var tbl_input = ApTable.create(1);
 tbl_input.setTarget();
 var cbo_req = ApCombo.create('유사도');
@@ -73,12 +75,13 @@ cbo_NOTICE_USER_HH.bindStore(dsu[0]);
 var dt_update = ApDate.create();
 dt_update.setToday();
 var btn_update = ApButton.create('등록');
-btn_update.setMargin('0 10 0 20')
+btn_update.setMargin('0 10 0 20')   //사이 간격 조절
 tbl_input.cellShare(3);
 
+//ApEvent
 ApEvent.onlaod = function () {
 
-
+    //set Panel & size
     viewPanel.full(pnl_contents);
     pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
     tbl_H.setHeight(30);

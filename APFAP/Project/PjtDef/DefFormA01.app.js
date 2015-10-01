@@ -39,12 +39,14 @@ btn_SAVE.eClick = function () {
         var ds = DBconnect.runProcedure(prIU);
     }else{}
 }
+
 upl_TEAMIMG.eUpload = function (fileKey) {
     img_TEAMIMG.setFileKey(fileKey);
 }
 upl_TEAMIMG.eClear = function () {
     img_TEAMIMG.setFileKey('');
 }
+
 EmptyCheck = function () {
     //빈값 체크
     if (txt_TITLE.getValue() == '') {

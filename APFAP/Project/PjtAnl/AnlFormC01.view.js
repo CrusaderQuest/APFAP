@@ -9,16 +9,16 @@ var pnl_contents = ApPanel.create();
 //data-type
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
-    data: [
+    data: [   //분류
         ['소프트웨어', 'SOFT'],
         ['하드웨어', 'HARD'],
         ['인력', 'HUMAN'],
         ['기타', 'ETC']
     ]
 });
-var gridData;
+
+var gridData;   //기본 gridstore
 var deleteArray = [];
-var searchData;
 
 //db user
 var prU = DBParams.create('sp_AnlFormC01', 'USER_INFO');
@@ -34,17 +34,20 @@ var dt_EDATE = ApDate.create('');
 dt_EDATE.setWidth(110);
 var btn_search = ApButton.create('조회');
 tbl_H.cellShare(4);
-dt_EDATE.setToday();
+dt_EDATE.setToday();    //현재 날짜로
 
+//grid add column
 var grd_a = ApGrid.create(false, true);
 grd_a.addColumn('combo', '분류', ['CATEGORY', comboStore], 110);
 grd_a.addColumn('text', '명칭', 'DEV_NM', 300);
 grd_a.addColumn('text', '용도', 'DEV_USE', 500);
 grd_a.addColumn('date', '등록일', 'E_DT', 120);
 grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 100);
-//grd_a.reconfigure(gridData);
+
+//ApEvent
 ApEvent.onlaod = function () {
 
+    //set Panel & size
     pnl_contents.divideV(tbl_H, grd_a, tbl_H);
     tbl_H.setHeight(30);
     viewPanel.full(pnl_contents);

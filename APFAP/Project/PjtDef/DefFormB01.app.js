@@ -3,7 +3,7 @@
 /// <reference path="../../Resource/Scripts/noncomponent.js" />
 /// <reference path="DefFormB01.view.js" />
 
-//View 단 정의 영역 시작
+//App 단 정의 영역 시작
 function GRD_LOAD() {
     //데이터생성
     var pr = DBParams.create('sp_DefFormB01', 'GET_TABLE');
@@ -11,25 +11,33 @@ function GRD_LOAD() {
     var ds = DBconnect.runProcedure(pr);
     gridData = ds[0];
     grd_a.reconfigure(gridData);
-    grd_a.findPlugin('cellediting').disable();
-}
-grd_a.eButtonAddClick = function () {
-    grd_a.reconfigure(gridData);
-    gridData.add({ FUNC_IMP: '선택사항', CATEGORY: '기타', FUNC_NM: null, SUMMARY: null, S_DT: null, E_DT: null, E_USER: null });
-    grd_a.setFocus(grd_a.getTotalCount() - 1);
+    grd_a.findPlugin('cellediting').disable(); //그리드 칼럼 수정 불가
 }
 
+//그리드 칼럼 추가 
+grd_a.eButtonAddClick = function () {
+    grd_a.reconfigure(gridData);
+    gridData.add({
+        FUNC_IMP: '선택사항', CATEGORY: '기타', FUNC_NM: null, SUMMARY: null,
+        S_DT: null, E_DT: null, E_USER: null
+    }); //초기값 세팅 
+    grd_a.setFocus(grd_a.getTotalCount() - 1);  //마지막으로 추가된 칼럼에 포커스
+}
+
+//그리드 삭제 버튼 
 grd_a.eButtonDeleteClick = function () {
     if (grd_a.selModel.getSelection() == 0) {
-        //Ext.Msg.alert("경고 창", "클릭 해주세요.");
+        Ext.Msg.alert("경고 창", "삭제할 행이 없습니다.");
     } else {
         for (var i = 0; i < grd_a.getSelection().length; i++) {
             var tempNo = grd_a.getSelection()[i].data.FUNC_NUM;
             deleteArray.push(tempNo);
-        }
+        }   //delete 한 행의 FUNC_NUM를 deleteArray에 저장 후 sync시 db에서 삭제
         gridData.remove(grd_a.selModel.getSelection());
     }
 }
+
+//Sync 버튼 데이터 베이스에 저장
 btn_SAVE.eClick = function () {
     for (var i = 0; i < gridData.data.length; i++) {
         //튜블 수 loop
@@ -48,10 +56,12 @@ btn_SAVE.eClick = function () {
         pr.addParam('E_DT', gridData.data.items[i].data.E_DT);
         var ds = DBconnect.runProcedure(pr);
     }
-    deleteDB();
+    deleteDB(); //삭제 행이 있으면 삭제
     //
     GRD_LOAD();
 }
+
+//그리드 삭제 내용 db에서 삭제 deleteAraay
 function deleteDB() {
     var pr = DBParams.create('sp_DefFormB01', 'DELETE_TABLE');
     for (var i = 0; i < deleteArray.length; i++) {
@@ -60,7 +70,8 @@ function deleteDB() {
         var ds = DBconnect.runProcedure(pr);
     }
 }
-//grid 변환
+
+//grid 내용 필드로
 grd_a.eSelectionChange = function (record, rowIndex, paramId) {
     console.log(paramId, record.data, rowIndex);
     cbo_imp.setValue(record.data.FUNC_IMP);
@@ -71,7 +82,7 @@ grd_a.eSelectionChange = function (record, rowIndex, paramId) {
 
 }
 
-//grid update
+//등록 버튼시 필드 내용을 그리드로
 btn_update.eClick = function () {
     grd_a.selection.set('FUNC_IMP', cbo_imp.getValue());
     grd_a.selection.set('CATEGORY', cbo_category.getValue());
@@ -81,11 +92,20 @@ btn_update.eClick = function () {
 
     if (grd_a.selection.data.S_DT == null) {
         grd_a.selection.data.S_DT = dt_update.getYMD();
-    }
+    }   //S_DT는 없을때 한번만 입력 되게 E_DT는 매번 갱신
     grd_a.selection.data.E_DT = dt_update.getYMD();
     grd_a.reconfigure(gridData);
+
+    //필드 내용 clear
+    cbo_req.setValue(null);
+    cbo_fcagtegory.setValue(null);
+    txt_nm.setValue(null);
+    txta_summary.setValue(null);
+    cbo_NOTICE_USER_HH.setValue(null);
+    up_doc.setFileKey(null);
 }
 
+//조회 버튼 날짜로 색인
 btn_search.eClick = function () {
     if (dt_SDATE.getYMD() > dt_EDATE.getYMD()) { }
     else {
@@ -94,7 +114,6 @@ btn_search.eClick = function () {
         prS.addParam('E_SEARCH', dt_EDATE.getYMD());
         var dsS = DBconnect.runProcedure(prS);
         grd_a.reconfigure(dsS[0]);
-
 
     }
 }

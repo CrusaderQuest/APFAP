@@ -7,30 +7,23 @@
 var pnl_contents = ApPanel.create();
 var pnl_main = ApPanel.create();
 var pnl_grid = ApPanel.create();
+
 //data-type
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
-    data: [
+    data: [  //문서타입
         ['뭘 넣을까', 'important'],
         ['문서의 타입', 'type'],
         ['기타', 'ext']
     ]
 });
-var gridData;
-var searchData;
+var gridData;   //기본 gridstore
 var deleteArray = [];
 var up_key = 1;
+
 //db user
 var prU = DBParams.create('sp_DefFormC01', 'USER_INFO');
 var dsu = DBconnect.runProcedure(prU);
-
-//// tbl_main
-//var tbl_main = ApTable.create(2);
-//tbl_main.addCls('tableStyle_main');
-//tbl_main.updateLayout();
-//tbl_main.setTarget();
-//var btn_save = ApButton.create("변경상태 저장");
-//var lb_main = ApLabel.create("문서 관리 ---- 프로그램 제작에 필요한 여러 양식 및 문서를 관리합니다.");
 
 //search
 var tbl_H = ApTable.create(1);
@@ -42,7 +35,7 @@ var dt_EDATE = ApDate.create('');
 dt_EDATE.setWidth(110);
 var btn_search = ApButton.create('조회');
 tbl_H.cellShare(4);
-dt_EDATE.setToday();
+dt_EDATE.setToday();    //현재 날짜로
 
 //grid add column
 var grd_a = ApGrid.create(false, true);
@@ -51,6 +44,7 @@ grd_a.addColumn('text', '문서 명', 'DOC_NM', 200);
 grd_a.addColumn('date', '등록일', 'E_DT', 110);
 grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 110);
 
+//input Field
 var tbl_input = ApTable.create(1);
 tbl_input.setTarget();
 var cbo_category = ApCombo.create('문서 타입');
@@ -68,11 +62,13 @@ cbo_NOTICE_USER_HH.bindStore(dsu[0]);
 var dt_update = ApDate.create();
 dt_update.setToday();
 var btn_update = ApButton.create('등록');
-btn_update.setMargin('0 10 0 20')
+btn_update.setMargin('0 10 0 20')   //사이 간격 조절
 tbl_input.cellShare(3);
 
+//ApEvent
 ApEvent.onlaod = function () {
 
+    //set Panel & size
     viewPanel.full(pnl_contents);
     pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
     tbl_H.setHeight(30);
