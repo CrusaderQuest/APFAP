@@ -86,7 +86,7 @@ viewPanel.add({
                         {
                             xtype: 'tbspacer',
                             //flex: 1,
-                            height: 157
+                            height: 155
                         },
                         {
                             xtype: 'tbspacer',
