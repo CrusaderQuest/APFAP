@@ -53,10 +53,12 @@ ApEvent.onlaod = function () {
     viewPanel.full(pnl_content);
     
     pnl_content.divideV(pnl_graph, pnl_grd);
+    pnl_graph.setHeight(200);
 
     pnl_graph.divideH(pnl_partGraph, pnl_versionGraph);
 
     pnl_grd.divideV(pnl_topGrd, pnl_botGrd);
+    pnl_topGrd.setHeight(220);
 
     pnl_topGrd.divideV(tbl_topGrd, pnl_topGrdCon);
     tbl_topGrd.setHeight(30);
