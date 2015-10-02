@@ -161,3 +161,16 @@ cbo_formType.eChange = function (record) {
         });
     }
 }
+btn_context.eClick = function () {
+    Ext.MessageBox.confirm('', '프로젝트를 완료하시겠어요?', function (btn) {
+
+        if (btn == 'yes') {
+            var pr = DBParams.create('SP_COMMAIN', 'END_PROJECT');
+            var ds = DBconnect.runProcedure(pr);
+            location.replace('../Start/Project.html');
+        }
+        else {
+        }
+
+    });
+}

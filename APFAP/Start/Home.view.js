@@ -96,6 +96,20 @@ var cha_ING_H = Ext.create('Ext.chart.Chart', {
                 var sto_cha_ING_D = DBconnect.runProcedure(pr);
                 // get the correct serie
                 MAIN.items.items[0].items.items[2].items.items[0].removeAll();
+                var index = '';
+                if (obj.yField.substr(2, 3) == 'DEF' ){
+                    index = 0;
+                } else if (obj.yField.substr(2, 3) == 'ANL') {
+                    index = 1;
+                } else if (obj.yField.substr(2, 3) == 'DES') {
+                    index = 2;
+                } else if (obj.yField.substr(2, 3) == 'DEV') {
+                    index = 3;
+                } else if (obj.yField.substr(2, 3) == 'TES') {
+                    index = 4;
+                } else if (obj.yField.substr(2, 3) == 'EVL') {
+                    index = 5;
+                }
                 MAIN.items.items[0].items.items[2].items.items[0].add(
                     Ext.create('Ext.chart.Chart', {
                     width: '100%',
@@ -108,7 +122,7 @@ var cha_ING_H = Ext.create('Ext.chart.Chart', {
                     insetPadding: 15,
                     items: [{
                         type: 'text',
-                        text: '정의',
+                        text: obj.series.title[index],
                         font: '16px 나눔고딕',
                         width: 100,
                         height: 30,
@@ -238,8 +252,8 @@ var cha_ING_D = Ext.create('Ext.chart.Chart', {
     }]
 });
 var grd_NOTICE = ApGrid.create();
-grd_NOTICE.addColumn('text', '공지', 'NOTICE_TITLE', 400);
-grd_NOTICE.addColumn('text', '내용', 'NOTICE_CONTENT', 200);
+grd_NOTICE.addColumn('text', '공지', 'NOTICE_TITLE', 200);
+grd_NOTICE.addColumn('text', '내용', 'NOTICE_CONTENT', 500);
 grd_NOTICE.setLockColumns('NOTICE_TITLE', 'NOTICE_CONTENT');
 var panel4 = ApGrid.create();
 panel4.addColumn('text', 'text4', 'aa')
@@ -262,8 +276,8 @@ Ext.define('Main', {
 	    //region: 'center',
 	    stateful: false,
 	    columnWidths: [
-		    0.50,
-		    0.50
+		    0.40,
+		    0.60
 	    ],
         parts: {
             portlet: {
@@ -279,22 +293,17 @@ Ext.define('Main', {
             title: '단계별 진행상황',
             //font: '22px 나눔고딕',
             columnIndex: 0,
-            height: 350
+            height:500
         }, {
 			type: 'portlet',
 			title: '상세 진행상황',
 			columnIndex: 1,
-			height: 250
+			height: 194
 		}, {
 			type: 'portlet',
 			title: '공지사항',
-		    columnIndex: 0,
-		    height: 150
-		}, {
-			type: 'portlet',
-			title: '이번 주 할일',
-		    columnIndex: 1,
-		    height: 250
+			columnIndex: 1,
+			height: 300
 		}]
 	}]
 	
@@ -308,7 +317,6 @@ Ext.onReady(function () {
     });
     MAIN.items.items[0].items.items[0].items.items[0].add(cha_ING_H);
     MAIN.items.items[0].items.items[2].items.items[0].add(cha_ING_D);
-    MAIN.items.items[0].items.items[0].items.items[1].add(grd_NOTICE);
-    MAIN.items.items[0].items.items[2].items.items[1].add(panel4);
+    MAIN.items.items[0].items.items[2].items.items[1].add(grd_NOTICE);
     SYS_INIT();
 })
