@@ -18,7 +18,7 @@ function GRD_LOAD() {
 grd_a.eButtonAddClick = function () {
     grd_a.reconfigure(gridData);
     gridData.add({
-        FUNC_IMP: '선택사항', CATEGORY: '기타', FUNC_NM: null, SUMMARY: null,
+        FUNC_NUM: 0, FUNC_IMP: '선택사항', CATEGORY: '기타', FUNC_NM: null, SUMMARY: null,
         S_DT: null, E_DT: null, E_USER: GetSession().S_USER_NO
     }); //초기값 세팅 
     grd_a.setFocus(grd_a.getTotalCount() - 1);  //마지막으로 추가된 칼럼에 포커스
@@ -34,7 +34,9 @@ grd_a.eButtonDeleteClick = function () {
             deleteArray.push(tempNo);
         }   //delete 한 행의 FUNC_NUM를 deleteArray에 저장 후 sync시 db에서 삭제
         gridData.remove(grd_a.selModel.getSelection());
+        grd_a.setFocus(grd_a.getTotalCount() - 1);
     }
+
 }
 
 //Sync 버튼 데이터 베이스에 저장
@@ -97,12 +99,11 @@ btn_update.eClick = function () {
     grd_a.reconfigure(gridData);
 
     //필드 내용 clear
-    cbo_req.setValue(null);
-    cbo_fcagtegory.setValue(null);
+    cbo_imp.setValue(null);
+    cbo_category.setValue(null);
     txt_nm.setValue(null);
     txta_summary.setValue(null);
     cbo_NOTICE_USER_HH.setValue(null);
-    up_doc.setFileKey(null);
 }
 
 //조회 버튼 날짜로 색인

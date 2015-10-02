@@ -12,8 +12,10 @@ var pnl_grid = ApPanel.create();
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
     data: [  //문서타입
-        ['뭘 넣을까', 'important'],
-        ['문서의 타입', 'type'],
+        ['PPT 파일', 'ppt'],
+        ['한글 문서', 'hwp'],
+        ['PDA 파일', 'pda'],
+        ['사진 파일', 'image'],
         ['기타', 'ext']
     ]
 });
