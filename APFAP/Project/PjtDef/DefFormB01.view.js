@@ -10,7 +10,7 @@ var pnl_grid = ApPanel.create();
 //data-type
 var comboStore = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
-    data: [
+    data: [  //기능중요도
         ['필수사항', '필수사항'],
         ['선택사항', '선택사항'],
         ['요구사항', '요구사항']
@@ -18,15 +18,15 @@ var comboStore = Ext.create('Ext.data.ArrayStore', {
 });
 var comboStore2 = Ext.create('Ext.data.ArrayStore', {
     fields: ['SHOWVALUE', 'HIDEVALUE'],
-    data: [
+    data: [  //기능분류
         ['DB', 'DB'],
         ['UI', 'UI'],
         ['통신', '통신'],
         ['기타', '기타']
     ]
 });
-var gridData;
 
+var gridData;   //기본 gridstore
 var deleteArray = [];
 
 //db user
@@ -43,7 +43,7 @@ var dt_EDATE = ApDate.create('');
 dt_EDATE.setWidth(110);
 var btn_search = ApButton.create('조회');
 tbl_H.cellShare(4);
-dt_EDATE.setToday();
+dt_EDATE.setToday();    //현재 날짜로
 
 //grid add column
 var grd_a = ApGrid.create(false, true);
@@ -53,6 +53,7 @@ grd_a.addColumn('text', '기능 명', 'FUNC_NM', 200);
 grd_a.addColumn('date', '등록일', 'E_DT', 110);
 grd_a.addColumn('combo', '등록자', ['E_USER', dsu[0]], 80);
 
+//input Field
 var tbl_input = ApTable.create(1);
 tbl_input.setTarget();
 var cbo_imp = ApCombo.create('중요도');
@@ -72,12 +73,13 @@ cbo_NOTICE_USER_HH.bindStore(dsu[0]);
 var dt_update = ApDate.create();
 dt_update.setToday();
 var btn_update = ApButton.create('등록');
-btn_update.setMargin('0 10 0 20')
+btn_update.setMargin('0 10 0 20')   //사이 간격 조절
 tbl_input.cellShare(3);
 
+//ApEvent
 ApEvent.onlaod = function () {
 
-
+    //set Panel & size
     viewPanel.full(pnl_contents);
     pnl_contents.divideV(tbl_H, pnl_grid, tbl_H);
     tbl_H.setHeight(30);

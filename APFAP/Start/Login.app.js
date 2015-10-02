@@ -41,7 +41,14 @@ btn_JOIN_J.eClick = function () {
     }
     TRY_JOIN(txt_USERID_J.getValue(), txt_USERPW_J.getValue(), txt_EMAIL_J.getValue())
 }
-
+txt_USERPW_L.eKeyDown = function (e) {
+    if(e.keyCode == 13)
+    btn_LOGIN_L.eClick();
+}
+txt_USERPW_J.eKeyDown = function (e) {
+    if (e.keyCode == 13)
+    btn_JOIN_J.eClick();
+}
 function TRY_LOGIN(userid, userpw) {
     Ext.Ajax.request({
         async: false,

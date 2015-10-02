@@ -225,6 +225,7 @@
     <Content Include="Resource\Scripts\noncomponent-컴포넌트 외 모듈.css" />
     <Content Include="Resource\Scripts\noncomponent.js" />
     <Content Include="Resource\Scripts\options-toolbar.js" />
+    <Content Include="Resource\Themes\document.png" />
     <Content Include="Resource\Themes\Save.ico" />
     <Content Include="Resource\Themes\ApStyle.css" />
     <Content Include="Resource\Themes\calendar.css" />
