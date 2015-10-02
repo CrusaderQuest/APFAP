@@ -101,7 +101,7 @@ function dbSave() {
             pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
             pr.addParam('D_DEV_NO', selectedRecords[i].get('D_DEV_NO'));
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
-            pr.addParam('START_DT', ApFn.YMD(selectedRecords[i].get('START_DT')));
+            pr.addParam('START_DT', ApFn.setYMD(selectedRecords[i].get('START_DT')));
             pr.addParam('DEV_VALUE', convertValue(selectedRecords[i].get('DEV_VALUE')));
             pr.addParam('TEST_VALUE', convertValue(selectedRecords[i].get('TEST_VALUE')));
             pr.addParam('DEADLINE', ApFn.setYMD(selectedRecords[i].get('DEADLINE')));
