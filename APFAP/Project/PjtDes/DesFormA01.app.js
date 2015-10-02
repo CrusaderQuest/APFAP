@@ -5,20 +5,22 @@
 
 //App 단 정의 영역 시작
 
-//btn_insert.eClick = function () {
-//    Ext.Msg.alert("창 이름", "경고 내용");
-//}
-
-//btn_delete.eClick = function () {
-//    Ext.Msg.alert("창 이름", "경고 내용");
-//}
 function getTable() {
     var prm = DBParams.create('sp_DesFormA01', 'GET_TABLE');
     var dbc = DBconnect.runProcedure(prm);
     dbc_save = dbc[0];
-    prm.addParam('E_DT', ApFn.setYMD(dbc_save.data.items[0].data.E_DT));
     grd.reconfigure(dbc_save);
 }
+function get_Init_Table() {
+    var pr = DBParams.create('sp_DesFormA01', 'GET_TABLE');
+    var ds = DBconnect.runProcedure(pr);
+    if (ds[0].data.length == 0)
+    {
+        pr = DBParams.create('sp_DesFormA01', 'INSERT_TABLE');
+        ds = DBconnect.runProcedure(pr);
+    }
+}
+
 btn_SAVE.eClick = function () {
     var prm = DBParams.create('sp_DesFormA01', 'UPDATE_TABLE');
     dbc_save.data.items[0].data.UP_KEY = upload.getFileKey();
