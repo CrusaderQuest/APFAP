@@ -28,6 +28,7 @@ var comboStore2 = Ext.create('Ext.data.ArrayStore', {
 
 var gridData;   //기본 gridstore
 var deleteArray = [];
+var Dindex; //포커스에 이용
 
 //db user
 var prU = DBParams.create('sp_DefFormB01', 'USER_INFO');

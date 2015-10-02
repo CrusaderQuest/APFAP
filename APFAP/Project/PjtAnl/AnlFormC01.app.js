@@ -34,6 +34,7 @@ grd_a.eButtonDeleteClick = function () {
             deleteArray.push(tempNo);
         }
         gridData.remove(grd_a.selModel.getSelection());
+        grd_a.setFocus(Dindex - 1);
     }
 }
 

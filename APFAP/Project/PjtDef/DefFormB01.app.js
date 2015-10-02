@@ -34,7 +34,7 @@ grd_a.eButtonDeleteClick = function () {
             deleteArray.push(tempNo);
         }   //delete 한 행의 FUNC_NUM를 deleteArray에 저장 후 sync시 db에서 삭제
         gridData.remove(grd_a.selModel.getSelection());
-        grd_a.setFocus(grd_a.getTotalCount() - 1);
+        grd_a.setFocus(Dindex - 1);
     }
 
 }
