@@ -1264,13 +1264,15 @@ ApCombo.prototype.setIndex = function (index) {
     var value = this.getStore().data.items[index].data.SHOWVALUE;
     this.superclass.setValue.call(this, value);
 }
-//setValue hidevalue -> showvalue()
+
 ApCombo.prototype.setValue = function (value) {
+    this.superclass.setValue.call(this, value);
+};//setValue hidevalue -> showvalue()
+ApCombo.prototype.setValueHS = function (value) {
     for (var i = 0; i < this.store.totalCount; i++) {
         if (this.store.data.items[i].data.HIDEVALUE == value) {
             value = this.store.data.items[i].data.SHOWVALUE
             this.superclass.setValue.call(this, value);
-            return;
         }
     }
 };
