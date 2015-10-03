@@ -39,14 +39,17 @@ tbl_login.setTarget();
 //tbl_login.setStyle('padding-top', '20px');
 tbl_login.setStyle('padding-left', '10px');
 var btn_messenger = ApButton.create('초대하기');
-btn_messenger.setWidth(130);
+btn_messenger.setWidth(150);
 var btn_context = ApButton.create('완료하기');
 if (ApFn.isMaster() != true) {
     btn_context.setHidden(true);
 }
-btn_context.setWidth(130);
+btn_context.setWidth(150);
 var cbo_formType = ApCombo.create('', 'test', 0);
-cbo_formType.setWidth(130);
+cbo_formType.setWidth(100);
+var btn_context = ApButton.create('퇴근');
+btn_context.setWidth(45);
+tbl_login.cellShare(2);
 var pnl_progress = ApPanel.create();
 pnl_progress.setLayout('vbox');
 var progress = Ext.create('Ext.ProgressBar', {
@@ -68,7 +71,7 @@ if (leftDt < 0) {
     leftDt = Math.floor(leftDt / (1000 * 60 * 60 * 24));
 }
 var per = thenD.getTime() / nowD.getTime()
-var d_day = ApLabel.create("프로젝트를 시작한지" + doDt + " 일 째, 남은 기간 : D - " + leftDt + "일");
+var d_day = ApLabel.create("프로젝트를 시작한지 " + doDt + " 일 째, 남은 기간 : D - " + leftDt + "일");
 d_day.setStyle('padding-top', '10px');
 var lbl_login = ApLabel.create(ds[1].getAt(0).data.USER_NM + ' 님 환영합니다.');
 lbl_login.setStyle('padding-top', '5px');
@@ -180,7 +183,7 @@ ApEvent.onlaod = function () {
     headerPanelDetail.divideH(tbl_header, headerPanelSub, headerPanelSub);
     tbl_header.setWidth(600);
     headerPanelSub.divideH(pnl_progress, tbl_login, tbl_login);
-    tbl_login.setWidth(165);
+    tbl_login.setWidth(180);
     mainPanel.divideH(menu, tab_main, menu);
     tab_main.addTab('메인').full({
         html: '<iframe src="Home.html?" width="100%" height="100%" frameborder="0"></iframe>'

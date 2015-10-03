@@ -220,8 +220,6 @@
     <Content Include="Resource\Scripts\component-컴포넌트 모듈%28화면에 보여지는 것%29.css" />
     <Content Include="Resource\Scripts\component.js" />
     <Content Include="Resource\Scripts\ext-theme-crisp-debug.js" />
-    <Content Include="Resource\Scripts\jquery-1.11.3.min.js" />
-    <Content Include="Resource\Scripts\naverLogin_implicit-1.0.1.js" />
     <Content Include="Resource\Scripts\noncomponent-컴포넌트 외 모듈.css" />
     <Content Include="Resource\Scripts\noncomponent.js" />
     <Content Include="Resource\Scripts\options-toolbar.js" />
@@ -738,6 +736,7 @@
     <Content Include="ServerCore\getSession.aspx" />
     <Content Include="ServerCore\Join.aspx" />
     <Content Include="ServerCore\Login.aspx" />
+    <Content Include="ServerCore\Logout.aspx" />
     <Content Include="ServerCore\setSession.aspx" />
     <Content Include="Start\Home.app.js" />
     <Content Include="Start\Home.html" />
@@ -814,6 +813,12 @@
     </Compile>
     <Compile Include="ServerCore\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\Logout.aspx.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\Logout.aspx.designer.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
     </Compile>
     <Compile Include="ServerCore\setSession.aspx.cs">
       <DependentUpon>setSession.aspx</DependentUpon>

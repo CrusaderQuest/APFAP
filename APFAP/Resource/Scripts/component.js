@@ -630,13 +630,14 @@ Ext.define('ApGrid', {
     columnsMap: []
 })
 //addColumn 칼럼 추가
+
 ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) {
     var columnType = null;
     if (width == undefined) {
         width = 200;
-    }   //기본 200
-    switch (type) { //text, num, date, check, combo,hide
-        case 'text':    //문자
+    }
+    switch (type) {
+        case 'text':
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 xtype: 'textcolumn',
@@ -650,7 +651,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 }
             });
             break;
-        case 'num':     //숫자 0~100000
+        case 'num':
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 xtype: 'numbercolumn',
@@ -667,7 +668,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 }
             });
             break;
-        case 'date':    //날짜 포맷은 Y-m-d
+        case 'date':
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 xtype: 'datecolumn',
@@ -680,27 +681,24 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 editor: {
                     xtype: 'datefield',
                     format: 'Y-m-d',
-                    submitFormat: 'c' 
+                    submitFormat: 'c'
                 }
             });
             break;
-        case 'check':   //체크박스
+        case 'check':
             columnType = {
                 text: columnText,
                 xtype: 'checkcolumn',
                 width: width,
                 dataIndex: paramId,
-                align: 'center',
-                //trueText: 'true',
-                //falseText: 'false',
-                align: 'center',
-                editor: {
-                    xtype: 'checkfield',
-                    //selectOnFocus: true,
-                }
+                align: 'center'
+                //editor: {
+                //    xtype: 'checkfield',
+                //    //selectOnFocus: true,
+                //}
             };
             break;
-        case 'combo':   //콤보박스
+        case 'combo':
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 width: width,
@@ -710,7 +708,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 style: 'text-align:center',
                 renderer: function (value) {
                     //console.log(0);
-                    try {   //set items 선택할 수 있는 항목들 생성 
+                    try {
                         for (var i = 0; i < this.columnsMap.length; i++) {
                             if (this.columnsMap[i].dataIndex == paramId[0]) {
 
@@ -735,40 +733,41 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                     //    }
                     //}
                     //return value;
-                   
+
                 },
                 //store: comboStore,
                 //renderer: Ext.util.Format.usMoney,
-                editor: {   //showvalue 와 hidvalue
+                editor: {
                     xtype: 'combobox',
                     displayField: 'SHOWVALUE',
                     valueField: 'HIDEVALUE',
-                    store: paramId[1]
+                    store: paramId[1],
                     //listeners: {
                     //    change: function (editor, e, eOpts) {
                     //        console.log('sdf');
                     //    }
                     //}
-                    //renderer: function (value) {
-                    //    if (value != 0 && value != "") {
-                    //        if (paramId[1].findRecord("HIDEVALUE", value) != null)
-                    //            return paramId[1].findRecord("HIDEVALUE", value).get('name');
-                    //        else
-                    //            return value;
-                    //    }
-                    //    else
-                    //        return "";  // display nothing if value is empty
-                    //}
+                    renderer: function (value) {
+                        if (value != 0 && value != "") {
+                            if (paramId[1].findRecord("HIDEVALUE", value) != null)
+                                return paramId[1].findRecord("HIDEVALUE", value).get('name');
+                            else
+                                return value;
+                        }
+                        else
+                            return "";  // display nothing if value is empty
+                    }
                 }
             });
             break;
-        case 'hide':    //숨은 필드
+            //하이드컬럼 테스트 필요
+        case 'hide':
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 width: 0,
                 dataIndex: paramId
             });
-            columnType.isVisible(false);    //true시 visible
+            columnType.isVisible(false);
             break;
     }
     this.columnsMap.push(columnType);
@@ -881,13 +880,12 @@ ApGrid.prototype.eButtonDeleteClick = function () {
 }
 
 var ApGrid = {
-    //ApGrid.create()
     create: function (check, type) {
         //var selModel = '';
         var toolbar = [];
         if (type == undefined || false) {
             toolbar = [];
-        } else if (type == true) {  //grid의 추가 버튼,삭제 버튼를 내장
+        } else if (type == true) {
             toolbar = [{
                 xtype: 'toolbar',
                 items: [{
@@ -910,7 +908,7 @@ var ApGrid = {
                     }
                 }]
             }]
-        } else if(type == 'D'){
+        } else if (type == 'D') {
             toolbar = [{
                 xtype: 'toolbar',
                 items: [{
@@ -927,14 +925,13 @@ var ApGrid = {
             }]
         }
         var _ApGrid = Ext.create('ApGrid', {
-            //ApGrid.create()
             //store: store,
             width: 'fit',
             title: '',
-            checkedGrid : check,
+            checkedGrid: check,
             //header: true,
             lockColumns: [],
-            deleted:[],
+            deleted: [],
             dockedItems: toolbar,
             border: 1,
             //selModel: selModel,
@@ -954,7 +951,7 @@ var ApGrid = {
                     dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(colIndex).dataIndex;
 
                     this.eCellDbClick(record, grd.selModel.getCurrentPosition().rowIdx, dataIndex);
-                   
+
                 },
                 cellkeydown: function (grd, row, colIndex, z, a, b, event) {
                     var code = event.getCharCode();
@@ -988,7 +985,7 @@ var ApGrid = {
                         }
                     }
                 },
-                beforeedit : function(editor, e ,eOpts){
+                beforeedit: function (editor, e, eOpts) {
                     var dataIndex = _ApGrid.getView().headerCt.getHeaderAtIndex(e.colIdx).dataIndex;
                     if (this.lockColumns.indexOf(dataIndex) != -1) {
                         return false;
@@ -1004,8 +1001,10 @@ var ApGrid = {
                         if (record.dirty) {
                             //레코드가 더러울때
                             record.set('AP_STATE', true);
+                            //record.commit();
                         } else {
                             record.set('AP_STATE', false);
+                            record.commit();
                         }
                         delete record.modified['AP_STATE'];
                         _ApGrid.view.refresh();
@@ -1022,7 +1021,13 @@ var ApGrid = {
             if (_ApGrid.checkedGrid) {
                 //_ApGrid.eUpdate(record, e.rowIdx, dataIndex);
                 try {
-                    delete record.modified['AP_STATE'];
+                    if (record.modified['AP_STATE'] == undefined) {
+
+                    } else {
+                        //delete record.modified['AP_STATE'];
+                        record.dirty = false;
+                    }
+
                 } catch (e) {
 
                 }
@@ -1033,16 +1038,17 @@ var ApGrid = {
                         i++;
                     }
                     if (i == 1) {
-                        if (record.previousValues.APSTATE) {
-                            record.set('AP_STATE', false);
-                        }
-                        record.commit();
+                        //if (record.previousValues.APSTATE == undefined) {
+                        //    record.set('AP_STATE', false);
+                        //} else {
+                        record.set('AP_STATE', true);
+                        //}
                     } else {
 
                         record.set('AP_STATE', true);
                     }
                 } else {
-                    record.set('AP_STATE', false);
+                    //record.set('AP_STATE', false);
                 }
                 _ApGrid.view.refresh();
             }
@@ -1067,7 +1073,6 @@ var ApGrid = {
         return _ApGrid;
     }
 }
-
 
 
 ///////////////---------------일반 컴포넌트---------------////////////////////////////

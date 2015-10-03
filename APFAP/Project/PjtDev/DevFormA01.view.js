@@ -67,6 +67,9 @@ var pnl_tabView = ApPanel.create();     //각 탭의 컨텐츠.
 var pnl_mainTabView = ApPanel.create(); //메인 뷰
 var pnl_mainTabChart = ApPanel.create();
 var pnl_mainUserChart = ApPanel.create();
+
+var lbl_mainTabChart = ApLabel.create('카테고리별 그래프');
+var lbl_mainUserChart = ApLabel.create('개발자별 그래프');
 //그래프 전체, 담당자, 각 탭 (각 컴포넌트 main 붙여서 명명.)
 
 //서브 탭의 컴포넌트
@@ -113,6 +116,8 @@ ApEvent.onlaod = function () {
 
     //메인 뷰
     pnl_mainTabView.divideV(pnl_mainTabChart, pnl_mainUserChart);
+    pnl_mainTabChart.add(lbl_mainTabChart);
+    pnl_mainUserChart.add(lbl_mainUserChart);
     pnl_tabView.full(pnl_mainTabView);
 
     //서브 뷰
@@ -138,8 +143,8 @@ ApEvent.onlaod = function () {
     mainTabChart = initChart(mainTabChartStore);
     mainUserChart = initChart(mainUserChartStore);
 
-    pnl_mainTabChart.full(mainTabChart);
-    pnl_mainUserChart.full(mainUserChart);
+    pnl_mainTabChart.add(mainTabChart);
+    pnl_mainUserChart.add(mainUserChart);
     pnl_tabGraph.full(tabChart);
 
     drawMainChart();
