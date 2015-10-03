@@ -3,19 +3,21 @@
 
 //Global function
 
+//set, get 관련된 추가 함수들 
 var ApFn = {
+    //ApFn.function
     toDbTyoe: function (type, value) {
-        if (type == 'date') {
+        if (type == 'date') {   //date 
             return value.substr(0, 4) + value.substr(5, 2) + value.substr(8, 2);
         } else if (type == 'bool') {
             return value == true ? 'T' : 'F';
         }
     },
-    setImportColor: function (text) {
+    setImportColor: function (text) {   //red로 강조
         var tag = "<font color='red'>" + text + '</font>';
         return tag
     },
-    getUser: function () {
+    getUser: function () {  //로그인 한 User get ex) U0000001
         if (GetSession() == undefined) {
             return 'X';
         } else {
@@ -23,7 +25,7 @@ var ApFn = {
             return value;
         }
     },
-    getProjectKey: function () {
+    getProjectKey: function () {    //활성화 되어 있는 프로젝트키 get
         if (GetSession() == undefined) {
             return 'X';
         } else {
@@ -32,7 +34,7 @@ var ApFn = {
         }
         //return 'P0000000001';
     },
-    isMaster: function () {
+    isMaster: function () { //관리자 권한을 가졌는지 확인
         if (GetSession() == undefined) {
             return 'X';
         } else {
@@ -44,7 +46,7 @@ var ApFn = {
             }
         }
     },
-    setYMD: function (value) {
+    setYMD: function (value) {  //date타입의 변환
         value = value.substr(0, 4) + value.substr(5, 2) + value.substr(8, 2);
         return value;
     }
@@ -61,12 +63,15 @@ var ApFn = {
 //}, function () {
 //    alert('Student object created');
 //});
+
+//db에 넘길 파라미터
 Ext.define('DBParams', {
     procedureName: '',
     procedureSection: '',
     params: ''
 });
 
+//파라미터 추가 
 DBParams.prototype.addParam = function (paramName, paramValue) {
     if (this.params == '') {
         this.params = paramName + '※' + paramValue;
@@ -76,11 +81,13 @@ DBParams.prototype.addParam = function (paramName, paramValue) {
 }
 DBParams.prototype.setName = function (procedureName) {
     this.procedureName = procedureName;
-}
+}//setName
 DBParams.prototype.setSection = function (Section) {
     this.setSection = Section;
-}
+}//setSection
+
 var DBParams = {
+    //DBParmas.create()
     create: function (procedureName, procedureSection) {
         var _DBParams = Ext.create('DBParams', {
         });
@@ -95,6 +102,7 @@ var DBconnect = {
     runProcedure: function (dbParams) {
         var procedureName = dbParams.procedureName;
         var procedureSection = dbParams.procedureSection;
+        //이용자가 누구인지, 어떤 프로젝트 인지에 따라서
         dbParams.addParam('PROJECT_KEY', ApFn.getProjectKey());
         dbParams.addParam('E_USER', ApFn.getUser());
         var params = dbParams.params;
@@ -212,9 +220,11 @@ function GetSession() {
 
 //Ready function start!
 
+//viewPanel 위에 contents들이 존재
 var viewPanel = ApPanel.create('컨텐츠전체영역');
 var viewPort = '';
 
+//contents 각각 시작시 로드
 ApEvent = {
     onlaod: function () {
 
@@ -228,13 +238,14 @@ menuFrame.addCls('tableStyle_main');
 menuFrame.updateLayout();
 menuFrame.setTarget();
 
+//입력 내용 db에 저장 버튼
 var btn_SAVE = ApButton.create('Sync');
 btn_SAVE.setIcon('../../Resource/Themes/Save_1.png');
 btn_SAVE.setIconCls('btn_save');
 btn_SAVE.setWidth(70);
 
 var txt = '로드실패';
-try {
+try {   
     txt = parent.tab_main.getActiveTab().items.items[0].explane;
 } catch (e) {
 
@@ -242,7 +253,9 @@ try {
 var lbl_DISCRIPT = ApLabel.create(txt);
 
 var pr = DBParams.create('sp_COMMAIN', 'SEARCH_PROG');
-pr.addParam('CONTENT_CD', document.location.href.substr(document.location.href.indexOf('Project') + 15, 3).toUpperCase() + document.location.href.substr(document.location.href.indexOf('Project') + 22, 1).toUpperCase());
+pr.addParam('CONTENT_CD', document.location.href.substr
+    (document.location.href.indexOf('Project') + 15, 3).toUpperCase() +
+    document.location.href.substr(document.location.href.indexOf('Project') + 22, 1).toUpperCase());
 var ds = DBconnect.runProcedure(pr);
 var num_RATE = ApNum.create('진행율');
 num_RATE.setMaxValue(100);

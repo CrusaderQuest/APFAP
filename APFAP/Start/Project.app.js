@@ -36,10 +36,11 @@ function SYS_INIT() {
 //이미지처리
 upl_TEAMIMG.eUpload = function (fileKey) {
     img_TEAMIMG.setFileKey(fileKey);
-}
+}   //업로드 버튼
 upl_TEAMIMG.eClear = function () {
     img_TEAMIMG.setFileKey('');
-}
+}   //삭제 버튼
+
 btn_CREATE.eClick = function () {
     //빈값 체크
     if (txt_TITLE.getValue() == '') {
@@ -96,6 +97,7 @@ btn_CREATE.eClick = function () {
     var ds = DBconnect.runProcedure(pr);
 
     ApMsg.warning('멋진 프로젝트가 되길 바랍니다!', function () {
+        //생성후 값 clear
         txt_TITLE.setValue('');
         txa_SUBTITLE.setValue('');
         dt_END.setToday();
@@ -107,13 +109,14 @@ btn_CREATE.eClick = function () {
         SYS_INIT();
     })
 }
+//프로젝트 참여하기 
 grd_SELECT.eCellDbClick = function (record, rowIndex, paramId) {
     _setSession(record.data.PROJECT_KEY, 'X', true);
 }
 grd_JOIN.eCellDbClick = function (record, rowindex, paramId) {
     Ext.MessageBox.confirm('♧프로젝트 참가 알림♧', '"' + record.data.TITLE + '"프로젝트에 참가 하실려구요?', function (btn) {
 
-        if (btn == 'yes') {
+        if (btn == 'yes') { //유저와 프로젝트 매칭
             var pr = DBParams.create('sp_COMPROJECT', 'JOIN_PROJECT');
             pr.addParam('P_KEY', record.data.PROJECT_KEY);
             var ds = DBconnect.runProcedure(pr);
@@ -127,13 +130,9 @@ grd_JOIN.eCellDbClick = function (record, rowindex, paramId) {
 grd_GOING.eCellDbClick = function (record, rowIndex, paramId) {
     _setSession(record.data.PROJECT_KEY, record.data.MASTER_TF, false);
 }
-
 grd_CLOSED.eCellDbClick = function (record, rowIndex, paramId) {
     _setSession(record.data.PROJECT_KEY, record.data.MASTER_TF, true);
 }
-
-
-
 
 function _setSession(projectkey, master_tf, readOnly) {
     Ext.Ajax.request({
