@@ -5,6 +5,7 @@
 
 //로그인클릭
 btn_LOGIN_L.eClick = function () {
+    //입력 안된 부분 확인
     if (txt_USERID_L.getValue() == '') {
         ApMsg.warning('아이디를 입력해 주세요.', function () {
             txt_USERID_L.focus();
@@ -21,6 +22,7 @@ btn_LOGIN_L.eClick = function () {
 }
 //회원가입 클릭
 btn_JOIN_J.eClick = function () {
+    //입력 안된 부분 확인
     if (txt_USERID_J.getValue() == '') {
         ApMsg.warning('아이디를 입력해 주세요.', function () {
             txt_USERID_J.focus();
@@ -41,15 +43,17 @@ btn_JOIN_J.eClick = function () {
     }
     TRY_JOIN(txt_USERID_J.getValue(), txt_USERPW_J.getValue(), txt_EMAIL_J.getValue())
 }
+//엔터키 입력 시 로그인
 txt_USERPW_L.eKeyDown = function (e) {
     if(e.keyCode == 13)
     btn_LOGIN_L.eClick();
 }
+//엔터키 입력 시 회원가입
 txt_USERPW_J.eKeyDown = function (e) {
     if (e.keyCode == 13)
     btn_JOIN_J.eClick();
 }
-function TRY_LOGIN(userid, userpw) {
+function TRY_LOGIN(userid, userpw) {    //아이디, 패스워드 로그인
     Ext.Ajax.request({
         async: false,
         url: '../ServerCore/Login.aspx',
@@ -64,15 +68,16 @@ function TRY_LOGIN(userid, userpw) {
         success: function (response, eOpt) {
             console.log(response)
             var resText = response.responseText;
+            //id 혹은 패스워드 틀리면
             if (resText == 'NID') {
                 ApMsg.warning('아이디가 존재하지 않네요! 다시한번 확인해 주세요', function(){
-                    txt_USERPW_L.setValue('');
+                    txt_USERPW_L.setValue('');//clear
                     txt_USERID_L.focus();
                 });
                 return;
             } else if (resText == 'NPW') {
                 ApMsg.warning('비밀번호가 정확하지 않네요! 다시한번 확인해 주세요', function () {
-                    txt_USERPW_L.setValue('');
+                    txt_USERPW_L.setValue('');//clear
                     txt_USERPW_L.focus();
                 });
                 return;
@@ -86,7 +91,7 @@ function TRY_LOGIN(userid, userpw) {
     });
 }
 
-function TRY_JOIN(userid, userpw, email) {
+function TRY_JOIN(userid, userpw, email) {  //회원가입
     Ext.Ajax.request({
         async: false,
         url: '../ServerCore/Join.aspx',
@@ -102,7 +107,8 @@ function TRY_JOIN(userid, userpw, email) {
         success: function (response, eOpt) {
             console.log(response)
             var resText = response.responseText;
-            if (resText == 'EID') {
+            //사용중인 아이디,이메일인지 확인
+            if (resText == 'EID') { 
                 ApMsg.warning('멋진 아이디인, "' + txt_USERID_J.getValue() + '"는 이미 다른 분이 사용중입니다..-_-', function () {
                     txt_USERID_J.setValue('');
                     txt_USERID_J.focus();

@@ -7,10 +7,10 @@ var loginPanel = Ext.create('Ext.panel.Panel', {
     width: 320,
     title: '어서오세요. 회원님'
 })
-
+//login 
 var loginTable = ApTable.create(1);
 loginTable.setTarget();
-
+//input area
 var txt_USERID_L = ApText.create('','a',0);
 txt_USERID_L.setWidth(300);
 txt_USERID_L.emptyText = '아이디를 입력해주세요.';
@@ -19,10 +19,12 @@ var txt_USERPW_L = ApText.create('','b',0);
 txt_USERPW_L.setWidth(195);
 txt_USERPW_L.emptyText = '비밀번호';
 txt_USERPW_L.applyEmptyText();
+//login btn
 var btn_LOGIN_L = ApButton.create('들어가기','c');
 btn_LOGIN_L.setMargin('0 0 0 15')
 loginTable.cellShare(2);
 
+//회원 가입
 var joinPanel = Ext.create('Ext.panel.Panel', {
     //flex: 3,
     height : 250,
@@ -32,7 +34,7 @@ var joinPanel = Ext.create('Ext.panel.Panel', {
 
 var joinTable = ApTable.create(1);
 joinTable.setTarget();
-
+//input area
 var txt_USERID_J = ApText.create('', 'a', 0);
 txt_USERID_J.setWidth(300);
 txt_USERID_J.emptyText = '아이디';
@@ -45,10 +47,12 @@ var txt_USERPW_J = ApText.create('', 'b', 0);
 txt_USERPW_J.setWidth(195);
 txt_USERPW_J.emptyText = '비밀번호';
 txt_USERPW_J.applyEmptyText();
+//가입 버튼
 var btn_JOIN_J = ApButton.create('가입하기', 'c');
 btn_JOIN_J.setMargin('0 0 0 15')
 joinTable.cellShare(2);
 
+//메인화면 이미지 
 viewPanel.add({
     xtype: 'panel',
     header: false,
