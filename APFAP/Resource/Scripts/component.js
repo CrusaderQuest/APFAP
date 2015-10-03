@@ -101,6 +101,7 @@ function getNode(text, leaf, expanded, check) {
 }
 //메세지 처리
 var ApMsg = {
+    //경고창
     warning : function (text, callback) {
         Ext.Msg.show({
         message: text,
@@ -121,19 +122,18 @@ Ext.define('ApTreeStore', {
         children: []
     }
 });
-
+//트리에 노드 추가
 ApTreeStore.prototype.addNode = function (parentNode, node) {
     if (parentNode == undefined || parentNode == '') {
         parentNode = this.getRootNode();
     };
     parentNode.appendChild(node);
 };
-
-
+//트리에 노드 중간 삽입
 ApTreeStore.prototype.insertNode = function (parentNode, index, node) {
     parentNode.insertChild(index, node);
 };
-
+//트리에 노드 삭제
 ApTreeStore.prototype.removeNode = function (node) {
     if (node == "") {
         return;
@@ -147,13 +147,13 @@ ApTreeStore.prototype.removeNode = function (node) {
 //    //node.set('text', 'help') store 데이터 변경
 //    node.set(field, data);
 //};
-
+//노드 위치 변환 
 ApTreeStore.prototype.replaceNode = function (newChild, oldChild, mode) {
 
     var parentNode = oldChild.parentNode
     if (oldChild.data.index == -1) {
         return;
-    };
+    };//straight 모드와 back 모드 지원
     if (mode == 'straight') {
         oldChild = parentNode.replaceChild(newChild, oldChild);
         parentNode.insertChild(newChild.data.index + 1, oldChild);
@@ -163,7 +163,7 @@ ApTreeStore.prototype.replaceNode = function (newChild, oldChild, mode) {
     };
 };
 
-//트리 스토어
+//트리 스토어 component
 var ApTreeStore = {
     create: function (rootText) {
         if (rootText == undefined)
@@ -174,11 +174,12 @@ var ApTreeStore = {
         return store;
     }
 };
-//트리 모듈
+//트리 component
 Ext.define('ApTree', {
     extend: 'Ext.tree.Panel',
     componentTree: 'tree'
 });
+//event
 ApTree.prototype.eContextMenu = function (x, y, width, height) { };
 ApTree.prototype.eEnter = function (s, r) { };
 ApTree.prototype.eClick = function (node) { };
@@ -186,6 +187,8 @@ ApTree.prototype.eSelectionChange = function (node) { };
 ApTree.prototype.eDbclick = function (node) { };
 ApTree.prototype.eExpand = function (s) { };
 ApTree.prototype.eCollapse = function (s) { };
+
+//포커스 주기
 ApTree.prototype.setFocus = function (key, value) {
     var index = this.view.getStore().findBy(function (re, id) {
         if (re.data.value.getValue(key) == value) {
@@ -195,14 +198,16 @@ ApTree.prototype.setFocus = function (key, value) {
     if (index == -1) index = 0;
     this.getSelectionModel().select(index);//포커스이동
 };
+//index 얻음 
 ApTree.prototype.getIndex = function (key, value) {
     var index = this.view.getStore().findBy(function (re, id) {
         if (re.raw.value.getValue(key) == value) {
-            return true;
+            return true;    //값이 있으면 true
         }
     });
     return index;
 };
+//트리에 Node 추가
 ApTree.prototype.addNode = function (node, parentNode) {
     try {
 
@@ -267,6 +272,7 @@ ApTree.prototype.addNode = function (node, parentNode) {
     }
 };
 
+//트리 노드 삭제
 ApTree.prototype.removeNode = function (node) {
     if (this.getRootNode().childNodes.length > 0) {
 
@@ -276,7 +282,7 @@ ApTree.prototype.removeNode = function (node) {
         };
         if (this.getSelectionModel().selectPrevious(this.getSelectionModel().lastSelected)) {
             this.store.removeNode(node);
-        } else {
+        } else {    //선택 노드가 마지막인지 확인해서 삭제 
             this.getSelectionModel().selectNext();
             this.store.removeNode(node);
         };
@@ -290,15 +296,16 @@ ApTree.prototype.removeNode = function (node) {
     };
 };
 
+//노드에 할당
 ApTree.prototype.bindNode = function (node, depth, expended) {
-    var parentNode = this.getRootNode();
-    if (depth == 1) {
+    var parentNode = this.getRootNode();    //parent = root
+    if (depth == 1) {   //처음 할당시 (깊이가 1)
         parentNode.appendChild(node);
         if (undefined == this.getRootNode().childNodes[0]) {
             this.node[noedeIndex].leaf = true;
         };
 
-    } else {
+    } else {    //추가적으로 할당시
         var deepCount = depth - 1;
         for (var i = 0 ; i < deepCount ; i++) {
 
@@ -329,25 +336,26 @@ ApTree.prototype.getNode = function (key, value) {
     });
     parentNode.cascadeBy(function (childNode) {
         if (childNode.raw.value.keys == key && childNode.raw.value.values == value) {
-            return childNode;
+            return childNode;   //key 값고 value를 통해 색인 후 get
         };
     }, this);
 };
-
+//전체 삭제
 ApTree.prototype.clear = function () {
     this.getRootNode().removeAll();
     this.selected = '';
 };
+//노드 상승
 ApTree.prototype.upNode = function (node) {
     var index = node.data.index - 1;
-    if (index >= 0) {
+    if (index >= 0) {   //최상층은 안되므로
         var oldNode = node.parentNode.getChildAt(index);
         this.store.replaceNode(node, oldNode, 'straight');
     };
 };
-
+//노드 하강
 ApTree.prototype.downNode = function (node) {
-    var index = node.data.index + 1
+    var index = node.data.index + 1 //최하는 불가 
     if (index <= node.parentNode.childNodes.length - 1) {
         var oldNode = node.parentNode.getChildAt(index);
         this.store.replaceNode(node, oldNode, 'back');
@@ -362,6 +370,7 @@ ApTree.prototype.allMember = function () {
     return everyNodes;
 };
 var ApTree = {
+    //ApTree.create
     store: '',
     frame: false,
     create: function (title, store, editable, rootVisible) {
@@ -392,7 +401,7 @@ var ApTree = {
         } else {
             rootVisible = true;
         };
-
+        //child
         var _ApTree = Ext.create('ApTree', {
             title: title,
             store: ApTree.store,
@@ -405,7 +414,7 @@ var ApTree = {
             columns: editable,
             cls: ''
         });
-
+        //event
         _ApTree.on('afterrender', function (me, eOpts) {
             _ApTree.on('itemdblclick', function (s, r, a, b, e) {
                 _ApTree.selected = r;
@@ -502,7 +511,7 @@ var ApTab = {
     }
 };
 
-//패널
+//패널 component
 Ext.define('ApPanel', {
     extend: 'Ext.panel.Panel',
     dataType: 'panel',
@@ -511,6 +520,7 @@ Ext.define('ApPanel', {
     width: '100%',
     border: 1
 });
+//전체 match parents
 ApPanel.prototype.full = function (panel) {
     this.add(panel)
 };
@@ -532,7 +542,7 @@ ApPanel.prototype.divideH = function (panel1, panel2, panel) {
         panel1.setRegion('center');
     }
     this.add(panel1);
-    panel.width = '50%';
+    panel.width = '50%';    // 1:1 분할
     this.add(panel2);
 }
 /*
@@ -553,13 +563,14 @@ ApPanel.prototype.divideV = function (panel1, panel2, panel) {
         panel1.setRegion('center');
         panel2.setRegion('south');
     }
-    panel.height = '50%';
+    panel.height = '50%';   //1:1 분할 
 
     this.full(panel1);
     this.full(panel2);
 };
 
 var ApPanel = {
+    //ApPanel.create()
     create: function (title) {
         var _panel = Ext.create('ApPanel', {
             ComponentType: 'Panel',
@@ -573,11 +584,12 @@ var ApPanel = {
     }
 };
 
-//테이블
+//테이블 component
 Ext.define('ApTable', {
     extend: 'Ext.panel.Panel',
     ComponentType: 'table'
 });
+//테이블에 set 
 ApTable.prototype.setTarget = function () {
     _tempTableTarget = this;
 };
@@ -585,7 +597,7 @@ ApTable.prototype.setStyleSearch = function () {
     this.addCls('tableStyle_search');
     this.updateLayout();
 }
-ApTable.prototype.cellShare = function (count) {
+ApTable.prototype.cellShare = function (count) {    //해당 칸을 count 만큼 share
     for (var i = 1 ; i < count ; i++) {
         var _Shareitem = _tempTableTarget.items.items[_tempTableTarget.itemLength - count + 1].items.items[0];
         _tempTableTarget.items.items[_tempTableTarget.itemLength - count].add(_Shareitem);
@@ -596,6 +608,7 @@ ApTable.prototype.cellShare = function (count) {
     }
 };
 var ApTable = {
+    //ApTable.create()
     create: function (colSize) {
         var _ApTable = Ext.create('ApTable', {
             layout: {
@@ -610,19 +623,20 @@ var ApTable = {
     }
 }
 
-/* 그리드 컴포넌트 **********************************************************/
+/* 그리드 component **********************************************************/
 Ext.define('ApGrid', {
     extend: 'Ext.grid.Panel',
     ComponentType: 'grid',
     columnsMap: []
 })
+//addColumn 칼럼 추가
 ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) {
     var columnType = null;
     if (width == undefined) {
         width = 200;
-    }
-    switch (type) {
-        case 'text':
+    }   //기본 200
+    switch (type) { //text, num, date, check, combo,hide
+        case 'text':    //문자
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 xtype: 'textcolumn',
@@ -636,7 +650,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 }
             });
             break;
-        case 'num':
+        case 'num':     //숫자 0~100000
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 xtype: 'numbercolumn',
@@ -653,7 +667,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 }
             });
             break;
-        case 'date':
+        case 'date':    //날짜 포맷은 Y-m-d
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 xtype: 'datecolumn',
@@ -670,7 +684,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 }
             });
             break;
-        case 'check':
+        case 'check':   //체크박스
             columnType = {
                 text: columnText,
                 xtype: 'checkcolumn',
@@ -686,7 +700,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 }
             };
             break;
-        case 'combo':
+        case 'combo':   //콤보박스
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 width: width,
@@ -696,7 +710,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 style: 'text-align:center',
                 renderer: function (value) {
                     //console.log(0);
-                    try {
+                    try {   //set items 선택할 수 있는 항목들 생성 
                         for (var i = 0; i < this.columnsMap.length; i++) {
                             if (this.columnsMap[i].dataIndex == paramId[0]) {
 
@@ -725,7 +739,7 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 },
                 //store: comboStore,
                 //renderer: Ext.util.Format.usMoney,
-                editor: {
+                editor: {   //showvalue 와 hidvalue
                     xtype: 'combobox',
                     displayField: 'SHOWVALUE',
                     valueField: 'HIDEVALUE',
@@ -748,20 +762,20 @@ ApGrid.prototype.addColumn = function (type, columnText, paramId, width, align) 
                 }
             });
             break;
-            //하이드컬럼 테스트 필요
-        case 'hide':
+        case 'hide':    //숨은 필드
             columnType = Ext.create('Ext.grid.column.Column', {
                 text: columnText,
                 width: 0,
                 dataIndex: paramId
             });
-            columnType.isVisible(false);
+            columnType.isVisible(false);    //true시 visible
             break;
     }
     this.columnsMap.push(columnType);
     this.headerCt.insert(this.columns.length - 2, columnType);
     this.getView().refresh();
 }
+//Columns 잠금기능 
 ApGrid.prototype.setLockColumns = function(){
     for (var i = 0; i < arguments.length; i++) {
         this.lockColumns.push(arguments[i]);
@@ -774,6 +788,7 @@ ApGrid.prototype.setUnLockColumns = function () {
         }
     }
 }
+//총 row 갯수, 빈레코드 탐색
 ApGrid.prototype.getTotalCount = function () {
     return this.getStore().getCount();
 }
@@ -788,12 +803,13 @@ ApGrid.prototype.getEmptyRecord = function () {
     });
     return newRecord;
 }
+//선택 되어 있는 레코드 반환
 ApGrid.prototype.getSelectedRecords = function () {
     //var checkedRecords = this.getSelection();
     //checkedRecords.sort(function (a, b) {
     //    return a.internalId < b.internalId ? -1 : a.internalId > b.internalId ? 1 : 0;
     //});
-    var returnRecords = [];
+    var returnRecords = []; //다중선택도 처리하기 위해 []
     if (this.checkedGrid) {
         for (var i = 0; i < this.store.getCount() ; i++) {
             if (this.getRow(i).data.AP_STATE) {
@@ -806,6 +822,7 @@ ApGrid.prototype.getSelectedRecords = function () {
    
     return returnRecords;
 }
+//몇 행인지, 비어있는 레코드 추가, 행 삭제
 ApGrid.prototype.getRowIndex = function (record) {
     return this.getStore().indexOf(record);
 }
@@ -832,6 +849,7 @@ ApGrid.prototype.getRow = function (rowIndex) {
 ApGrid.prototype.setRow = function (rowIndex, paramId, value) {
     this.getRow(rowIndex).set(paramId, value)
 }
+//event
 ApGrid.prototype.eFocus = function () {
     console.log('focus');
 };
@@ -849,6 +867,7 @@ ApGrid.prototype.eCellDbClick = function (record, rowindex, paramId) { };
 ApGrid.prototype.eButtonAddClick = function () {
 
 }
+//포커스 지정, 포커스 삭제
 ApGrid.prototype.setFocus = function (rowIndex) {
     this.getSelectionModel().select(rowIndex);
     this.getView().focusRow(rowIndex);
@@ -860,13 +879,15 @@ ApGrid.prototype.setFocusOut = function () {
 ApGrid.prototype.eButtonDeleteClick = function () {
 
 }
+
 var ApGrid = {
+    //ApGrid.create()
     create: function (check, type) {
         //var selModel = '';
         var toolbar = [];
         if (type == undefined || false) {
             toolbar = [];
-        } else if (type == true) {
+        } else if (type == true) {  //grid의 추가 버튼,삭제 버튼를 내장
             toolbar = [{
                 xtype: 'toolbar',
                 items: [{
@@ -906,6 +927,7 @@ var ApGrid = {
             }]
         }
         var _ApGrid = Ext.create('ApGrid', {
+            //ApGrid.create()
             //store: store,
             width: 'fit',
             title: '',
@@ -1045,23 +1067,28 @@ var ApGrid = {
         return _ApGrid;
     }
 }
-/* 일반 컴포넌트 ************************************************************/
-//텍스트박스
+
+
+
+///////////////---------------일반 컴포넌트---------------////////////////////////////
+
+//텍스트박스 component
 Ext.define('ApText', {
     extend: 'Ext.form.field.Text',
     ComponentType: 'text'
 });
+//event
 ApText.prototype.eFocus = function () {
 };
 ApText.prototype.eChange = function (newValue, oldValue) {
 };
 ApText.prototype.eKeyDown = function (e) {
-
 }
 ApText.prototype.setFeildLabelWidth = function (width) {
     this.labelEl.setWidth(width)
 };
 var ApText = {
+    //ApText.create()
     create: function (label, paramId, labelWidth) {
         if (labelWidth == undefined) labelWidth = 80;
         var _ApText = Ext.create('ApText', {
@@ -1071,7 +1098,7 @@ var ApText = {
             labelWidth: labelWidth,
             labelStyle: 'white-space: nowrap;',
             paramId: paramId
-        });
+        });//기본 사이즈 80(라벨),180
         _ApText.on('afterrender', function (me, eOpts) {
             _ApText.on('focus', function (me, eOpts) {
                 _ApText.eFocus();
@@ -1087,11 +1114,12 @@ var ApText = {
         return _ApText;
     }
 }
-//넘버
+//넘버 component
 Ext.define('ApNum', {
     extend: 'Ext.form.field.Number',
     ComponentType: 'number'
 });
+//event
 ApNum.prototype.eFocus = function () {
 };
 ApNum.prototype.eChange = function (newValue, oldValue) {
@@ -1103,6 +1131,7 @@ ApNum.prototype.setFeildLabelWidth = function (width) {
     this.labelEl.setWidth(width)
 };
 var ApNum = {
+   // ApNum.create()
     create: function (label, paramId, labelWidth) {
         if (labelWidth == undefined) labelWidth = 80;
         var _ApNum = Ext.create('ApNum', {
@@ -1113,7 +1142,7 @@ var ApNum = {
             labelStyle: 'white-space: nowrap;',
             paramId: paramId,
             decimalPrecision : 0
-        });
+        });//기본 사이즈 80(라벨),180
         _ApNum.on('afterrender', function (me, eOpts) {
             _ApNum.on('focus', function (me, eOpts) {
                 _ApNum.eFocus();
@@ -1129,15 +1158,17 @@ var ApNum = {
         return _ApNum;
     }
 }
-//텍스트에어리어
+//텍스트에어리어 component (멀티라인 텍스트)
 Ext.define('ApTextArea', {
     extend: 'Ext.form.field.TextArea',
     ComponentType: 'textArea'
 });
+//event
 ApTextArea.prototype.eFocus = function () { };
 ApTextArea.prototype.eChange = function (newValue, oldValue) { };
 ApTextArea.prototype.eKeyDown = function (e) { };
 var ApTextArea = {
+    //ApTextArea.create()
     create: function (label, paramId, labelWidth) {
         if (labelWidth == undefined) labelWidth = 80;
         var _ApTextArea = Ext.create('ApTextArea', {
@@ -1145,7 +1176,7 @@ var ApTextArea = {
             fieldLabel: label,
             labelWidth: labelWidth,
             paramId: paramId
-        });
+        });//기본 사이즈 180
         _ApTextArea.on('afterrender', function (me, eOpts) {
             _ApTextArea.on('focus', function (me, eOpts) {
                 _ApTextArea.eFocus();
@@ -1161,22 +1192,26 @@ var ApTextArea = {
         return _ApTextArea;
     }
 }
-//날짜선택
+//날짜선택  component
 Ext.define('ApDate', {
     extend: 'Ext.form.field.Date',
     ComponentType: 'date'
 });
+//setToday 오늘 일자로
 ApDate.prototype.setToday = function () {
     this.setValue(Ext.Date.dateFormat(new Date(), 'Y-m-d'));
 };
+//YMD 데이터 포맷 변환
 ApDate.prototype.getYMD = function () {
     return Ext.Date.dateFormat(this.getValue(), 'Y-m-d');
     //var value = this.superclass.getValue.call(this);
     //return Ext.Date.dateFormat(value, 'Ymd');
 }
+//event
 ApDate.prototype.eChange = function (Value) { };
 ApDate.prototype.eKeyDown = function (e) { };
 var ApDate = {
+    //ApDate.create()
     create: function (label, paramId, labelWidth) {
         if (labelWidth == undefined) labelWidth = 80;
         var _ApDate = Ext.create('ApDate', {
@@ -1185,7 +1220,7 @@ var ApDate = {
             labelWidth: labelWidth,
             format: 'Y-m-d',
             paramId: paramId
-        });
+        });//기본 사이즈 190
         _ApDate.on('afterrender', function (me, eOpts) {
             _ApDate.on('change', function (me, newValue, oldValue, eOpts) {
                 _animationTarget = this;
@@ -1200,7 +1235,7 @@ var ApDate = {
     }
 }
 
-//콤보박스
+//콤보박스 component
 Ext.define('ApCombo', {
     extend: 'Ext.form.ComboBox',
     ComponentType: 'combo'
@@ -1208,24 +1243,33 @@ Ext.define('ApCombo', {
 ApCombo.prototype.eventChange = function (newValue, oldValue) { };
 
 ApCombo.prototype.addItem = function (showValue, hideValue) {
-
+    //combo add item
     this.items.push({
         SHOWVALUE: showValue,
         HIDEVALUE: hideValue
-    });
+    });//showvalue:나타나는 값, hidevalue:db에 저장 될 값
     var makeStore = Ext.create('Ext.data.Store', {
         fields: ['SHOWVALUE', 'HIDEVALUE'],
         data: this.items
     });
     this.bindStore(makeStore);
 }
+//setIndex showvalue
 ApCombo.prototype.setIndex = function (index) {
     var value = this.getStore().data.items[index].data.SHOWVALUE;
     this.superclass.setValue.call(this, value);
 }
+//setValue hidevalue -> showvalue()
 ApCombo.prototype.setValue = function (value) {
-    this.superclass.setValue.call(this, value);
+    for (var i = 0; i < this.store.totalCount; i++) {
+        if (this.store.data.items[i].data.HIDEVALUE == value) {
+            value = this.store.data.items[i].data.SHOWVALUE
+            this.superclass.setValue.call(this, value);
+            return;
+        }
+    }
 };
+//getValue   get hidevalue
 ApCombo.prototype.getValue = function () {
     try {
        return this.getSelection().data.HIDEVALUE;
@@ -1233,6 +1277,7 @@ ApCombo.prototype.getValue = function () {
 
     }
 }
+//focus 등등 이벤트
 ApCombo.prototype.eFocus = function () {
 };
 ApCombo.prototype.eChange = function (record) {
@@ -1249,13 +1294,13 @@ var ApCombo = {
         var _ApCombo = Ext.create('ApCombo', {
             labelWidth: 80,
             width: 180,
-            displayField: 'SHOWVALUE',
+            displayField: 'SHOWVALUE',  
             fieldLabel: label,
             labelWidth: labelWidth,
             forceSelection: true,
             paramId: paramId,
             items: []
-        });
+        });//기본 크기 80(라벨), 180
         _ApCombo.on('afterrender', function (me, eOpts) {
             _ApCombo.on('focus', function (me, eOpts) {
                 _ApCombo.eFocus();
@@ -1271,21 +1316,23 @@ var ApCombo = {
         return _ApCombo;
     }
 }
-//버튼
+//버튼 component
 Ext.define('ApButton', {
     extend: 'Ext.button.Button',
     ComponentType: 'button'
 });
+//버튼 클릭 이벤트
 ApButton.prototype.eClick = function () {
 };
 var ApButton = {
+    //ApButton.create()
     create: function (text, paramId) {
         var _ApButton = Ext.create('ApButton', {
             labelWidth: 80,
             text: text,
             width: 90,
             paramId: paramId
-        });
+        }); //기본 사이즈 80(라벨), 90
         _ApButton.on('afterrender', function (me, eOpts) {
             _ApButton.on('click', function (me, eOpts) {
                 _ApButton.eClick();
@@ -1295,16 +1342,18 @@ var ApButton = {
         return _ApButton;
     }
 }
-//체크박스
+//체크박스 component
 Ext.define('ApCheck', {
     extend: 'Ext.form.field.Checkbox',
     componentType: 'check'
 });
+//check change 이벤트, Width 사이즈
 ApCheck.prototype.eChange = function (newValue, oldValue) { };
 ApCheck.prototype.setFeildLabelWidth = function (width) {
     this.labelEl.setWidth(width)
 };
 var ApCheck = {
+    //ApCheck.create()
     create: function (text, paramId) {
         var _ApCheck = Ext.create('ApCheck', {
             boxLabel: text,
@@ -1319,14 +1368,16 @@ var ApCheck = {
         return _ApCheck;
     }
 }
-//label
+//label component
 Ext.define('ApLabel', {
     extend: 'Ext.form.Label',
 });
+//label click event
 ApLabel.prototype.eClick = function () {
     console.log('labelClick');
 }
 var ApLabel = {
+    //ApLabel.create()
     create: function (text) {
         var _ApLabel = Ext.create('ApLabel', {
             text: text,
@@ -1334,28 +1385,30 @@ var ApLabel = {
                 click: function (a, b) {
                     this.eClick();
                 }
-            }
+            }//text,click event
         })
         _setTarget(_ApLabel);
         return _ApLabel;
     }
 }
 
+//image를 읽어 화면에 보여주는 component
 Ext.define('ApImg', {
     extend: 'Ext.Img',
     ComponentType: 'image'
 });
+//fileKey를 통해 db에서  받기위한 함수
 ApImg.prototype.setFileKey = function (fileKey) {
     if (fileKey != '' && fileKey != undefined) {
         var _pr = DBParams.create('sp_COMFILE', 'GETFILE');
         _pr.addParam('FILEKEY', fileKey);
         var fileDs = DBconnect.runProcedure(_pr);
 
-        if (fileDs[0].data.items.length > 0) {
+        if (fileDs[0].data.items.length > 0) {  //파일 유
             var src = fileDs[0].data.items[0].data.UP_SRC
             this.key = fileKey;
             this.setSrc(src);
-        } else {
+        } else {    //파일 무
             console.error('파일없음');
         }
     } else {
@@ -1364,6 +1417,7 @@ ApImg.prototype.setFileKey = function (fileKey) {
 
 }
 var ApImg = {
+    //ApImg.create()
     create: function (src, paramId) {
         if (src == undefined) src = '';
         //if (labelWidth == undefined) labelWidth = 80;
@@ -1373,7 +1427,7 @@ var ApImg = {
             height: 180,
             paramId: paramId,
             Key: ''
-        });
+        });//180 x 180 사이즈 
         if (_ApImg.src == '') {
             _ApImg.setSrc('../../Resource/Themes/noImage.png');
         }
@@ -1382,11 +1436,13 @@ var ApImg = {
     }
 }
 
+//ApUpload 파일을 업로드 하기 위한 component
 Ext.define('ApUpload', {
     //extend: 'Ext.panel.Panel',
     extend: 'Ext.form.Panel',
     ComponentType: 'upload'
 });
+//db에서 keyGen 받기 위한 함수 
 ApUpload.prototype.setFileKey = function (filekey) {
     var pr = DBParams.create('sp_COMFILE', 'GETFILE');
     pr.addParam('FILEKEY', filekey);
@@ -1407,24 +1463,24 @@ ApUpload.prototype.setFileKey = function (filekey) {
         this.key = '';
     }
 }
+//get key&Name
 ApUpload.prototype.getFileKey = function () {
     return this.key;
 }
 ApUpload.prototype.getFileName = function () {
     return this.items.items[0].getRawValue();
 }
+//button 업로드 & 삭제 버튼
 ApUpload.prototype.eUpload = function (fileKeys) {
-
 }
 ApUpload.prototype.eClear = function () {
-
 }
 
-
 var ApUpload = {
+    //ApUpload.create()
     create: function (text, paramId) {
         var _upButton = Ext.create('Ext.button.Button', {
-            text: '업로드',
+            text: '업로드',    //eUpload
             handler: function () {
                 var form = this.up('form').getForm();
                 //form.url = form.getRawValue();
@@ -1444,7 +1500,7 @@ var ApUpload = {
                             _clearButton.show();
                             _ApUpload.items.items[0].button.hide();
                             _ApUpload.eUpload(_ApUpload.key);
-                        }
+                        }   //upload 완료 후에는 hide, clear와 down 버튼 show
                     });
                 }
             }
@@ -1465,7 +1521,7 @@ var ApUpload = {
             }
         });
         _clearButton = Ext.create('Ext.button.Button', {
-            text: '삭제',
+            text: '삭제', //eClear
             handler: function () {
                 Ext.Ajax.request({
                     async: false,
@@ -1486,7 +1542,7 @@ var ApUpload = {
                         _clearButton.hide();
                         _downButton.hide();
                         _ApUpload.eClear();
-                    },
+                    },  //삭제시 clear와 down은 hide, up은 show
                     failure: function (response, options) {
                         //Ext.Msg.error('Failure', response.responseText);
                         Ext.Msg.error('Failure', response.statusText);

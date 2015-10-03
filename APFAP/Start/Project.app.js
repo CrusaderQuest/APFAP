@@ -88,6 +88,7 @@ btn_CREATE.eClick = function () {
     var pr = DBParams.create('sp_COMPROJECT', 'MAKE_PROJECT');
     pr.addParam('TITLE', txt_TITLE.getValue());
     pr.addParam('SUBTITLE', txa_SUBTITLE.getValue());
+    pr.addParam('ENDDATE', ApFn.toDbTyoe('date',dt_END.getYMD()));
     pr.addParam('P_CATEGORY',cbo_TYPE_1.getValue());
     pr.addParam('P_TYPE',cbo_TYPE_2.getValue());
     pr.addParam('P_TEAM',txt_TEAMNAME.getValue());
@@ -97,6 +98,7 @@ btn_CREATE.eClick = function () {
     ApMsg.warning('멋진 프로젝트가 되길 바랍니다!', function () {
         txt_TITLE.setValue('');
         txa_SUBTITLE.setValue('');
+        dt_END.setToday();
         cbo_TYPE_1.setValue('');
         cbo_TYPE_2.setValue('');
         txt_TEAMNAME.setValue('');
