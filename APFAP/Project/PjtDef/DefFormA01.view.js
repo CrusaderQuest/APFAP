@@ -8,7 +8,11 @@ var tbl_MAKE = ApTable.create(1);
 tbl_MAKE.setTarget();
 //제목
 var txt_TITLE = ApText.create('제목');
-txt_TITLE.setWidth(600);
+txt_TITLE.setWidth(410);
+var dt_END = ApDate.create('기한', '', 60);
+dt_END.setWidth(185);
+dt_END.setToday();
+tbl_MAKE.cellShare(2);
 var txa_SUBTITLE = ApTextArea.create('설명');
 txa_SUBTITLE.setWidth(600);
 //프로젝트 타입
