@@ -738,6 +738,7 @@
     <Content Include="ServerCore\getSession.aspx" />
     <Content Include="ServerCore\Join.aspx" />
     <Content Include="ServerCore\Login.aspx" />
+    <Content Include="ServerCore\Logout.aspx" />
     <Content Include="ServerCore\setSession.aspx" />
     <Content Include="Start\Home.app.js" />
     <Content Include="Start\Home.html" />
@@ -814,6 +815,12 @@
     </Compile>
     <Compile Include="ServerCore\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\Logout.aspx.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerCore\Logout.aspx.designer.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
     </Compile>
     <Compile Include="ServerCore\setSession.aspx.cs">
       <DependentUpon>setSession.aspx</DependentUpon>

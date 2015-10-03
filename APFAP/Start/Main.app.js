@@ -174,3 +174,28 @@ btn_context.eClick = function () {
 
     });
 }
+btn_context.eClick = function () {
+    Ext.MessageBox.confirm('', '퇴근하시겠어요?', function (btn) {
+
+        if (btn == 'yes') {
+            Ext.Ajax.request({
+                async: false,
+                url: '../ServerCore/Logout.aspx',
+                method: 'POST',
+                reader: {
+                    type: 'json'
+                },
+                success: function (response, eOpt) {
+                    console.log(response)
+                    location.replace('../Start/Login.html');
+                },
+                failure: function (response, options) {
+                    ApMsg.warning('헉.. 통신이 실패했습니다. 인터넷 연결상태를 확인해 주세요.');
+                }
+            });
+        }
+        else {
+        }
+
+    });
+}
