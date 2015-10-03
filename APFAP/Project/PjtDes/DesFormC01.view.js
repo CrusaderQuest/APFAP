@@ -37,8 +37,10 @@ img_UPLOAD_D.setWidth(600);
 img_UPLOAD_D.setHeight(320);
 ApEvent.onlaod = function () {
     SYS_INIT();
-    viewPanel.divideH(tre_H, pnl_D);
-    tre_H.setWidth(400);
+    var paneltest = ApPanel.create();
+    viewPanel.divideH(paneltest, pnl_D);
+    paneltest.setWidth(400);
+    paneltest.add(tre_H);
     pnl_D.divideH(tbl_H, tbl_D);
     tbl_H.setWidth(100);
 }
