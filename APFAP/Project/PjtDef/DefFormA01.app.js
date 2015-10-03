@@ -17,6 +17,7 @@ function GRD_LOAD() {
     var ds = DBconnect.runProcedure(pr);
     dbData = ds[0];
     txt_TITLE.setValue(dbData.data.items[0].data.TITLE);
+    dt_END.setValue(dbData.data.items[0].data.ENDDATE);
     txa_SUBTITLE.setValue(dbData.data.items[0].data.SUBTITLE);
     cbo_TYPE_1.setValue(dbData.data.items[0].data.P_CATEGORY);
     cbo_TYPE_2.setValue(dbData.data.items[0].data.P_TYPE);
@@ -32,6 +33,7 @@ btn_SAVE.eClick = function () {
         prIU.addParam("TITLE", txt_TITLE.getValue());
         prIU.addParam("SUBTITLE", txa_SUBTITLE.getValue());
         prIU.addParam("P_CATEGORY", cbo_TYPE_1.getValue());
+        prIU.addParam('ENDDATE', ApFn.toDbTyoe('date', dt_END.getYMD()));
         prIU.addParam("P_TYPE", cbo_TYPE_2.getValue());
         prIU.addParam("P_TEAM", txt_TEAMNAME.getValue());
         prIU.addParam("P_IMAGE", upl_TEAMIMG.getFileKey());

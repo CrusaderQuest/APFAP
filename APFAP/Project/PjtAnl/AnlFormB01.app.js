@@ -54,6 +54,7 @@ grd_a.eButtonDeleteClick = function () {
             deleteArray.push(tempNo);
         }    //delete 한 행의 UP_KEY를 deleteArray에 저장 후 sync시 db에서 삭제
         gridData.remove(grd_a.getSelection());
+        grd_a.setFocus(Dindex - 1);
     }
 }
 
@@ -117,6 +118,7 @@ grid_update = function () {
     grd_a.selection.set('CATEGORY', cbo_category.getValue());
     grd_a.selection.set('IMPORTANT', cbo_important.getValue())
     grd_a.selection.set('REQ_NM', txt_nm.getValue());
+    grd_a.selection.set('LEV', cbo_lev.getValue());
     grd_a.selection.set('DESCRIPTION', txta_summary.getValue());
     grd_a.selection.set('E_USER', cbo_NOTICE_USER_HH.getValue());
 

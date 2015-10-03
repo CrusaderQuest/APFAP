@@ -54,6 +54,7 @@ grd_a.eButtonDeleteClick = function () {
             deleteArray.push(tempNo);
         }   //delete 한 행의 UP_KEY를 deleteArray에 저장 후 sync시 db에서 삭제
         gridData.remove(grd_a.getSelection());
+        grd_a.setFocus(Dindex - 1);
     }
 }
 
@@ -95,6 +96,7 @@ function deleteDB() {
 //grid 내용 필드로
 grd_a.eSelectionChange = function (record, rowIndex, paramId) {
     console.log(paramId, record.data, rowIndex);
+    Dindex = rowIndex;
 
     cbo_req.setValue(record.data.REQ_SIMILARITY);
     cbo_fcagtegory.setValue(record.data.FILE_CATEGORY);

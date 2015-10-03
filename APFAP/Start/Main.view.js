@@ -36,16 +36,50 @@ var headerPanelSub = ApPanel.create();
 
 var tbl_login = ApTable.create(1);
 tbl_login.setTarget();
-tbl_login.setStyle('padding-top', '20px');
+//tbl_login.setStyle('padding-top', '20px');
 tbl_login.setStyle('padding-left', '10px');
-var lbl_login = ApLabel.create(ds[1].getAt(0).data.USER_NM + ' 님 환영합니다.');
-
-var tbl_content = ApTable.create(1);
-tbl_content.setTarget();
 var btn_messenger = ApButton.create('초대하기');
-var btn_context = ApButton.create('공지사항');
+btn_messenger.setWidth(150);
+var btn_context = ApButton.create('완료하기');
+if (ApFn.isMaster() != true) {
+    btn_context.setHidden(true);
+}
+btn_context.setWidth(150);
 var cbo_formType = ApCombo.create('', 'test', 0);
+cbo_formType.setWidth(100);
+var btn_context = ApButton.create('퇴근');
+btn_context.setWidth(45);
+tbl_login.cellShare(2);
+var pnl_progress = ApPanel.create();
+pnl_progress.setLayout('vbox');
+var progress = Ext.create('Ext.ProgressBar', {
+    width: '100%',
+    height: 30,
+    flat:1
+});
+ds[0].getAt(0).data.ENDDATE
+var nowD = new Date();
+var startD = new Date(ds[0].getAt(0).data.STARTDATE);
+var thenD = new Date(ds[0].getAt(0).data.ENDDATE);
+var doDt = nowD.getTime() - startD.getTime();
+doDt = Math.floor(doDt / (1000 * 60 * 60 * 24));
 
+var leftDt = thenD.getTime() - nowD.getTime();
+if (leftDt < 0) {
+    leftDt = 0;
+} else {
+    leftDt = Math.floor(leftDt / (1000 * 60 * 60 * 24));
+}
+var per = thenD.getTime() / nowD.getTime()
+var d_day = ApLabel.create("프로젝트를 시작한지 " + doDt + " 일 째, 남은 기간 : D - " + leftDt + "일");
+d_day.setStyle('padding-top', '10px');
+var lbl_login = ApLabel.create(ds[1].getAt(0).data.USER_NM + ' 님 환영합니다.');
+lbl_login.setStyle('padding-top', '5px');
+lbl_login.setStyle('padding-bottom', '5px');
+progress.setValue((doDt / (doDt + leftDt)));
+pnl_progress.add(lbl_login);
+pnl_progress.add(progress);
+pnl_progress.add(d_day);
 var tre_COM = ApTree.create('');
 var tre_DEF = ApTree.create('');
 var tre_ANL = ApTree.create('');
@@ -67,37 +101,37 @@ var menu = Ext.create('Ext.panel.Panel', {
         activeOnTop: true
     },
     items: [{ 
-        title: '◀정&nbsp&nbsp&nbsp의▶',
+        title: '&nbsp정&nbsp&nbsp&nbsp의',
         layout: 'fit',
         cls: 'colorA',
         items:[tre_DEF]
     }, {
-        title: '◀분&nbsp&nbsp&nbsp석▶',
+        title: '&nbsp분&nbsp&nbsp&nbsp석',
         layout: 'fit',
         cls: 'colorB',
         items: [tre_ANL]
     }, {
-        title: '◀설&nbsp&nbsp&nbsp계▶',
+        title: '&nbsp설&nbsp&nbsp&nbsp계',
         layout: 'fit',
         cls: 'colorC',
         items: [tre_DES]
     }, {
-        title: '◀개&nbsp&nbsp&nbsp발▶',
+        title: '&nbsp개&nbsp&nbsp&nbsp발',
         layout: 'fit',
         cls: 'colorD',
         items: [tre_DEV]
     }, {
-        title: '◀테스트▶',
+        title: '&nbsp테스트',
         layout: 'fit',
         cls: 'colorE',
         items: [tre_TES]
     }, {
-        title: '◀평&nbsp&nbsp&nbsp가▶',
+        title: '&nbsp평&nbsp&nbsp&nbsp가',
         cls: 'colorF',
         layout: 'fit',
         items: [tre_EVL]
     }, {
-        title: '◀공&nbsp&nbsp&nbsp통▶',
+        title: '&nbsp공&nbsp&nbsp&nbsp통',
         cls: 'colorG',
         layout: 'fit',
         items: [tre_COM]
@@ -148,7 +182,8 @@ ApEvent.onlaod = function () {
     tbl_Logo.setWidth(110);
     headerPanelDetail.divideH(tbl_header, headerPanelSub, headerPanelSub);
     tbl_header.setWidth(600);
-    headerPanelSub.divideH(tbl_login, tbl_content);
+    headerPanelSub.divideH(pnl_progress, tbl_login, tbl_login);
+    tbl_login.setWidth(180);
     mainPanel.divideH(menu, tab_main, menu);
     tab_main.addTab('메인').full({
         html: '<iframe src="Home.html?" width="100%" height="100%" frameborder="0"></iframe>'

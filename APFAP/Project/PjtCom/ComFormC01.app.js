@@ -54,6 +54,8 @@ grd_D.eSelectionChange = function (record, rowIndex, paramId) {
     //SEARCH_D();
 }
 
+
+//초기화
 btn_ADDNOICE_HH.eClick = function () {
     txt_NOTICE_TITLE_HH.setValue('');
     txa_NOTICE_CONTENT_HH.setValue('');

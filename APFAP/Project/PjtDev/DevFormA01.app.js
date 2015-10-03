@@ -37,6 +37,7 @@ btn_SAVE.eClick = function () {
     } else {
         grd.reconfigure(grdStore);
     }
+    drawTabChart();
 }
 //-----------------------DB 통신-----------------------
 //해당 탭의 테이블을 가져옴.
@@ -101,7 +102,7 @@ function dbSave() {
             pr = DBParams.create('sp_DevFormA01', 'UPDATE_TABLE');
             pr.addParam('D_DEV_NO', selectedRecords[i].get('D_DEV_NO'));
             pr.addParam('D_DEV_NM', selectedRecords[i].get('D_DEV_NM'));
-            pr.addParam('START_DT', ApFn.YMD(selectedRecords[i].get('START_DT')));
+            pr.addParam('START_DT', ApFn.setYMD(selectedRecords[i].get('START_DT')));
             pr.addParam('DEV_VALUE', convertValue(selectedRecords[i].get('DEV_VALUE')));
             pr.addParam('TEST_VALUE', convertValue(selectedRecords[i].get('TEST_VALUE')));
             pr.addParam('DEADLINE', ApFn.setYMD(selectedRecords[i].get('DEADLINE')));
@@ -323,6 +324,13 @@ function drawMainChart() {
     mainTabChart.redraw();
     mainUserChart.redraw();
 }
+/*
+renderer: function(sprite, record, attr, index, store){
+    return Ext.apply(attr, {
+        fill: '#3590D2'
+    });
+}
+*/
 function initChart(storeTemp) {
     var chart = Ext.create('Ext.chart.Chart', {
         width: 300,
@@ -376,8 +384,11 @@ function initChart(storeTemp) {
             }
         }]
     });
-    return chart;
+return chart;
 }
+
+
+
 //------------------5개 탭 버튼 클릭 이벤트---------------------
 btn_main.eClick = function () {
     isSearched = 0;
@@ -593,16 +604,16 @@ dt_eEndDate.eChange = function (record) {
 }
 grd.eUpdate = function (record, rowIndex, paramId) {
     
-        if (paramId == 'TEST_VALUE' && record.data.TEST_VALUE == 1 && record.data.DEV_VALUE ==1) {
-            var pr = DBParams.create('sp_ComFormA01', 'GET_DATE');
-            var ds = DBconnect.runProcedure(pr);
-            record.data.END_DT = ds[0].data.items[0].data.DATE;
-            if (isSearched) {
-                grd.reconfigure(filterStore);
-            } else {
-                grd.reconfigure(grdStore);
-            }
+    if (paramId == 'TEST_VALUE' && record.data.TEST_VALUE == 1 && record.data.DEV_VALUE ==1) {
+        var pr = DBParams.create('sp_ComFormA01', 'GET_DATE');
+        var ds = DBconnect.runProcedure(pr);
+        record.data.END_DT = ds[0].data.items[0].data.DATE;
+        if (isSearched) {
+            grd.reconfigure(filterStore);
+        } else {
+            grd.reconfigure(grdStore);
         }
+    }
 
 
     isUpdated = 1;
