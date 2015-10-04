@@ -2,6 +2,7 @@
 /// <reference path="../Resource/Scripts/component.js" />
 /// <reference path="../Resource/Scripts/noncomponent.js" />
 
+//chart 담을 내용 get,
 var pr = DBParams.create('sp_COMMAIN', 'SEARCH_GRAPH_H');
 var ds = DBconnect.runProcedure(pr);
 var cha_ING_H = Ext.create('Ext.chart.Chart', {
@@ -11,7 +12,7 @@ var cha_ING_H = Ext.create('Ext.chart.Chart', {
     padding: '10 0 0 0',
     animate: true,
     shadow: false,
-    config: {
+    config: {   //차트 항목별 color
         colors: ['#1ABC9C', '#F1C40F', '#3498DB', '#C0392B', '#9B59B6']
     },
     style: 'background: #fff;',
@@ -60,7 +61,7 @@ var cha_ING_H = Ext.create('Ext.chart.Chart', {
             renderer: function (v) { return v + '%'; }
         }
     }],
-    series: [{
+    series: [{  //담을 내용- 6개의 항목 진행률
         type: 'column',
         axis: 'left',
         //renderer: function (sprite, record, attr, index, store) {
@@ -89,14 +90,15 @@ var cha_ING_H = Ext.create('Ext.chart.Chart', {
                 this.setTitle(browser + '단계의 ' + storeItem.get('ALLRATE') + ': ' + storeItem.get(item.yField) + '%');
             }
         },
-        listeners: {
-            itemmousedown: function (obj) {
+        listeners: {//상세진행사항 차트
+            itemmousedown: function (obj) { 
                 var pr = DBParams.create('sp_COMMAIN', 'SEARCH_GRAPH_D');
                 pr.addParam('CONTENT_CD',obj.yField.substr(2, 3));
                 var sto_cha_ING_D = DBconnect.runProcedure(pr);
                 // get the correct serie
                 MAIN.items.items[0].items.items[2].items.items[0].removeAll();
                 var index = '';
+                //선택된 항목 0~5
                 if (obj.yField.substr(2, 3) == 'DEF' ){
                     index = 0;
                 } else if (obj.yField.substr(2, 3) == 'ANL') {

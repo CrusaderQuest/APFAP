@@ -16,11 +16,12 @@ function GRD_LOAD() {
     //데이터셋
     var ds = DBconnect.runProcedure(pr);
     dbData = ds[0];
+    //데이터 bind
     txt_TITLE.setValue(dbData.data.items[0].data.TITLE);
     dt_END.setValue(dbData.data.items[0].data.ENDDATE);
     txa_SUBTITLE.setValue(dbData.data.items[0].data.SUBTITLE);
-    cbo_TYPE_1.setValue(dbData.data.items[0].data.P_CATEGORY);
-    cbo_TYPE_2.setValue(dbData.data.items[0].data.P_TYPE);
+    cbo_TYPE_1.setValueHS(dbData.data.items[0].data.P_CATEGORY);
+    cbo_TYPE_2.setValueHS(dbData.data.items[0].data.P_TYPE);
     txt_TEAMNAME.setValue(dbData.data.items[0].data.P_TEAM);
     upl_TEAMIMG.setFileKey(dbData.data.items[0].data.P_IMAGE);
     img_TEAMIMG.setFileKey(dbData.data.items[0].data.P_IMAGE);
@@ -29,7 +30,7 @@ function GRD_LOAD() {
 btn_SAVE.eClick = function () {
     if (EmptyCheck()) {
         var prIU = DBParams.create('sp_DefFormA01', 'UPDATE_TABLE');
-        //데이터셋
+        //addParam 파라미터 추가
         prIU.addParam("TITLE", txt_TITLE.getValue());
         prIU.addParam("SUBTITLE", txa_SUBTITLE.getValue());
         prIU.addParam("P_CATEGORY", cbo_TYPE_1.getValue());
